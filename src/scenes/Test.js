@@ -18,6 +18,7 @@ export default class Test extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64
     });
+    this.load.image('gun', './assets/sprites/gun.png');
 
 
     // Declare variables for center of the scene
@@ -31,6 +32,15 @@ export default class Test extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.player.setCollideWorldBounds(true);
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+    var gun, bullets, enemy, bullet, enemyGroup;
+    this.nextFire = 0;
+    this.fireRate = 200;
+    this.speed = 1000;
+
+    this.gun = this.add.sprite(this.centerX, this.centerY, 'gun');
+    this.gun.setScale(0.5);
+
 
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
@@ -55,14 +65,14 @@ export default class Test extends Phaser.Scene {
     //this.physics.add.overlap(this.bullets, this.enemies, this.hitEnemy, null, this);
 
     // Event listener for movement of mouse pointer
-    // this.input.on(
-    //   "pointermove",
-    //   function(pointer) {
-    //     var betweenPoints = Phaser.Math.Angle.BetweenPoints;
-    //     var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.player, pointer);
-    //     this.player.setAngle(angle);
-    //   }, this
-    // );
+    this.input.on(
+      "pointermove",
+      function(pointer) {
+        var betweenPoints = Phaser.Math.Angle.BetweenPoints;
+        var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.gun, pointer);
+        this.gun.setAngle(angle);
+      }, this
+    );
 
     //When pointer is down, run function shoot
     //this.input.on("pointerdown", this.shoot, this);
