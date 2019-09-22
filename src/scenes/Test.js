@@ -69,14 +69,16 @@ export default class Test extends Phaser.Scene {
 
     //Anims
     const anims = this.anims;
-    anims.create({
+    this.anims.create({
       key: "walk",
-      frames: anims.generateFrameNames("cowboy", {
-        prefix: "walk",
-        start: 1,
-        end: 2,
-      }),
+      frames: this.anims.generateFrameNumbers("cowboy", { start: 0, end: 2 }),
       frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idle",
+      frames: [{ key: "cowboy", frame: 0 }],
+      frameRate: 20,
       repeat: -1
     });
     //Music
@@ -120,17 +122,17 @@ export default class Test extends Phaser.Scene {
     // Normalize and scale the velocity so that player can't move faster along a diagonal
     this.player.body.velocity.normalize().scale(speed);
 
-  //   if (this.cursors.left.isDown) {
-  //     this.player.anims.play("walk", true);
-  //   } else if (this.cursors.right.isDown) {
-  //     this.player.anims.play("walk", true);
-  //   } else if (this.cursors.up.isDown) {
-  //     this.player.anims.play("walk", true);
-  //   } else if (this.cursors.down.isDown) {
-  //     this.player.anims.play("walk", true);
-  //   } else {
-  //     this.player.anims.stop();
-  // }
+    if (this.cursors.left.isDown) {
+      this.player.anims.play("walk", true);
+    } else if (this.cursors.right.isDown) {
+      this.player.anims.play("walk", true);
+    } else if (this.cursors.up.isDown) {
+      this.player.anims.play("walk", true);
+    } else if (this.cursors.down.isDown) {
+      this.player.anims.play("walk", true);
+    } else {
+      this.player.anims.play("idle", true);
+  }
 
   }
 }
