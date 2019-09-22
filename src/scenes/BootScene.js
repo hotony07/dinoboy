@@ -35,6 +35,11 @@ export default class BootScene extends Phaser.Scene {
     var start = this.add.text(this.centerX-50, this.centerY+130, "START",{
       fontSize: '32px'
     });
+
+    button.on("pointerup", function () {
+       //this.scene.start('Scene1');
+     }, this
+    );
   }
 
   update (time, delta) {
