@@ -10,11 +10,13 @@ export default class Test extends Phaser.Scene {
 
   preload () {
     // Preload assets
-    this.load.image('player', './assets/sprites/cowboy_idle1.png');
-    this.load.image('enemy', './assets/Scene1/enemy.png');
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("music", './assets/Music/8TownRoad.wav');
     this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
+      frameWidth: 64,
+      frameHeight: 64
+    });
+    this.load.spritesheet('enemy', './assets/dinosaur/smallDino.png', {
       frameWidth: 64,
       frameHeight: 64
     });
@@ -41,10 +43,9 @@ export default class Test extends Phaser.Scene {
     this.gun = this.add.sprite(this.centerX, this.centerY, 'gun');
     this.gun.setScale(0.5);
 
-
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
-      key: "soda",
+      key: "enemy",
       repeat: 4,
       setXY: {
         x: 100,
@@ -55,7 +56,7 @@ export default class Test extends Phaser.Scene {
     });
 
     this.enemyGroup.children.iterate(function(child) {
-      child.setScale(0.1);
+      child.setScale(.75);
     });
 
     this.bullets = this.physics.add.group({
@@ -75,7 +76,7 @@ export default class Test extends Phaser.Scene {
     );
 
     //When pointer is down, run function shoot
-    //this.input.on("pointerdown", this.shoot, this);
+    this.input.on("pointerdown", this.shoot, this);
 
     //Anims
     const anims = this.anims;
@@ -143,6 +144,50 @@ export default class Test extends Phaser.Scene {
     } else {
       this.player.anims.play("idle", true);
   }
+  // Update the scene
+    this.bullets.children.each(
+      function (b) {
+        if (b.active) {
+          this.physics.add.overlap(
+            b,
+            this.enemyGroup,
+            this.hitEnemy,
+            null,
+            this
+          );
+          if (b.y < 0) {
+            b.setActive(false);
+          } else if (b.y > this.cameras.main.height) {
+            b.setActive(false);
+          } else if (b.x < 0) {
+            b.setActive(false);
+          } else if (b.x > this.cameras.main.width) {
+            b.setActive(false);
+          }
+        }
+      }.bind(this)
+    );
 
+  }
+
+  shoot (pointer) {
+    var betweenPoints = Phaser.Math.Angle.BetweenPoints;
+    var angle = betweenPoints(this.gun, pointer);
+    var velocityFromRotation = this.physics.velocityFromRotation;
+    //Create a variable called velocity from a Vector2
+    var velocity = new Phaser.Math.Vector2();
+    velocityFromRotation(angle, this.speed, velocity);
+    //Get the bullet group
+    var bullet = this.bullets.get();
+    bullet.setAngle(Phaser.Math.RAD_TO_DEG * angle);
+    bullet
+      .enableBody(true, this.gun.x, this.gun.y, true, true)
+      .setVelocity(velocity.x, velocity.y);
+  }
+
+  hitEnemy (bullet, enemy) {
+    console.log('hit');
+    enemy.disableBody(true, true);
+    bullet.disableBody(true, true);
   }
 }
