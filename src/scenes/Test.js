@@ -40,7 +40,8 @@ export default class Test extends Phaser.Scene {
     this.fireRate = 200;
     this.speed = 1000;
 
-    this.gun = this.add.sprite(this.player.x + 30, this.player.y + 10, 'gun');
+    this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
+    this.gun.setOrigin(0, 1);
     this.gun.setScale(0.5);
 
     //this.enemies = this.add.group();
@@ -124,8 +125,8 @@ export default class Test extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
-    this.gun.x = this.player.x + 30;
-    this.gun.y = this.player.y + 10;
+    this.gun.x = this.player.x + 15;
+    this.gun.y = this.player.y + 17;
 
     // Horizontal movement
     if (this.cursors.left.isDown) {
