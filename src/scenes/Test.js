@@ -36,6 +36,7 @@ export default class Test extends Phaser.Scene {
 
     this.player = this.physics.add.sprite(this.centerX, this.centerY, 'player');
     this.player.setCollideWorldBounds(true);
+    this.player.body.setSize(64, 64, 0 ,0);
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -210,7 +211,9 @@ export default class Test extends Phaser.Scene {
         }
       }.bind(this)
     );
-    if (this.ammoDrops.countActive(true) == 0) {
+    if (this.ammoDrops.countActive(true) != 0) {
+      this.availDrop = false;
+    } else {
       this.availDrop = true;
     }
     if (this.ammo == 0 && this.availDrop) {
