@@ -31,16 +31,20 @@ export default class Test extends Phaser.Scene {
   create (data) {
 
     this.player = this.physics.add.sprite(this.centerX, this.centerY, 'player');
-    this.cursors = this.input.keyboard.createCursorKeys();
     this.player.setCollideWorldBounds(true);
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     var gun, bullets, enemy, bullet, enemyGroup;
     this.nextFire = 0;
     this.fireRate = 200;
     this.speed = 1000;
 
-    this.gun = this.add.sprite(this.player.x + 30, this.player.y + 10, 'gun');
+    this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
+    this.gun.setOrigin(0, 1);
     this.gun.setScale(0.5);
 
     //this.enemies = this.add.group();
@@ -65,6 +69,11 @@ export default class Test extends Phaser.Scene {
     });
     //this.physics.add.overlap(this.bullets, this.enemies, this.hitEnemy, null, this);
 
+    this.ammoDrops = this.physics.add.group();
+    this.availDrop = true;
+    this.physics.add.overlap(this.player, this.ammoDrops, this.pickAmmo, null, this);
+
+
     // Event listener for movement of mouse pointer
     this.input.on(
       "pointermove",
@@ -74,9 +83,18 @@ export default class Test extends Phaser.Scene {
         this.gun.setAngle(angle);
       }, this
     );
+    this.ammo = 10;
+    //When pointer is down and you have ammo, run function shoot
+      this.input.on("pointerdown", function(pointer) {
+        if (this.ammo > 0){
+          this.shoot(pointer);
+          this.ammo -= 1;
+        } else {
+          console.log('out of ammo');
+        }
+        console.log('bullets remaining: ', this.ammo);
+      }, this);
 
-    //When pointer is down, run function shoot
-    this.input.on("pointerdown", this.shoot, this);
 
     //Anims
     const anims = this.anims;
@@ -115,33 +133,33 @@ export default class Test extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
-    this.gun.x = this.player.x + 30;
-    this.gun.y = this.player.y + 10;
+    this.gun.x = this.player.x + 15;
+    this.gun.y = this.player.y + 17;
 
     // Horizontal movement
-    if (this.cursors.left.isDown) {
+    if (this.a.isDown) {
       this.player.body.setVelocityX(-speed);
-    } else if (this.cursors.right.isDown) {
+    } else if (this.d.isDown) {
       this.player.body.setVelocityX(speed);
     }
 
     // Vertical movement
-    if (this.cursors.up.isDown) {
+    if (this.w.isDown) {
       this.player.body.setVelocityY(-speed);
-    } else if (this.cursors.down.isDown) {
+    } else if (this.s.isDown) {
       this.player.body.setVelocityY(speed);
     }
 
     // Normalize and scale the velocity so that player can't move faster along a diagonal
     this.player.body.velocity.normalize().scale(speed);
 
-    if (this.cursors.left.isDown) {
+    if (this.a.isDown) {
       this.player.anims.play("walk", true);
-    } else if (this.cursors.right.isDown) {
+    } else if (this.d.isDown) {
       this.player.anims.play("walk", true);
-    } else if (this.cursors.up.isDown) {
+    } else if (this.w.isDown) {
       this.player.anims.play("walk", true);
-    } else if (this.cursors.down.isDown) {
+    } else if (this.s.isDown) {
       this.player.anims.play("walk", true);
     } else {
       this.player.anims.play("idle", true);
@@ -169,6 +187,16 @@ export default class Test extends Phaser.Scene {
         }
       }.bind(this)
     );
+    if (this.ammoDrops.countActive(true) == 0) {
+      this.availDrop = true;
+    }
+    if (this.ammo == 0 && this.availDrop) {
+      var ammoDrop = this.physics.add.sprite(16, 16, 'bullet');
+      ammoDrop.setScale(2);
+      this.ammoDrops.add(ammoDrop);
+      ammoDrop.setRandomPosition(0, 0, game.config.width, game.config.height);
+      this.availDrop = false;
+    }
 
   }
 
@@ -191,5 +219,21 @@ export default class Test extends Phaser.Scene {
     console.log('hit');
     enemy.disableBody(true, true);
     bullet.disableBody(true, true);
+    // Random ammo drop after enemy kill
+    //dropRate increases when you're low on bullets
+    var dropRate = Math.max((10 - this.ammo) / 15, 0);
+    if (Math.random() < dropRate) {
+      console.log('the enemy dropped some bullets!');
+      var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'bullet');
+      ammoDrop.setScale(2);
+      this.ammoDrops.add(ammoDrop);
+    }
+
+  }
+
+  pickAmmo (player, ammo) {
+    ammo.disableBody(true, true);
+    this.ammo += 5;
+    console.log('bullets remaining: ', this.ammo);
   }
 }
