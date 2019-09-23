@@ -25,8 +25,8 @@ export default class BootScene extends Phaser.Scene {
       this.cameras.main.setBackgroundColor(0x71A83A);
 
 
-    var logo = this.add.image(this.centerX , this.centerY, 100, "logo");
-    logo.setFrame(0.3);
+    var logo = this.add.image(this.centerX , this.centerY - 100, "logo");
+    //logo.setFrame(0.3);
 
     var button = this.add.sprite(this.centerX, this.centerY + 150, "button", 0).setInteractive();
     button.setScale(0.5);
