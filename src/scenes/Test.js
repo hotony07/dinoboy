@@ -22,6 +22,8 @@ export default class Test extends Phaser.Scene {
     });
     this.load.image('gun', './assets/sprites/gun.png');
 
+    this.load.image('tree', './assets/Scene1/tree.png');
+
 
     // Declare variables for center of the scene
     this.centerX = this.cameras.main.width / 2;
@@ -29,6 +31,8 @@ export default class Test extends Phaser.Scene {
   }
 
   create (data) {
+
+    this.cameras.main.setBackgroundColor(0x3a6b0a);
 
     this.player = this.physics.add.sprite(this.centerX, this.centerY, 'player');
     this.player.setCollideWorldBounds(true);
@@ -124,6 +128,25 @@ export default class Test extends Phaser.Scene {
 
     this.music.play(musicConfig);
 
+    //trees
+    this.treeGroup = this.physics.add.group(
+      {
+      key: "tree",
+      repeat: 4,
+      setXY: {
+        x: Math.floor(Math.random() * 780) ,
+        y: Math.floor(Math.random() * 580) ,
+      }
+    });
+
+    this.treeGroup.children.iterate(function(child) {
+      child.setScale(1.2);
+      child.x = Math.floor(Math.random() * 780) ,
+      child.y = Math.floor(Math.random() * 580)
+
+    });
+
+
   }
 
   update (time, delta) {
@@ -197,6 +220,8 @@ export default class Test extends Phaser.Scene {
       ammoDrop.setRandomPosition(0, 0, game.config.width, game.config.height);
       this.availDrop = false;
     }
+
+
 
   }
 
