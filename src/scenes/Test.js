@@ -66,6 +66,11 @@ export default class Test extends Phaser.Scene {
     });
     //this.physics.add.overlap(this.bullets, this.enemies, this.hitEnemy, null, this);
 
+    this.ammoDrops = this.physics.add.group();
+    this.availDrop = true;
+    this.physics.add.overlap(this.player, this.ammoDrops, this.pickAmmo, null, this);
+
+
     // Event listener for movement of mouse pointer
     this.input.on(
       "pointermove",
@@ -179,6 +184,16 @@ export default class Test extends Phaser.Scene {
         }
       }.bind(this)
     );
+    if (this.ammoDrops.countActive(true) == 0) {
+      this.availDrop = true;
+    }
+    if (this.ammo == 0 && this.availDrop) {
+      var ammoDrop = this.physics.add.sprite(16, 16, 'bullet');
+      ammoDrop.setScale(2);
+      this.ammoDrops.add(ammoDrop);
+      ammoDrop.setRandomPosition(0, 0, game.config.width, game.config.height);
+      this.availDrop = false;
+    }
 
   }
 
@@ -206,9 +221,16 @@ export default class Test extends Phaser.Scene {
     var dropRate = Math.max((10 - this.ammo) / 15, 0);
     if (Math.random() < dropRate) {
       console.log('the enemy dropped some bullets!');
-      this.ammo += 5;
-      console.log('bullets remaining: ', this.ammo);
+      var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'bullet');
+      ammoDrop.setScale(2);
+      this.ammoDrops.add(ammoDrop);
     }
 
+  }
+
+  pickAmmo (player, ammo) {
+    ammo.disableBody(true, true);
+    this.ammo += 5;
+    console.log('bullets remaining: ', this.ammo);
   }
 }
