@@ -74,9 +74,18 @@ export default class Test extends Phaser.Scene {
         this.gun.setAngle(angle);
       }, this
     );
+    this.ammo = 10;
+    //When pointer is down and you have ammo, run function shoot
+      this.input.on("pointerdown", function(pointer) {
+        if (this.ammo > 0){
+          this.shoot(pointer);
+          this.ammo -= 1;
+        } else {
+          console.log('out of ammo');
+        }
+        console.log('bullets remaining: ', this.ammo);
+      }, this);
 
-    //When pointer is down, run function shoot
-    this.input.on("pointerdown", this.shoot, this);
 
     //Anims
     const anims = this.anims;
@@ -191,5 +200,14 @@ export default class Test extends Phaser.Scene {
     console.log('hit');
     enemy.disableBody(true, true);
     bullet.disableBody(true, true);
+    // Random ammo drop after enemy kill
+    //dropRate increases when you're low on bullets
+    var dropRate = Math.max((10 - this.ammo) / 15, 0);
+    if (Math.random() < dropRate) {
+      console.log('the enemy dropped some bullets!');
+      this.ammo += 5;
+      console.log('bullets remaining: ', this.ammo);
+    }
+
   }
 }
