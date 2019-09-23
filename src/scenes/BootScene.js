@@ -10,7 +10,7 @@ export default class BootScene extends Phaser.Scene {
 
   preload () {
     // Preload assets
-    this.load.image('logo', './assets/logo.png');
+    this.load.image('logo', './assets/Scene1/logo.png');
     this.load.spritesheet('button', './assets/buttonSheet.png',{
       frameHeight: 166,
       frameWidth: 299
@@ -22,8 +22,14 @@ export default class BootScene extends Phaser.Scene {
 
   create (data) {
     //Create the scene
+      this.cameras.main.setBackgroundColor(0x71A83A);
+
+
+    var logo = this.add.image(this.centerX , this.centerY  100, "logo");
+    logo.setFrame(0.3);
+
     var button = this.add.sprite(this.centerX, this.centerY + 150, "button", 0).setInteractive();
-    button.setScale(0.7);
+    button.setScale(0.5);
     button.on("pointerover", function() {
       this.setFrame(1);
     });
@@ -32,12 +38,12 @@ export default class BootScene extends Phaser.Scene {
       this.setFrame(0);
     });
 
-    var start = this.add.text(this.centerX-50, this.centerY+130, "START",{
-      fontSize: '32px'
+    var start = this.add.text(this.centerX-50, this.centerY+133, "START",{
+      fontSize: '30px'
     });
 
     button.on("pointerup", function () {
-       //this.scene.start('Scene1');
+       this.scene.start('Test');
      }, this
     );
   }
