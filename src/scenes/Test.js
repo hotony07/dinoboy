@@ -31,9 +31,12 @@ export default class Test extends Phaser.Scene {
   create (data) {
 
     this.player = this.physics.add.sprite(this.centerX, this.centerY, 'player');
-    this.cursors = this.input.keyboard.createCursorKeys();
     this.player.setCollideWorldBounds(true);
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     var gun, bullets, enemy, bullet, enemyGroup;
     this.nextFire = 0;
@@ -129,29 +132,29 @@ export default class Test extends Phaser.Scene {
     this.gun.y = this.player.y + 17;
 
     // Horizontal movement
-    if (this.cursors.left.isDown) {
+    if (this.a.isDown) {
       this.player.body.setVelocityX(-speed);
-    } else if (this.cursors.right.isDown) {
+    } else if (this.d.isDown) {
       this.player.body.setVelocityX(speed);
     }
 
     // Vertical movement
-    if (this.cursors.up.isDown) {
+    if (this.w.isDown) {
       this.player.body.setVelocityY(-speed);
-    } else if (this.cursors.down.isDown) {
+    } else if (this.s.isDown) {
       this.player.body.setVelocityY(speed);
     }
 
     // Normalize and scale the velocity so that player can't move faster along a diagonal
     this.player.body.velocity.normalize().scale(speed);
 
-    if (this.cursors.left.isDown) {
+    if (this.a.isDown) {
       this.player.anims.play("walk", true);
-    } else if (this.cursors.right.isDown) {
+    } else if (this.d.isDown) {
       this.player.anims.play("walk", true);
-    } else if (this.cursors.up.isDown) {
+    } else if (this.w.isDown) {
       this.player.anims.play("walk", true);
-    } else if (this.cursors.down.isDown) {
+    } else if (this.s.isDown) {
       this.player.anims.play("walk", true);
     } else {
       this.player.anims.play("idle", true);
