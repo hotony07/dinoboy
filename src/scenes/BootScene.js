@@ -11,6 +11,8 @@ export default class BootScene extends Phaser.Scene {
   preload () {
     // Preload assets
     this.load.image('logo', './assets/Scene1/logo.png');
+    this.load.image('title', './assets/Scene1/dinoboi.png');
+    this.load.image('title2', './assets/Scene1/boy.png');
     this.load.spritesheet('button', './assets/buttonSheet.png',{
       frameHeight: 166,
       frameWidth: 299
@@ -22,11 +24,13 @@ export default class BootScene extends Phaser.Scene {
 
   create (data) {
     //Create the scene
-      this.cameras.main.setBackgroundColor(0x71A83A);
+    this.cameras.main.setBackgroundColor(0x3a6b0a);
 
 
-    var logo = this.add.image(this.centerX , this.centerY - 100, "logo");
-    //logo.setFrame(0.3);
+    var logo = this.add.image(this.centerX , this.centerY - 150, "logo");
+    var title = this.add.sprite(this.centerX -150, this.centerY + 100, "title");
+    var title2 = this.add.sprite(this.centerX + 150, this.centerY + 60, "title2");
+    //title.setFrame(0.5);
 
     var button = this.add.sprite(this.centerX, this.centerY + 150, "button", 0).setInteractive();
     button.setScale(0.5);
