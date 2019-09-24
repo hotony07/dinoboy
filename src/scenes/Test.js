@@ -72,7 +72,6 @@ export default class Test extends Phaser.Scene {
       defaultKey: "bullet",
       maxSize: 10
     });
-    //this.physics.add.overlap(this.bullets, this.enemies, this.hitEnemy, null, this);
 
     this.ammoDrops = this.physics.add.group();
     this.availDrop = true;
@@ -144,9 +143,20 @@ export default class Test extends Phaser.Scene {
       child.setScale(1.2);
       child.x = Math.floor(Math.random() * 780) ,
       child.y = Math.floor(Math.random() * 580)
-
+      child.body.setSize(36, 52, 32, 32);
+      child.body.immovable = true;
     });
 
+    //Colliders
+    this.physics.add.collider(this.player, this.treeGroup);
+    this.physics.add.collider(this.enemyGroup, this.treeGroup);
+    this.physics.add.collider(
+      this.treeGroup,
+      this.bullets,
+      this.deadBullet,
+      null,
+      this
+    );
 
   }
 
@@ -224,7 +234,19 @@ export default class Test extends Phaser.Scene {
       this.availDrop = false;
     }
 
-
+    //If there ar eno enemies left, create more
+    if (this.enemyGroup.countActive(true) == 0) {
+      this.enemyGroup = this.physics.add.group({
+        key: "enemy",
+        repeat: 4,
+        setXY: {
+          x: 100,
+          y: 100,
+          stepX: 0,
+          stepY: 100
+        }
+      });
+    }
 
   }
 
@@ -263,5 +285,9 @@ export default class Test extends Phaser.Scene {
     ammo.disableBody(true, true);
     this.ammo += 5;
     console.log('bullets remaining: ', this.ammo);
+  }
+
+  deadBullet (tree, bullet) {
+    bullet.disableBody(true, true);
   }
 }
