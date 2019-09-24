@@ -23,6 +23,7 @@ export default class Test extends Phaser.Scene {
     this.load.image('gun', './assets/sprites/gun.png');
 
     this.load.image('tree', './assets/Scene1/tree.png');
+    this.load.image('ammo', './assets/sprites/ammo.png');
 
 
     // Declare variables for center of the scene
@@ -252,8 +253,8 @@ export default class Test extends Phaser.Scene {
     var dropRate = Math.max((10 - this.ammo) / 15, 0);
     if (Math.random() < dropRate) {
       console.log('the enemy dropped some bullets!');
-      var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'bullet');
-      ammoDrop.setScale(2);
+      var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
+      ammoDrop.setScale(0.5);
       this.ammoDrops.add(ammoDrop);
     }
 
