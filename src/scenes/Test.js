@@ -140,7 +140,7 @@ export default class Test extends Phaser.Scene {
     });
 
     this.treeGroup.children.iterate(function(child) {
-      child.setScale(1.2);
+      child.setScale(0.7);
       child.x = Math.floor(Math.random() * 780) ,
       child.y = Math.floor(Math.random() * 580)
       child.body.setSize(36, 52, 32, 32);
