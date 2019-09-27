@@ -11,7 +11,7 @@ export default class Test extends Phaser.Scene {
   preload () {
     // Preload assets
     this.load.image('bullet', './assets/sprites/bullet.png')
-    this.load.audio("music", './assets/Music/8TownRoad.wav');
+    //this.load.audio("music", './assets/Music/8TownRoad.wav');
     this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
       frameWidth: 64,
       frameHeight: 64
@@ -115,7 +115,7 @@ export default class Test extends Phaser.Scene {
       frameRate: 20,
       repeat: -1
     });
-    //Music
+    /*Music
     this.music = this.sound.add("music");
     var musicConfig = {
       mute: false,
@@ -128,7 +128,7 @@ export default class Test extends Phaser.Scene {
     }
 
     this.music.play(musicConfig);
-
+    */
     //trees
     this.treeGroup = this.physics.add.group(
       {
@@ -144,7 +144,8 @@ export default class Test extends Phaser.Scene {
       child.setScale(0.7);
       child.x = Math.floor(Math.random() * 780) ,
       child.y = Math.floor(Math.random() * 580)
-      child.body.setSize(36, 52, 32, 32);
+      child.body.setSize(32, 30);
+      child.body.setOffset(72, 130);
       child.body.immovable = true;
     });
 

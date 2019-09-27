@@ -2,7 +2,7 @@
 
 export default {
   type: Phaser.AUTO,
-  parent: 'phaser-example',
+  parent: 'Dino Boy',
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
