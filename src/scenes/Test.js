@@ -32,6 +32,7 @@ export default class Test extends Phaser.Scene {
 
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
+    this.load.image('health', './assets/Scene1/Heart.png')
 
 
     // Declare variables for center of the scene
@@ -212,6 +213,16 @@ export default class Test extends Phaser.Scene {
     // camera.startFollow(this.player);
     // camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
+    this.healthGroup = this.add.group({
+      key: 'health',
+      repeat: 4,
+      setXY: {
+        x: 50,
+        y: 50,
+        stepX: 50,
+        stepY: 0
+      }
+    });
   }
 
   update (time, delta) {
@@ -317,10 +328,12 @@ export default class Test extends Phaser.Scene {
   }
 
   takeDamage (player, enemy) {
-    if (!this.playerHit) {
+    if (!this.playerHit && this.currentHealth > 0) {
       this.currentHealth--;
       this.playerHit = true;
+      this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
     }
+
   }
 
   shoot (pointer) {
