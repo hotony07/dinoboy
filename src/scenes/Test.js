@@ -14,6 +14,9 @@ export default class Test extends Phaser.Scene {
     // Preload assets
     this.load.image('bullet', './assets/sprites/bullet.png')
     //this.load.audio("music", './assets/Music/8TownRoad.wav');
+    this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
+    this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
+
     this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
       frameWidth: 64,
       frameHeight: 64
@@ -32,7 +35,7 @@ export default class Test extends Phaser.Scene {
 
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
-    this.load.image('health', './assets/Scene1/Heart.png')
+    this.load.image('health', './assets/Scene1/Heart.png');
 
 
     // Declare variables for center of the scene
@@ -136,6 +139,13 @@ export default class Test extends Phaser.Scene {
           this.shoot(pointer);
           this.ammo -= 1;
         } else {
+          var gunEmptyConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            loop: false,
+          }
+          this.gunEmpty.play(gunEmptyConfig);
           console.log('out of ammo');
         }
         console.log('bullets remaining: ', this.ammo);
@@ -170,6 +180,10 @@ export default class Test extends Phaser.Scene {
 
     this.music.play(musicConfig);
     */
+
+    this.gunshot = this.sound.add("gunshot");
+    this.gunEmpty = this.sound.add("gun_empty");
+
     //trees
     this.treeGroup = this.physics.add.group(
       {
@@ -349,6 +363,15 @@ export default class Test extends Phaser.Scene {
     bullet
       .enableBody(true, this.gun.x, this.gun.y, true, true)
       .setVelocity(velocity.x, velocity.y);
+
+    var gunshotConfig = {
+      mute: false,
+      volume: 1,
+      rate: 1,
+      loop: false,
+    }
+
+    this.gunshot.play(gunshotConfig);
   }
 
   hitEnemy (bullet, enemy) {
