@@ -1,7 +1,7 @@
 /*global Phaser*/
-export default class Test extends Phaser.Scene {
+export default class Test2 extends Phaser.Scene {
   constructor () {
-    super('Test');
+    super('Test2');
   }
 
   init (data) {
@@ -20,10 +20,16 @@ export default class Test extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64
     });
+    this.load.image('stego', './assets/dinosaur/stego.png')
+
+
     this.load.image('gun', './assets/sprites/gun.png');
 
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
+
+    this.load.image("tiles", "./assets/Tilemaps/tiles.png");
+    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap.json");
 
 
     // Declare variables for center of the scene
@@ -32,17 +38,35 @@ export default class Test extends Phaser.Scene {
   }
 
   create (data) {
+    const map = this.make.tilemap({ key: "map" });
+    const tileset = map.addTilesetImage("sheet", "tiles");
 
-    this.cameras.main.setBackgroundColor(0x3a6b0a);
+    const belowLayer = map.createStaticLayer("Below", tileset, 0, 0).setDepth(-10);
+    const worldLayer = map.createStaticLayer("World", tileset, 0, 0);
 
-    this.player = this.physics.add.sprite(this.centerX, this.centerY, 'player');
-    this.player.setCollideWorldBounds(true);
+    worldLayer.setCollisionByProperty({ collides: true });
+
+    const spawnPoint = map.findObject(
+    "Spawns",
+    obj => obj.name === "Player Spawn"
+    );
+
+    this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, 'player');
     this.player.body.setSize(64, 64, 0 ,0);
+    this.player.setScale(.5);
+    this.player.setCollideWorldBounds(true);
+    this.physics.add.collider(this.player, worldLayer);
+
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
+    const camera = this.cameras.main;
+    camera.setZoom(3);
+    camera.startFollow(this.player);
+    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
     var gun, bullets, enemy, bullet, enemyGroup;
     this.nextFire = 0;
@@ -50,8 +74,8 @@ export default class Test extends Phaser.Scene {
     this.speed = 1000;
 
     this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
-    this.gun.setOrigin(0, 1);
-    this.gun.setScale(0.5);
+    this.gun.setOrigin(0.5);
+    this.gun.setScale(0.25);
 
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
@@ -59,7 +83,7 @@ export default class Test extends Phaser.Scene {
       repeat: 4,
       setXY: {
         x: 100,
-        y: 100,
+        y: 300,
         stepX: 0,
         stepY: 100
       }
@@ -68,6 +92,19 @@ export default class Test extends Phaser.Scene {
     this.enemyGroup.children.iterate(function(child) {
       child.setScale(.75);
     });
+
+    //stegosaurus
+    const stegoSpawn = map.findObject(
+    "Spawns",
+    obj => obj.name === "Stego Spawn"
+    );
+
+    this.stego = this.physics.add.sprite(stegoSpawn.x, stegoSpawn.y, 'stego');
+    this.stego.setCollideWorldBounds(true);
+    this.stego.body.setSize(256, 128, stegoSpawn.x, stegoSpawn.y);
+    this.stego.setScale(.5);
+    this.stego.setDepth(-1);
+    this.enemyGroup.add(this.stego);
 
     this.bullets = this.physics.add.group({
       defaultKey: "bullet",
@@ -84,7 +121,7 @@ export default class Test extends Phaser.Scene {
       "pointermove",
       function(pointer) {
         var betweenPoints = Phaser.Math.Angle.BetweenPoints;
-        var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.gun, pointer);
+        var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.gun, pointer.positionToCamera(camera));
         this.gun.setAngle(angle);
       }, this
     );
@@ -92,7 +129,7 @@ export default class Test extends Phaser.Scene {
     //When pointer is down and you have ammo, run function shoot
       this.input.on("pointerdown", function(pointer) {
         if (this.ammo > 0){
-          this.shoot(pointer);
+          this.shoot(pointer.positionToCamera(camera));
           this.ammo -= 1;
         } else {
           console.log('out of ammo');
@@ -130,40 +167,42 @@ export default class Test extends Phaser.Scene {
     this.music.play(musicConfig);
     */
     //trees
-    this.treeGroup = this.physics.add.group(
-      {
-      key: "tree",
-      repeat: 4,
-      setXY: {
-        x: Math.floor(Math.random() * 780) ,
-        y: Math.floor(Math.random() * 580) ,
-      }
-    });
-
-    this.treeGroup.children.iterate(function(child) {
-      child.setScale(0.7);
-      child.x = Math.floor(Math.random() * 780) ,
-      child.y = Math.floor(Math.random() * 580)
-      child.body.setSize(32, 30);
-      child.body.setOffset(72, 130);
-      child.body.immovable = true;
-    });
+    // this.treeGroup = this.physics.add.group(
+    //   {
+    //   key: "tree",
+    //   repeat: 4,
+    //   setXY: {
+    //     x: Math.floor(Math.random() * 780) ,
+    //     y: Math.floor(Math.random() * 580) ,
+    //   }
+    // });
+    //
+    // this.treeGroup.children.iterate(function(child) {
+    //   child.setScale(0.7);
+    //   child.x = Math.floor(Math.random() * 780) ,
+    //   child.y = Math.floor(Math.random() * 580)
+    //   child.body.setSize(32, 30);
+    //   child.body.setOffset(72, 130);
+    //   child.body.immovable = true;
+    // });
 
     //Colliders
-    this.physics.add.collider(this.player, this.treeGroup);
-    this.physics.add.collider(this.enemyGroup, this.treeGroup);
+    // this.physics.add.collider(this.player, this.treeGroup);
+    // this.physics.add.collider(this.enemyGroup, this.treeGroup);
+    // this.physics.add.collider(
+    //   this.treeGroup,
+    //   this.bullets,
+    //   this.deadBullet,
+    //   null,
+    //   this
+    // );
     this.physics.add.collider(
-      this.treeGroup,
+      worldLayer,
       this.bullets,
       this.deadBullet,
       null,
       this
     );
-
-    //Camera follows player
-    // const camera = this.cameras.main;
-    // camera.startFollow(this.player);
-    // camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
   }
 
@@ -174,8 +213,8 @@ export default class Test extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
-    this.gun.x = this.player.x + 15;
-    this.gun.y = this.player.y + 17;
+    this.gun.x = this.player.x + 13;
+    this.gun.y = this.player.y + 5;
 
     // Horizontal movement
     if (this.a.isDown) {
@@ -290,7 +329,7 @@ export default class Test extends Phaser.Scene {
 
   pickAmmo (player, ammo) {
     ammo.disableBody(true, true);
-    this.ammo += 5;
+    this.ammo += 20;
     console.log('bullets remaining: ', this.ammo);
   }
 
