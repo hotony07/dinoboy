@@ -93,6 +93,34 @@ export default class Test2 extends Phaser.Scene {
       child.setScale(.75);
     });
 
+    var enemy = this.add.image(100, 100, 'enemy');
+    var enemy2 = this.add.image(100, 200, 'enemy');
+    var enemy3 = this.add.image(100, 300, 'enemy');
+    var enemy4 = this.add.image(100, 400, 'enemy');
+
+
+    var tween = this.tweens.add({
+      targets: [enemy, enemy3],
+      props: {
+        x: { value: '+=600', duration: 7000, flipX: true},
+        y: { value: '570', duration: 7500, ease: 'Sine.easeInOut'}
+      },
+      delay: 100,
+      yoyo: true,
+      loop: -1
+    })
+
+    this.tweens.add({
+      targets: [enemy2, enemy4],
+      props: {
+        x: { value: '500', duration: 7000, flipX: true},
+        y: { value: '170', duration: 7500, ease: 'Sine.easeInOut'}
+      },
+      delay: 100,
+      yoyo: true,
+      loop: -1
+    })
+
     //stegosaurus
     const stegoSpawn = map.findObject(
     "Spawns",
