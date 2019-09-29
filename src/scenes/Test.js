@@ -46,7 +46,7 @@ export default class Test extends Phaser.Scene {
     this.player = this.physics.add.sprite(this.centerX, this.centerY, 'player');
     this.player.setCollideWorldBounds(true);
     this.player.body.setSize(64, 64, 0 ,0);
-    this.maxHealth = 100;
+    this.maxHealth = 5;
     this.currentHealth = this.maxHealth;
     this.playerHitTimer = 0;
 
@@ -318,7 +318,7 @@ export default class Test extends Phaser.Scene {
 
   takeDamage (player, enemy) {
     if (!this.playerHit) {
-      this.currentHealth -= 10;
+      this.currentHealth--;
       this.playerHit = true;
     }
   }
