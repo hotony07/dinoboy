@@ -6,6 +6,8 @@ export default class Test extends Phaser.Scene {
 
   init (data) {
     // Initialization code goes here
+    this.gameOver = false;
+    this.playerHit = false;
   }
 
   preload () {
@@ -44,6 +46,10 @@ export default class Test extends Phaser.Scene {
     this.player = this.physics.add.sprite(this.centerX, this.centerY, 'player');
     this.player.setCollideWorldBounds(true);
     this.player.body.setSize(64, 64, 0 ,0);
+    this.maxHealth = 5;
+    this.currentHealth = this.maxHealth;
+    this.playerHitTimer = 0;
+
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -193,6 +199,13 @@ export default class Test extends Phaser.Scene {
       null,
       this
     );
+    this.physics.add.overlap(
+      this.player,
+      this.enemyGroup,
+      this.takeDamage,
+      null,
+      this
+    );
 
     //Camera follows player
     // const camera = this.cameras.main;
@@ -202,6 +215,10 @@ export default class Test extends Phaser.Scene {
   }
 
   update (time, delta) {
+    if (this.gameOver) {
+      this.player.disableBody(false, false);
+    }
+    console.log(this.currentHealth);
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
@@ -210,6 +227,14 @@ export default class Test extends Phaser.Scene {
     this.player.body.setVelocity(0);
     this.gun.x = this.player.x + 15;
     this.gun.y = this.player.y + 17;
+
+    if (this.playerHit) {
+      this.playerHitTimer++;
+      if (this.playerHitTimer >= 60) {
+        this.playerHit = false;
+        this.playerHitTimer = 0;
+      }
+    }
 
     // Horizontal movement
     if (this.a.isDown) {
@@ -289,6 +314,13 @@ export default class Test extends Phaser.Scene {
       });
     }
 
+  }
+
+  takeDamage (player, enemy) {
+    if (!this.playerHit) {
+      this.currentHealth--;
+      this.playerHit = true;
+    }
   }
 
   shoot (pointer) {
