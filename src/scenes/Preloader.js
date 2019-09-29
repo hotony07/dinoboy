@@ -98,9 +98,8 @@ export default class PreloaderScene extends Phaser.Scene {
     this.timedEvent = this.time.delayedCall(3000, this.ready, [], this);
 
 
-
     // load assets needed in our game
-    //Scene0 Assets
+    //Test Assets
     this.load.image('bullet', './assets/sprites/bullet.png')
     //this.load.audio("music", './assets/Music/8TownRoad.wav');
     this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
@@ -114,11 +113,13 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.image('gun', './assets/sprites/gun.png');
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
+    this.load.spritesheet('boss1', './assets/dinosaur/stego.png', {
+      frameWidth: 512,
+      frameHeight: 512
+    });
 
-    //plugins
-    var url;
-    url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/plugins/dist/rexvirtualjoystickplugin.min.js';
-    this.load.plugin('rexvirtualjoystickplugin', url, true);
+    this.centerX = this.cameras.main.width / 2;
+    this.centerY = this.cameras.main.height / 2;
 
   }
 

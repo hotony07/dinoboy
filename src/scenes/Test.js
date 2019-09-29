@@ -6,16 +6,27 @@ export default class Test extends Phaser.Scene {
 
   init (data) {
     // Initialization code goes here
+    this.gameOver = false;
+    this.playerHit = false;
   }
 
   preload () {
     // Preload assets
     this.load.image('bullet', './assets/sprites/bullet.png')
     //this.load.audio("music", './assets/Music/8TownRoad.wav');
+    this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
+    this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
+
     this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
       frameWidth: 64,
       frameHeight: 64
     });
+
+    this.load.spritesheet('boss1', './assets/dinosaur/stego.png', {
+      frameWidth: 512,
+      frameHeight: 512
+    });
+
     this.load.spritesheet('enemy', './assets/dinosaur/smallDino.png', {
       frameWidth: 64,
       frameHeight: 64
@@ -24,6 +35,7 @@ export default class Test extends Phaser.Scene {
 
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
+    this.load.image('health', './assets/Scene1/Heart.png');
 
 
     // Declare variables for center of the scene
@@ -38,6 +50,10 @@ export default class Test extends Phaser.Scene {
     this.player = this.physics.add.sprite(this.centerX, this.centerY, 'player');
     this.player.setCollideWorldBounds(true);
     this.player.body.setSize(64, 64, 0 ,0);
+    this.maxHealth = 5;
+    this.currentHealth = this.maxHealth;
+    this.playerHitTimer = 0;
+
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -67,7 +83,35 @@ export default class Test extends Phaser.Scene {
 
     this.enemyGroup.children.iterate(function(child) {
       child.setScale(.75);
+
     });
+
+    var enemy = this.add.image(100, 100, 'enemy');
+    var enemy2 = this.add.image(100, 200, 'enemy');
+    var enemy3 = this.add.image(100, 300, 'enemy');
+    var enemy4 = this.add.image(100, 400, 'enemy');
+
+    var tween = this.tweens.add({
+      targets: [enemy, enemy3],
+      props: {
+        x: { value: '+=600', duration: 5000, flipX: true},
+        y: { value: '570', duration: 4500, ease: 'Sine.easeInOut'}
+      },
+      delay: 100,
+      yoyo: true,
+      loop: -1
+    })
+
+    this.tweens.add({
+      targets: [enemy2, enemy4],
+      props: {
+        x: { value: '500', duration: 5000, flipX: true},
+        y: { value: '170', duration: 4500, ease: 'Sine.easeInOut'}
+      },
+      delay: 100,
+      yoyo: true,
+      loop: -1
+    })
 
     this.bullets = this.physics.add.group({
       defaultKey: "bullet",
@@ -95,6 +139,13 @@ export default class Test extends Phaser.Scene {
           this.shoot(pointer);
           this.ammo -= 1;
         } else {
+          var gunEmptyConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            loop: false,
+          }
+          this.gunEmpty.play(gunEmptyConfig);
           console.log('out of ammo');
         }
         console.log('bullets remaining: ', this.ammo);
@@ -129,6 +180,10 @@ export default class Test extends Phaser.Scene {
 
     this.music.play(musicConfig);
     */
+
+    this.gunshot = this.sound.add("gunshot");
+    this.gunEmpty = this.sound.add("gun_empty");
+
     //trees
     this.treeGroup = this.physics.add.group(
       {
@@ -159,15 +214,36 @@ export default class Test extends Phaser.Scene {
       null,
       this
     );
+    this.physics.add.overlap(
+      this.player,
+      this.enemyGroup,
+      this.takeDamage,
+      null,
+      this
+    );
 
     //Camera follows player
     // const camera = this.cameras.main;
     // camera.startFollow(this.player);
     // camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
+    this.healthGroup = this.add.group({
+      key: 'health',
+      repeat: 4,
+      setXY: {
+        x: 50,
+        y: 50,
+        stepX: 50,
+        stepY: 0
+      }
+    });
   }
 
   update (time, delta) {
+    if (this.gameOver) {
+      this.player.disableBody(false, false);
+    }
+    console.log(this.currentHealth);
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
@@ -176,6 +252,14 @@ export default class Test extends Phaser.Scene {
     this.player.body.setVelocity(0);
     this.gun.x = this.player.x + 15;
     this.gun.y = this.player.y + 17;
+
+    if (this.playerHit) {
+      this.playerHitTimer++;
+      if (this.playerHitTimer >= 60) {
+        this.playerHit = false;
+        this.playerHitTimer = 0;
+      }
+    }
 
     // Horizontal movement
     if (this.a.isDown) {
@@ -257,6 +341,15 @@ export default class Test extends Phaser.Scene {
 
   }
 
+  takeDamage (player, enemy) {
+    if (!this.playerHit && this.currentHealth > 0) {
+      this.currentHealth--;
+      this.playerHit = true;
+      this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
+    }
+
+  }
+
   shoot (pointer) {
     var betweenPoints = Phaser.Math.Angle.BetweenPoints;
     var angle = betweenPoints(this.gun, pointer);
@@ -270,6 +363,15 @@ export default class Test extends Phaser.Scene {
     bullet
       .enableBody(true, this.gun.x, this.gun.y, true, true)
       .setVelocity(velocity.x, velocity.y);
+
+    var gunshotConfig = {
+      mute: false,
+      volume: 1,
+      rate: 1,
+      loop: false,
+    }
+
+    this.gunshot.play(gunshotConfig);
   }
 
   hitEnemy (bullet, enemy) {
