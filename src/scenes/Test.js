@@ -16,6 +16,12 @@ export default class Test extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64
     });
+
+    this.load.spritesheet('boss1', './assets/dinosaur/stego.png', {
+      frameWidth: 512,
+      frameHeight: 512
+    });
+
     this.load.spritesheet('enemy', './assets/dinosaur/smallDino.png', {
       frameWidth: 64,
       frameHeight: 64
@@ -67,7 +73,35 @@ export default class Test extends Phaser.Scene {
 
     this.enemyGroup.children.iterate(function(child) {
       child.setScale(.75);
+
     });
+
+    var enemy = this.add.image(100, 100, 'enemy');
+    var enemy2 = this.add.image(100, 200, 'enemy');
+    var enemy3 = this.add.image(100, 300, 'enemy');
+    var enemy4 = this.add.image(100, 400, 'enemy');
+
+    var tween = this.tweens.add({
+      targets: [enemy, enemy3],
+      props: {
+        x: { value: '+=600', duration: 5000, flipX: true},
+        y: { value: '570', duration: 4500, ease: 'Sine.easeInOut'}
+      },
+      delay: 100,
+      yoyo: true,
+      loop: -1
+    })
+
+    this.tweens.add({
+      targets: [enemy2, enemy4],
+      props: {
+        x: { value: '500', duration: 5000, flipX: true},
+        y: { value: '170', duration: 4500, ease: 'Sine.easeInOut'}
+      },
+      delay: 100,
+      yoyo: true,
+      loop: -1
+    })
 
     this.bullets = this.physics.add.group({
       defaultKey: "bullet",
