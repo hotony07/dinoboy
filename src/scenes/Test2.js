@@ -346,9 +346,10 @@ export default class Test2 extends Phaser.Scene {
     //Game over
     if (this.gameOver) {
       this.player.disableBody(false, false);
-      this.gun.destroy();
+      //this.gun.destroy();
       var text = this.add.text(this.player.x - 30, this.player.y - 40, 'Game Over');
       var score = this.add.text(this.player.x - 30, this.player.y + 25, 'Kills: ' + this.kills);
+      this.input.enabled = false;
     }
     // Update the scene
     const speed = 175;
