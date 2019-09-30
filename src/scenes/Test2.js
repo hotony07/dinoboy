@@ -20,7 +20,7 @@ export default class Test2 extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64
     });
-    this.load.image('stego', './assets/dinosaur/stego.png')
+    this.load.image('stego', './assets/dinosaur/stego2.png')
 
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -29,6 +29,8 @@ export default class Test2 extends Phaser.Scene {
 
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
+    this.load.image('health', './assets/Scene1/Heart.png');
+
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
     this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap.json");
@@ -57,6 +59,10 @@ export default class Test2 extends Phaser.Scene {
     this.player.body.setSize(64, 64, 0 ,0);
     this.player.setScale(.5);
     this.player.setCollideWorldBounds(true);
+    this.maxHealth = 5;
+    this.currentHealth = this.maxHealth;
+    this.playerHitTimer = 0;
+    this.kills = 0;
 
     this.physics.add.collider(this.player, worldLayer);
 
@@ -83,20 +89,20 @@ export default class Test2 extends Phaser.Scene {
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
       key: "enemy",
-      repeat: 10
+      repeat: 100
     });
 
     this.enemyGroup.children.iterate(function(child) {
       child.setScale(0.7);
-      child.x = Math.floor(Math.random() * 900) ,
-      child.y = Math.floor(Math.random() * 900)
+      child.x = 200 + Math.floor(Math.random() * 700) ,
+      child.y = 200 + Math.floor(Math.random() * 700)
       child.health = 1;
     });
 
-    var enemy = this.add.image(100, 100, 'enemy');
-    var enemy2 = this.add.image(100, 200, 'enemy');
-    var enemy3 = this.add.image(100, 300, 'enemy');
-    var enemy4 = this.add.image(100, 400, 'enemy');
+    var enemy = this.physics.add.sprite(100, 100, 'enemy');
+    var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
+    var enemy3 = this.physics.add.sprite(100, 300, 'enemy');
+    var enemy4 = this.physics.add.sprite(100, 400, 'enemy');
 
 
     var tween = this.tweens.add({
@@ -120,6 +126,15 @@ export default class Test2 extends Phaser.Scene {
       yoyo: true,
       loop: -1
     })
+
+    this.enemyGroup.add(enemy);
+    this.enemyGroup.add(enemy2);
+    this.enemyGroup.add(enemy3);
+    this.enemyGroup.add(enemy4);
+    enemy.health = 1;
+    enemy2.health = 1;
+    enemy3.health = 1;
+    enemy4.health = 1;
 
     //stegosaurus
     const stegoSpawn = map.findObject(
@@ -272,6 +287,23 @@ export default class Test2 extends Phaser.Scene {
       null,
       this
     );
+    this.physics.add.overlap(
+      this.player,
+      this.enemyGroup,
+      this.takeDamage,
+      null,
+      this
+    );
+    this.healthGroup = this.add.group({
+      key: 'health',
+      repeat: 4,
+      setXY: {
+        x: 50,
+        y: 50,
+        stepX: 50,
+        stepY: 0
+      }
+    });
 
     this.playerGroup = this.physics.add.group();
     this.playerGroup.add(this.player);
@@ -282,21 +314,37 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
+
+    //Game over
+    if (this.gameOver) {
+      this.player.disableBody(false, false);
+      this.gun.destroy();
+      var text = this.add.text(this.player.x - 30, this.player.y - 40, 'Game Over');
+      var score = this.add.text(this.player.x - 30, this.player.y + 25, 'Kills: ' + this.kills);
+    }
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
 
-    var timeElapsed = 0;
-    //timeElapsed += game.Time.elapsed();
-    if (timeElapsed >= 0.5) {
-      timeElapsed = 0;
-      this.lasso.disableBody(true, true);
-    }
+    // var timeElapsed = 0;
+    // timeElapsed += game.timer.elapsed();
+    // if (timeElapsed >= 0.5) {
+    //   timeElapsed = 0;
+    //   this.lasso.disableBody(true, true);
+    // }
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
     this.gun.x = this.player.x + 13;
     this.gun.y = this.player.y + 5;
+
+    if (this.playerHit) {
+      this.playerHitTimer++;
+      if (this.playerHitTimer >= 60) {
+        this.playerHit = false;
+        this.playerHitTimer = 0;
+      }
+    }
 
     // Horizontal movement
     if (this.a.isDown) {
@@ -320,14 +368,34 @@ export default class Test2 extends Phaser.Scene {
 
     if (this.a.isDown) {
       this.player.anims.play("walk", true);
+      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+        this.lasso = this.makeLasso(-75, 0, 180);
+        //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
+      }
     } else if (this.d.isDown) {
       this.player.anims.play("walk", true);
+      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+        this.lasso = this.makeLasso(75, 0, 0);
+        //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
+      }
     } else if (this.w.isDown) {
       this.player.anims.play("walk", true);
+      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+        this.lasso = this.makeLasso2(0, -75, 180);
+        //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
+      }
     } else if (this.s.isDown) {
       this.player.anims.play("walk", true);
+      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+        this.lasso = this.makeLasso2(0, 75, 0);
+        //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
+      }
     } else {
       this.player.anims.play("idle", true);
+      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+        this.lasso = this.makeLasso(75, 0, 0);
+        //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
+      }
   }
   // Update the scene
     this.bullets.children.each(
@@ -366,10 +434,10 @@ export default class Test2 extends Phaser.Scene {
     }
 
     //If there ar eno enemies left, create more
-    if (this.enemyGroup.countActive(true) == 0) {
+    if (this.enemyGroup.countActive(true) < 4) {
       this.enemyGroup = this.physics.add.group({
         key: "enemy",
-        repeat: 10
+        repeat: 100
       });
 
       this.enemyGroup.children.iterate(function(child) {
@@ -394,6 +462,7 @@ export default class Test2 extends Phaser.Scene {
 
   }
 
+
   shoot (pointer) {
     var betweenPoints = Phaser.Math.Angle.BetweenPoints;
     var angle = betweenPoints(this.gun, pointer);
@@ -409,6 +478,18 @@ export default class Test2 extends Phaser.Scene {
       .setVelocity(velocity.x, velocity.y);
   }
 
+  takeDamage (player, enemy) {
+    if (!this.playerHit && this.currentHealth > 0) {
+      this.currentHealth--;
+      this.playerHit = true;
+      this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
+      if (this.currentHealth == 0) {
+        this.gameOver = true;
+      }
+    }
+    console.log(this.currentHealth);
+  }
+
   hitEnemy (bullet, enemy) {
     console.log('hit');
     bullet.disableBody(true, true);
@@ -416,6 +497,7 @@ export default class Test2 extends Phaser.Scene {
     console.log(enemy.health);
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
+      this.kills += 1;
       // Random ammo drop after enemy kill
       //dropRate increases when you're low on bullets
       var dropRate = Math.max((20 - this.ammo) / 25, 0);
@@ -428,6 +510,13 @@ export default class Test2 extends Phaser.Scene {
 
     }
 
+  }
+
+  makeLasso (xCo, yCo, angle) {
+    this.lassos.add(this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso').setAngle(angle));
+  }
+  makeLasso2 (xCo, yCo, angle) {
+    this.lassos.add(this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'uplasso').setAngle(angle));
   }
 
   pickAmmo (player, ammo) {
