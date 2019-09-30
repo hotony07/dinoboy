@@ -6,6 +6,7 @@ export default class Test2 extends Phaser.Scene {
 
   init (data) {
     // Initialization code goes here
+    //this.kils = data.kills;
   }
 
   preload () {
@@ -63,6 +64,7 @@ export default class Test2 extends Phaser.Scene {
     this.currentHealth = this.maxHealth;
     this.playerHitTimer = 0;
     this.kills = 0;
+
 
     this.physics.add.collider(this.player, worldLayer);
 
@@ -294,15 +296,22 @@ export default class Test2 extends Phaser.Scene {
       null,
       this
     );
+
+    this.healthScore = this.add.text(this.centerX - 290, this. centerY + 120, 'Health').setScrollFactor(0);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: 4,
       setXY: {
-        x: 50,
-        y: 50,
-        stepX: 50,
+        x: this.centerX - 300,
+        y: this.centerY + 145,
+        stepX: 20,
         stepY: 0
       }
+    });
+
+    this.healthGroup.children.iterate(function(child) {
+      child.setScrollFactor(0);
+      child.setScale(0.6);
     });
 
     this.playerGroup = this.physics.add.group();
@@ -311,6 +320,7 @@ export default class Test2 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
+    this.ammoScore = this.add.text(this.centerX - 100, this. centerY + 120, 'Ammo: '+ this.ammo).setScrollFactor(0);
   }
 
   update (time, delta) {
@@ -459,6 +469,7 @@ export default class Test2 extends Phaser.Scene {
       }
     }.bind(this));
 
+    //this.ammoCount = this.add.text(this.centerX - 100, this. centerY + 100, 'Ammo: '+ this.ammo).setScrollFactor(0);
 
   }
 
