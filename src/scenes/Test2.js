@@ -321,9 +321,13 @@ export default class Test2 extends Phaser.Scene {
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
     this.ammoScore = this.add.text(this.centerX - 100, this. centerY + 120, 'Ammo: '+ this.ammo).setScrollFactor(0);
+    this.killScore = this.add.text(this.centerX + 100, this. centerY + 120, 'Kills: '+ this.kills).setScrollFactor(0);
+
   }
 
   update (time, delta) {
+    this.ammoScore.setText('Ammo: ' + this.ammo);
+    this.killScore.setText('Kills: ' + this.kills);
 
     //Game over
     if (this.gameOver) {
