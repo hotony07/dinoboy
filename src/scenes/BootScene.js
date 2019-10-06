@@ -13,9 +13,9 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('logo', './assets/Scene1/logo.png');
     this.load.image('title', './assets/Scene1/dinoboi.png');
     this.load.image('title2', './assets/Scene1/boy.png');
-    this.load.spritesheet('button', './assets/buttonSheet.png',{
-      frameHeight: 166,
-      frameWidth: 299
+    this.load.spritesheet('button', './assets/sprites/button_1_spritesheet.png',{
+      frameWidth: 256,
+      frameHeight: 72
     });
     // Declare variables for center of the scene
     this.centerX = this.cameras.main.width / 2;
@@ -34,15 +34,19 @@ export default class BootScene extends Phaser.Scene {
 
     var button = this.add.sprite(this.centerX, this.centerY + 150, "button", 0).setInteractive();
     button.setScale(0.5);
-    button.on("pointerover", function() {
-      this.setFrame(1);
-    });
-
     button.on("pointerout", function () {
       this.setFrame(0);
     });
 
-    var start = this.add.text(this.centerX-50, this.centerY+133, "START",{
+    button.on("pointerover", function() {
+      this.setFrame(1);
+    });
+
+    button.on("pointerdown", function() {
+      this.setFrame(2);
+    });
+
+    var start = this.add.text(this.centerX-45, this.centerY+133, "START",{
       fontSize: '30px'
     });
 

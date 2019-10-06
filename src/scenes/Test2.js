@@ -10,7 +10,7 @@ export default class Test2 extends Phaser.Scene {
   }
 
   //TODO: implement all sounds
-  //TODO: create and implement UI art
+  //TODO: fix dino stacking issue
 
   preload () {
     // Preload assets
