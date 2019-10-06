@@ -3,7 +3,6 @@ import BootScene from './scenes/BootScene.js';
 //import Scene1 from './scenes/Scene1.js';
 import Config from './config/config.js';
 import Preloader from './scenes/Preloader.js';
-import Test from './scenes/Test.js';
 import Test2 from './scenes/Test2.js';
 
 
@@ -12,12 +11,11 @@ class Game extends Phaser.Game {
     super(Config);
     this.scene.add('Boot', BootScene);
     this.scene.add('Preloader', Preloader);
-    this.scene.add('Test', Test);
     this.scene.add('Test2', Test2);
 
 
     //this.scene.add('Scene1', Scene1);
-    this.scene.start('Test2');
+    this.scene.start('Boot');
   }
 }
 

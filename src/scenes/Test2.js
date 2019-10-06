@@ -9,6 +9,9 @@ export default class Test2 extends Phaser.Scene {
     //this.kils = data.kills;
   }
 
+  //TODO: implement all sounds
+  //TODO: create and implement UI art
+
   preload () {
     // Preload assets
     this.load.image('bullet', './assets/sprites/bullet.png')
