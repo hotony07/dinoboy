@@ -251,8 +251,8 @@ export default class Test2 extends Phaser.Scene {
       frameRate: 20,
       repeat: -1
     });
-    /*Music
-    this.music = this.sound.add("music");
+
+    this.music = this.sound.add("theme");
     var musicConfig = {
       mute: false,
       volume: 1,
@@ -264,7 +264,7 @@ export default class Test2 extends Phaser.Scene {
     }
 
     this.music.play(musicConfig);
-    */
+
 
     this.gunshot = this.sound.add("gunshot");
     this.gunEmpty = this.sound.add("gun_empty");
