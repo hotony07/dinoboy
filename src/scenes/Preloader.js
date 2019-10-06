@@ -24,7 +24,7 @@ export default class PreloaderScene extends Phaser.Scene {
     var progressBar = this.add.graphics();
     var progressBox = this.add.graphics();
     progressBox.fillStyle(0x222222, 0.8);
-    progressBox.fillRect(this.width/2 -250, 470, this.width/2 - 30, 50);
+    progressBox.fillRect(this.width/2 - 450, 470, this.width/2 - 30, 50);
 
 
     var loadingText = this.make.text({

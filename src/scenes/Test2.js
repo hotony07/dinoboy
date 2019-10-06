@@ -10,7 +10,7 @@ export default class Test2 extends Phaser.Scene {
   }
 
   //TODO: implement all sounds
-  //TODO: create and implement UI art
+  //TODO: fix dino stacking issue
 
   preload () {
     // Preload assets
@@ -75,6 +75,7 @@ export default class Test2 extends Phaser.Scene {
     this.player.body.setSize(64, 64, 0 ,0);
     this.player.setScale(.5);
     this.player.setCollideWorldBounds(true);
+    this.player.isMounted = false;
     this.maxHealth = 5;
     this.currentHealth = this.maxHealth;
     this.playerHitTimer = 0;
@@ -111,9 +112,10 @@ export default class Test2 extends Phaser.Scene {
 
     this.enemyGroup.children.iterate(function(child) {
       child.setScale(0.7);
-      child.x = 200 + Math.floor(Math.random() * 700) ,
-      child.y = 200 + Math.floor(Math.random() * 700)
+      child.x = 200 + Math.floor(Math.random() * 700);
+      child.y = 200 + Math.floor(Math.random() * 700);
       child.health = 1;
+      child.boss = false;
     });
 
     var enemy = this.physics.add.sprite(100, 100, 'enemy');
@@ -165,6 +167,7 @@ export default class Test2 extends Phaser.Scene {
     this.stego.setScale(.5);
     this.stego.setDepth(-1);
     this.stego.health = 50;
+    this.stego.boss = true;
     this.enemyGroup.add(this.stego);
 
     this.bullets = this.physics.add.group({
@@ -267,7 +270,6 @@ export default class Test2 extends Phaser.Scene {
     }
 
     this.music.play(musicConfig);
-
 
     this.gunshot = this.sound.add("gunshot");
     this.gunEmpty = this.sound.add("gun_empty");
@@ -380,6 +382,11 @@ export default class Test2 extends Phaser.Scene {
     this.player.body.setVelocity(0);
     this.gun.x = this.player.x + 13;
     this.gun.y = this.player.y + 5;
+    try {
+      this.mount.x = this.player.x;
+      this.mount.y = this.player.y + 50;
+    } catch {}
+
 
     if (this.playerHit) {
       this.playerHitTimer++;
@@ -391,19 +398,32 @@ export default class Test2 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown) {
+      if (this.player.isMounted){
+        this.player.body.setVelocityX(-5000);
+      } else {
       this.player.body.setVelocityX(-speed);
-      if (this.spacebar.isDown && this.lasso) {
-
-      }
+    }
     } else if (this.d.isDown) {
+      if (this.player.isMounted){
+        this.player.body.setVelocityX(5000);
+      } else {
       this.player.body.setVelocityX(speed);
+    }
     }
 
     // Vertical movement
     if (this.w.isDown) {
+      if (this.player.isMounted){
+        this.player.body.setVelocityY(-5000);
+      } else {
       this.player.body.setVelocityY(-speed);
+    }
     } else if (this.s.isDown) {
+      if (this.player.isMounted){
+        this.player.body.setVelocityY(5000);
+      } else {
       this.player.body.setVelocityY(speed);
+    }
     }
 
     // Normalize and scale the velocity so that player can't move faster along a diagonal
@@ -463,6 +483,19 @@ export default class Test2 extends Phaser.Scene {
         }
       }.bind(this)
     );
+    this.lassos.children.each(
+      function (l) {
+        if (l.active) {
+          this.physics.add.overlap(
+            l,
+            this.enemyGroup,
+            this.tameCheck,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
     if (this.ammoDrops.countActive(true) != 0) {
       this.availDrop = false;
     } else {
@@ -502,11 +535,18 @@ export default class Test2 extends Phaser.Scene {
       }
     }.bind(this));
 
+    this.timedEvent = this.time.delayedCall(1000, this.deleteLasso, [], this);
+
     //this.ammoCount = this.add.text(this.centerX - 100, this. centerY + 100, 'Ammo: '+ this.ammo).setScrollFactor(0);
 
   }
 
-
+  deleteLasso() {
+    if (this.lassos.getChildren().length > 0) {
+      this.lassos.getChildren()[0].disableBody(true, true);
+      this.lassos.getChildren()[0].destroy();
+    }
+  }
   shoot (pointer) {
     var betweenPoints = Phaser.Math.Angle.BetweenPoints;
     var angle = betweenPoints(this.gun, pointer);
@@ -543,7 +583,7 @@ export default class Test2 extends Phaser.Scene {
     console.log(enemy.health);
 
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
-    var deltaVolume = (0.1 - 1) / 500
+    var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
     var volume = deltaVolume * distFromPlayerToEnemy + 1
 
     var dinoHurtSoundConfig = this.defaultSoundConfig;
@@ -580,5 +620,22 @@ export default class Test2 extends Phaser.Scene {
 
   deadBullet (layer, bullet) {
     bullet.disableBody(true, true);
+  }
+
+  tameCheck (lasso, enemy) {
+    var tameRate;
+      if (enemy.boss) {
+        tameRate = Math.max((45 - enemy.health) / 25, 0);
+        if (Math.random() < tameRate) {
+          console.log('enemy tamed');
+          enemy.disableBody(true, true);
+          this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
+          this.mount.setScale(0.5);
+          this.mount.setDepth(-10);
+          this.player.isMounted = true;
+        } else {
+          console.log('attempt failed');
+        }
+      }
   }
 }
