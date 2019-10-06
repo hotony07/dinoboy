@@ -268,7 +268,6 @@ export default class Test2 extends Phaser.Scene {
 
     this.music.play(musicConfig);
 
-
     this.gunshot = this.sound.add("gunshot");
     this.gunEmpty = this.sound.add("gun_empty");
     this.babyDinoGrowl1 = this.sound.add("baby_dino_growl_1");
@@ -543,7 +542,7 @@ export default class Test2 extends Phaser.Scene {
     console.log(enemy.health);
 
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
-    var deltaVolume = (0.1 - 1) / 500
+    var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
     var volume = deltaVolume * distFromPlayerToEnemy + 1
 
     var dinoHurtSoundConfig = this.defaultSoundConfig;
