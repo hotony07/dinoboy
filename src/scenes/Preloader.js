@@ -85,10 +85,10 @@ export default class PreloaderScene extends Phaser.Scene {
         this.tweens.add({
         targets: logo,
         x: this.width/2,
-        y: 120,
-        scale: 0.4,
+        y: 300,
+        scale: 2,
         ease: 'Cubic',
-        duration: 2000,
+        duration: 1000,
         //repeat: -1,
         //yoyo: true
     });
