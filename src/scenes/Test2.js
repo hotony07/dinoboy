@@ -19,6 +19,15 @@ export default class Test2 extends Phaser.Scene {
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
 
+    this.load.audio("baby_dino_growl_1", './assets/sfx/dinosaur/baby_dino_growl_01.mp3');
+    this.load.audio("baby_dino_growl_2", './assets/sfx/dinosaur/baby_dino_growl_02.mp3');
+    this.load.audio("dino_hurt", './assets/sfx/dinosaur/dino_hurt.mp3');
+    this.load.audio("dino_roar", './assets/sfx/dinosaur/dino_roar.mp3');
+    this.load.audio("dino_step_1", './assets/sfx/dinosaur/dino_step_01.mp3');
+    this.load.audio("dino_step_2", './assets/sfx/dinosaur/dino_step_02.mp3');
+    this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
+    this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
+
     this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
       frameWidth: 64,
       frameHeight: 64
@@ -194,13 +203,7 @@ export default class Test2 extends Phaser.Scene {
             this.shoot(pointer.positionToCamera(camera));
             this.ammo -= 1;
           } else {
-            var gunEmptyConfig = {
-              mute: false,
-              volume: 1,
-              rate: 1,
-              loop: false,
-            }
-            this.gunEmpty.play(gunEmptyConfig);
+            this.gunEmpty.play(this.defaultSoundConfig);
             console.log('out of ammo');
           }
           console.log('bullets remaining: ', this.ammo);
@@ -268,9 +271,16 @@ export default class Test2 extends Phaser.Scene {
 
     this.music.play(musicConfig);
 
-
     this.gunshot = this.sound.add("gunshot");
     this.gunEmpty = this.sound.add("gun_empty");
+    this.babyDinoGrowl1 = this.sound.add("baby_dino_growl_1");
+    this.babyDinoGrowl2 = this.sound.add("baby_dino_growl_2");
+    this.dinoHurt = this.sound.add("dino_hurt");
+    this.dinoRoar = this.sound.add("dino_roar");
+    this.dinoStep1 = this.sound.add("dino_step1");
+    this.dinoStep2 = this.sound.add("dino_step2");
+    this.lassoHit = this.sound.add("lasso_hit");
+    this.lassoMiss = this.sound.add("lasso_miss");
 
     //trees
     this.treeGroup = this.physics.add.group(
@@ -551,14 +561,7 @@ export default class Test2 extends Phaser.Scene {
       .enableBody(true, this.gun.x, this.gun.y, true, true)
       .setVelocity(velocity.x, velocity.y);
 
-    var gunshotConfig = {
-      mute: false,
-      volume: 1,
-      rate: 1,
-      loop: false,
-    }
-
-    this.gunshot.play(gunshotConfig);
+    this.gunshot.play(this.defaultSoundConfig);
   }
 
   takeDamage (player, enemy) {
@@ -578,6 +581,15 @@ export default class Test2 extends Phaser.Scene {
     bullet.disableBody(true, true);
     enemy.health -= 1;
     console.log(enemy.health);
+
+    var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
+    var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
+    var volume = deltaVolume * distFromPlayerToEnemy + 1
+
+    var dinoHurtSoundConfig = this.defaultSoundConfig;
+    this.dinoHurt.volume = volume
+
+    this.dinoHurt.play(this.dinoHurtSoundConfig);
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
       this.kills += 1;
@@ -590,9 +602,7 @@ export default class Test2 extends Phaser.Scene {
         ammoDrop.setScale(0.5);
         this.ammoDrops.add(ammoDrop);
       }
-
     }
-
   }
 
   makeLasso (xCo, yCo, angle) {
