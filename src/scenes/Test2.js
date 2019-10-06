@@ -42,6 +42,10 @@ export default class Test2 extends Phaser.Scene {
     this.load.image('gun', './assets/sprites/gun.png');
     this.load.image('lasso', './assets/sprites/lasso.png');
     this.load.image('uplasso', './assets/sprites/uplasso.png');
+    this.load.spritesheet("lasso_ss", './assets/sprites/lasso_spritesheet.png', {
+      frameWidth: 124,
+      frameHeight: 44
+    });
 
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
