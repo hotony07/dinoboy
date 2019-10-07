@@ -13,6 +13,8 @@ export default class Test2 extends Phaser.Scene {
   //TODO: fix dino stacking issue
 
   preload () {
+    this.load.image('cinematicCowboyLasso', './assets/animation/cowboy_lasso.png');
+
     // Preload assets
     this.load.image('bullet', './assets/sprites/bullet.png')
     //this.load.audio("music", './assets/Music/8TownRoad.wav');
