@@ -13,8 +13,6 @@ export default class Test2 extends Phaser.Scene {
   //TODO: fix dino stacking issue
 
   preload () {
-    this.load.image('cinematicCowboyLasso', './assets/animation/cowboy_lasso.png');
-
     // Preload assets
     this.load.image('bullet', './assets/sprites/bullet.png')
     //this.load.audio("music", './assets/Music/8TownRoad.wav');
@@ -631,9 +629,27 @@ export default class Test2 extends Phaser.Scene {
   tameCheck (lasso, enemy) {
     var tameRate;
       if (enemy.boss) {
-        tameRate = Math.max((45 - enemy.health) / 25, 0);
+        tameRate = Math.max(100);
+        // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
+
+          this.scene.pause();
+          this.cutsceneVideo = document.createElement('video');
+          this.cutsceneVideo.playsinline = false;
+          this.cutsceneVideo.src = './assets/cutscene1.mp4';
+          this.cutsceneVideo.width = 1024;
+          this.cutsceneVideo.height = 576;
+          this.cutsceneVideo.autoplay = true;
+          var element = this.add.dom(this.cameras.main.centerX / 2, this.cameras.main.centerY, this.cutsceneVideo);
+          element.setVisible(true);
+          this.cutsceneVideo.addEventListener('ended', (event) =>
+          {
+            element.setVisible(false);
+            this.scene.resume("Test2");
+            this.deleteLasso();
+          });
+
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
           this.mount.setScale(0.5);
