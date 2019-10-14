@@ -260,7 +260,13 @@ export default class Test2 extends Phaser.Scene {
     this.anims.create({
       key: "idle",
       frames: [{ key: "cowboy", frame: 0 }],
-      frameRate: 20,
+      frameRate: 5,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "dodge",
+      frames: this.anims.generateFrameNumbers("cowboy", { start: 3, end: 8 }),
+      frameRate: 10,
       repeat: -1
     });
 
@@ -456,7 +462,7 @@ export default class Test2 extends Phaser.Scene {
         });
         this.player.dodgeLock = false;
         this.player.rollInvuln = true;
-
+        this.player.anims.play("dodge", true);
       }
 
       //summon lasso
@@ -477,6 +483,7 @@ export default class Test2 extends Phaser.Scene {
         });
         this.player.dodgeLock = false;
         this.player.rollInvuln = true;
+        this.player.anims.play("dodge", true);
       }
 
       //summon lasso
@@ -497,7 +504,7 @@ export default class Test2 extends Phaser.Scene {
         });
         this.player.dodgeLock = false;
         this.player.rollInvuln = true;
-
+        this.player.anims.play("dodge", true);
       }
 
       //summon lasso
@@ -518,7 +525,7 @@ export default class Test2 extends Phaser.Scene {
         });
         this.player.dodgeLock = false;
         this.player.rollInvuln = true;
-
+        this.player.anims.play("dodge", true);
       }
 
       //summon lasso
