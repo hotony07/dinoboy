@@ -634,7 +634,6 @@ export default class Test2 extends Phaser.Scene {
     this.timedEvent = this.time.delayedCall(1000, this.deleteLasso, [], this);
 
     //this.ammoCount = this.add.text(this.centerX - 100, this. centerY + 100, 'Ammo: '+ this.ammo).setScrollFactor(0);
-
   }
 
   deleteLasso() {
@@ -731,15 +730,11 @@ export default class Test2 extends Phaser.Scene {
           this.cutsceneVideo = document.createElement('video');
           this.cutsceneVideo.playsinline = false;
           this.cutsceneVideo.src = './assets/cutscene1.mp4';
-          this.cutsceneVideo.width = 1024;
-          this.cutsceneVideo.height = 576;
+          this.cutsceneVideo.width = this.cameras.main.width;
+          this.cutsceneVideo.height = this.cameras.main.height;
           this.cutsceneVideo.autoplay = true;
-          var element = this.add.dom(this.centerX, this.centerY , this.cutsceneVideo);
+          var element = this.add.dom(this.cameras.main.worldView.x + this.cameras.main.width / 2, this.cameras.main.worldView.y + this.cameras.main.height / 2, this.cutsceneVideo);
           element.setVisible(true);
-          //puts it in the corner but not the right size to fit the screen
-          //element.cameras.main.setViewport(1200, 1000, 800, 600)
-          //element.cameras.main.setSize(1920, 1080)
-
 
           this.cutsceneVideo.addEventListener('ended', (event) =>
           {
