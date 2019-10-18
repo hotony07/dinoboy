@@ -260,7 +260,13 @@ export default class Test2 extends Phaser.Scene {
     this.anims.create({
       key: "idle",
       frames: [{ key: "cowboy", frame: 0 }],
-      frameRate: 20,
+      frameRate: 5,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "dodge",
+      frames: this.anims.generateFrameNumbers("cowboy", { start: 3, end: 8 }),
+      frameRate: 10,
       repeat: -1
     });
 
@@ -456,7 +462,7 @@ export default class Test2 extends Phaser.Scene {
         });
         this.player.dodgeLock = false;
         this.player.rollInvuln = true;
-
+        this.player.anims.play("dodge", true);
       }
 
       //summon lasso
@@ -477,6 +483,7 @@ export default class Test2 extends Phaser.Scene {
         });
         this.player.dodgeLock = false;
         this.player.rollInvuln = true;
+        this.player.anims.play("dodge", true);
       }
 
       //summon lasso
@@ -497,7 +504,7 @@ export default class Test2 extends Phaser.Scene {
         });
         this.player.dodgeLock = false;
         this.player.rollInvuln = true;
-
+        this.player.anims.play("dodge", true);
       }
 
       //summon lasso
@@ -518,7 +525,7 @@ export default class Test2 extends Phaser.Scene {
         });
         this.player.dodgeLock = false;
         this.player.rollInvuln = true;
-
+        this.player.anims.play("dodge", true);
       }
 
       //summon lasso
@@ -627,7 +634,6 @@ export default class Test2 extends Phaser.Scene {
     this.timedEvent = this.time.delayedCall(1000, this.deleteLasso, [], this);
 
     //this.ammoCount = this.add.text(this.centerX - 100, this. centerY + 100, 'Ammo: '+ this.ammo).setScrollFactor(0);
-
   }
 
   deleteLasso() {
@@ -724,14 +730,17 @@ export default class Test2 extends Phaser.Scene {
           this.cutsceneVideo = document.createElement('video');
           this.cutsceneVideo.playsinline = false;
           this.cutsceneVideo.src = './assets/cutscene1.mp4';
-          this.cutsceneVideo.width = 1024;
-          this.cutsceneVideo.height = 576;
+          this.cutsceneVideo.width = this.cameras.main.width;
+          this.cutsceneVideo.height = this.cameras.main.height;
           this.cutsceneVideo.autoplay = true;
-          var element = this.add.dom(this.centerX, this.centerY , this.cutsceneVideo);
+          var element = this.add.dom(this.cameras.main.worldView.x + this.cameras.main.width / 2, this.cameras.main.worldView.y + this.cameras.main.height / 2, this.cutsceneVideo);
           element.setVisible(true);
+<<<<<<< HEAD
           //puts it in the corner but not the right size to fit the screen
           //element.cameras.main.setViewport(1200, 1000, 800, 600)
 
+=======
+>>>>>>> eeae3ed9c34f65d180e06586493afc407c9197f7
 
           this.cutsceneVideo.addEventListener('ended', (event) =>
           {
