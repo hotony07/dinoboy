@@ -27,13 +27,13 @@ export default class BootScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(0x3a6b0a);
 
 
-    var logo = this.add.image(this.centerX , this.centerY - 150, "logo");
-    var title = this.add.sprite(this.centerX -150, this.centerY + 100, "title");
-    var title2 = this.add.sprite(this.centerX + 150, this.centerY + 60, "title2");
+    var logo = this.add.image(this.centerX , this.centerY - 200, "logo");
+    var title = this.add.sprite(this.centerX -150, this.centerY + 90, "title");
+    var title2 = this.add.sprite(this.centerX + 150, this.centerY + 50, "title2");
     //title.setFrame(0.5);
 
-    var button = this.add.sprite(this.centerX, this.centerY + 150, "button", 0).setInteractive();
-    button.setScale(0.5);
+    var button = this.add.sprite(this.centerX - 100, this.centerY + 150, "button", 0).setInteractive();
+    button.setScale(0.65);
     button.on("pointerout", function () {
       this.setFrame(0);
     });
@@ -46,12 +46,35 @@ export default class BootScene extends Phaser.Scene {
       this.setFrame(2);
     });
 
-    var start = this.add.text(this.centerX-45, this.centerY+133, "START",{
+    var start = this.add.text(this.centerX-145, this.centerY+133, "START",{
       fontSize: '30px'
     });
 
     button.on("pointerup", function () {
        this.scene.start('Preloader');
+     }, this
+    );
+
+    var tutButton = this.add.sprite(this.centerX + 100, this.centerY + 150, "button", 0).setInteractive();
+    tutButton.setScale(0.65);
+    tutButton.on("pointerout", function () {
+      this.setFrame(0);
+    });
+
+    tutButton.on("pointerover", function() {
+      this.setFrame(1);
+    });
+
+    tutButton.on("pointerdown", function() {
+      this.setFrame(2);
+    });
+
+    var tutorial = this.add.text(this.centerX+30, this.centerY+133, "TUTORIAL",{
+      fontSize: '30px'
+    });
+
+    button.on("pointerup", function () {
+       //this.scene.start('Preloader');
      }, this
     );
   }
