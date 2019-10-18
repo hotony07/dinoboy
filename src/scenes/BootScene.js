@@ -196,8 +196,8 @@ export default class BootScene extends Phaser.Scene {
       fontSize: '30px'
     });
 
-    button.on("pointerup", function () {
-       //this.scene.start('Preloader');
+    tutButton.on("pointerup", function () {
+       this.scene.start('Tutorial1');
      }, this
     );
 

@@ -12,12 +12,129 @@ export default class PreloaderScene extends Phaser.Scene {
 
   preload () {
 
-    this.cameras.main.setBackgroundColor(0x3a6b0a);
+    this.cameras.main.setBackgroundColor(0x41734d);
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 30,
+        y: 20,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+      this.enemyGroup = this.physics.add.group(
+        {
+        key: "enemy",
+        repeat: 10,
+        setXY: {
+          x: 300,
+          y: 20,
+          stepX: 100,
+          stepY: 100
+        }
+    });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 7,
+      setXY: {
+        x: 30,
+        y: 300,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 600,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 4,
+      setXY: {
+        x: 30,
+        y: 600,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 1,
+      setXY: {
+        x: 30,
+        y: 900,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 900,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 1200,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 1500,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 4,
+      setXY: {
+        x: 1800,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
 
       // add logo image
       this.load.image('logo', './assets/Scene1/logo.png');
-      var logo = this.add.image(this.width/2, 270, 'logo');
-      logo.setScale(0.8);
+      var logo = this.add.image(this.width/2, this.height/2 -200, 'logo');
+      //logo.setScale(0.8);
       // Preload assets
       this.load.image('bullet', './assets/sprites/bullet.png')
       //this.load.audio("music", './assets/Music/8TownRoad.wav');
