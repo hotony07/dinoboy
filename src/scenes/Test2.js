@@ -339,12 +339,12 @@ export default class Test2 extends Phaser.Scene {
       this
     );
 
-    this.healthScore = this.add.text(this.centerX - 290, this. centerY + 120, 'Health').setScrollFactor(0);
+    this.healthScore = this.add.text(this.centerX - 260, this. centerY + 120, 'Health').setScrollFactor(0);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: 4,
       setXY: {
-        x: this.centerX - 300,
+        x: this.centerX - 270,
         y: this.centerY + 145,
         stepX: 20,
         stepY: 0

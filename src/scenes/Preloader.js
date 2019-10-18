@@ -15,6 +15,9 @@ export default class PreloaderScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(0x3a6b0a);
 
       // add logo image
+      this.load.image('logo', './assets/Scene1/logo.png');
+      var logo = this.add.image(this.width/2, 270, 'logo');
+      logo.setScale(0.8);
       // Preload assets
       this.load.image('bullet', './assets/sprites/bullet.png')
       //this.load.audio("music", './assets/Music/8TownRoad.wav');
