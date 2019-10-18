@@ -735,15 +735,10 @@ export default class Test2 extends Phaser.Scene {
           this.cutsceneVideo.autoplay = true;
           var element = this.add.dom(this.cameras.main.worldView.x + this.cameras.main.width / 2, this.cameras.main.worldView.y + this.cameras.main.height / 2, this.cutsceneVideo);
           element.setVisible(true);
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
+
           //puts it in the corner but not the right size to fit the screen
           //element.cameras.main.setViewport(1200, 1000, 800, 600)
 
-=======
->>>>>>> eeae3ed9c34f65d180e06586493afc407c9197f7
->>>>>>> 5585d15cc79d6ea053baa581acb1a987e9af3b76
 
           this.cutsceneVideo.addEventListener('ended', (event) =>
           {
