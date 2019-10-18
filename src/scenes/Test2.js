@@ -731,7 +731,6 @@ export default class Test2 extends Phaser.Scene {
           element.setVisible(true);
           //puts it in the corner but not the right size to fit the screen
           //element.cameras.main.setViewport(1200, 1000, 800, 600)
-          //element.cameras.main.setSize(1920, 1080)
 
 
           this.cutsceneVideo.addEventListener('ended', (event) =>

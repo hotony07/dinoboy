@@ -15,9 +15,52 @@ export default class PreloaderScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(0x3a6b0a);
 
       // add logo image
-    this.load.image('logo', './assets/Scene1/logo.png');
-    var logo = this.add.image(this.width/2, 270, 'logo');
-    logo.setScale(0.8);
+      // Preload assets
+      this.load.image('bullet', './assets/sprites/bullet.png')
+      //this.load.audio("music", './assets/Music/8TownRoad.wav');
+      this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
+      this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
+
+      this.load.audio("baby_dino_growl_1", './assets/sfx/dinosaur/baby_dino_growl_01.mp3');
+      this.load.audio("baby_dino_growl_2", './assets/sfx/dinosaur/baby_dino_growl_02.mp3');
+      this.load.audio("dino_hurt", './assets/sfx/dinosaur/dino_hurt.mp3');
+      this.load.audio("dino_roar", './assets/sfx/dinosaur/dino_roar.mp3');
+      this.load.audio("dino_step_1", './assets/sfx/dinosaur/dino_step_01.mp3');
+      this.load.audio("dino_step_2", './assets/sfx/dinosaur/dino_step_02.mp3');
+      this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
+      this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
+
+      this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
+        frameWidth: 64,
+        frameHeight: 64
+      });
+      this.load.spritesheet('enemy', './assets/dinosaur/smallDino.png', {
+        frameWidth: 64,
+        frameHeight: 64
+      });
+      this.load.image('stego', './assets/dinosaur/stego2.png')
+
+
+      this.load.image('gun', './assets/sprites/gun.png');
+      this.load.image('lasso', './assets/sprites/lasso.png');
+      this.load.image('uplasso', './assets/sprites/uplasso.png');
+      this.load.spritesheet("lasso_ss", './assets/sprites/lasso_spritesheet.png', {
+        frameWidth: 124,
+        frameHeight: 44
+      });
+
+      this.load.image('tree', './assets/Scene1/tree.png');
+      this.load.image('ammo', './assets/sprites/ammo.png');
+      this.load.image('health', './assets/Scene1/Heart.png');
+
+
+      this.load.image("tiles", "./assets/Tilemaps/tiles.png");
+      this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap.json");
+
+
+      // Declare variables for center of the scene
+      this.centerX = this.cameras.main.width / 2;
+      this.centerY = this.cameras.main.height / 2;
 
 
     // display progress bar
