@@ -20,12 +20,135 @@ export default class BootScene extends Phaser.Scene {
     // Declare variables for center of the scene
     this.centerX = this.cameras.main.width / 2;
     this.centerY = this.cameras.main.height / 2;
+
+    this.load.spritesheet('enemy', './assets/dinosaur/smallDino.png', {
+      frameWidth: 64,
+      frameHeight: 64
+    });
   }
 
   create (data) {
     //Create the scene
-    this.cameras.main.setBackgroundColor(0x3a6b0a);
+    this.cameras.main.setBackgroundColor(0x41734d);
 
+    //var dino = this.add.sprite(100, 100, 'enemy');
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 30,
+        y: 20,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+      this.enemyGroup = this.physics.add.group(
+        {
+        key: "enemy",
+        repeat: 10,
+        setXY: {
+          x: 300,
+          y: 20,
+          stepX: 100,
+          stepY: 100
+        }
+    });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 7,
+      setXY: {
+        x: 30,
+        y: 300,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 600,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 4,
+      setXY: {
+        x: 30,
+        y: 600,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 1,
+      setXY: {
+        x: 30,
+        y: 900,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 900,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 1200,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 10,
+      setXY: {
+        x: 1500,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
+
+    this.enemyGroup = this.physics.add.group(
+      {
+      key: "enemy",
+      repeat: 4,
+      setXY: {
+        x: 1800,
+        y: 30,
+        stepX: 100,
+        stepY: 100
+      }
+  });
 
     var logo = this.add.image(this.centerX , this.centerY - 200, "logo");
     var title = this.add.sprite(this.centerX -150, this.centerY + 90, "title");
@@ -77,6 +200,8 @@ export default class BootScene extends Phaser.Scene {
        //this.scene.start('Preloader');
      }, this
     );
+
+
   }
 
   update (time, delta) {
