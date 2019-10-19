@@ -6,11 +6,8 @@ export default class Test2 extends Phaser.Scene {
 
   init (data) {
     // Initialization code goes here
-    //this.kils = data.kills;
+    //this.kills = data.kills;
   }
-
-  //TODO: implement all sounds
-  //TODO: fix dino stacking issue
 
   preload () {
     // Preload assets
@@ -27,6 +24,7 @@ export default class Test2 extends Phaser.Scene {
     this.load.audio("dino_step_2", './assets/sfx/dinosaur/dino_step_02.mp3');
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
     this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
+    this.load.video("cutscene1", './assets/cutscene1.mp4');
 
     this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
       frameWidth: 64,
@@ -62,6 +60,10 @@ export default class Test2 extends Phaser.Scene {
   }
 
   create (data) {
+    this.cutscene1 = this.add.video(0, 0, 'cutscene1');
+    this.cutscene1.width = game.config.width;
+    this.cutscene1.height = game.config.height;
+    this.cutscene1.active = false;
     const map = this.make.tilemap({ key: "map" });
     const tileset = map.addTilesetImage("sheet", "tiles");
 
@@ -726,26 +728,16 @@ export default class Test2 extends Phaser.Scene {
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
 
-          this.scene.pause();
-          this.cutsceneVideo = document.createElement('video');
-          this.cutsceneVideo.playsinline = false;
-          this.cutsceneVideo.src = './assets/cutscene1.mp4';
-          this.cutsceneVideo.width = this.cameras.main.width;
-          this.cutsceneVideo.height = this.cameras.main.height;
-          this.cutsceneVideo.autoplay = true;
-          var element = this.add.dom(this.cameras.main.worldView.x + this.cameras.main.width / 2, this.cameras.main.worldView.y + this.cameras.main.height / 2, this.cutsceneVideo);
-          element.setVisible(true);
+          // this.scene.pause();
 
-          //puts it in the corner but not the right size to fit the screen
-          //element.cameras.main.setViewport(1200, 1000, 800, 600)
-
-
-          this.cutsceneVideo.addEventListener('ended', (event) =>
-          {
-            element.setVisible(false);
-            this.scene.resume("Test2");
-            this.deleteLasso();
-          });
+          //play video
+          this.cutscene1.active = true;
+          // this.cutsceneVideo.addEventListener('ended', (event) =>
+          // {
+          //   element.setVisible(false);
+          //   this.scene.resume("Test2");
+          //   this.deleteLasso();
+          // });
 
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
