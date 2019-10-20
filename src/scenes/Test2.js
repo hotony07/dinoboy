@@ -83,6 +83,7 @@ export default class Test2 extends Phaser.Scene {
     this.playerDodgeTimer = 0;
     this.kills = 0;
     this.player.isHit = false;
+    this.stegoSpawned = false;
 
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
@@ -162,14 +163,8 @@ export default class Test2 extends Phaser.Scene {
     obj => obj.name === "Stego Spawn"
     );
 
-    this.stego = this.physics.add.sprite(stegoSpawn.x, stegoSpawn.y, 'stego');
-    this.stego.setCollideWorldBounds(true);
-    this.stego.body.setSize(256, 128, stegoSpawn.x, stegoSpawn.y);
-    this.stego.setScale(.9);
-    this.stego.setDepth(-1);
-    this.stego.health = 50;
-    this.stego.boss = true;
-    this.enemyGroup.add(this.stego);
+    this.sStegoX = stegoSpawn.x;
+    this.sStegoY = stegoSpawn.y;
 
     this.bullets = this.physics.add.group({
       defaultKey: "bullet",
@@ -365,6 +360,19 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
+    if (!this.stegoSpawned && this.kills == 50) {
+      this.stegoSpawned = true;
+
+          this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
+          this.stego.setCollideWorldBounds(true);
+          this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
+          this.stego.setScale(.9);
+          this.stego.setDepth(-1);
+          this.stego.health = 50;
+          this.stego.boss = true;
+          this.enemyGroup.add(this.stego);
+    }
+
     if (this.cutscene1.video.ended) {
       this.cutscene1.alpha = 0;
       this.deleteLasso();
@@ -411,6 +419,9 @@ export default class Test2 extends Phaser.Scene {
 
     //Game over
     if (this.gameOver) {
+      while (this.healthGroup.getChildren().length > 0) {
+        this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
+      }
       this.player.disableBody(false, false);
       //this.gun.destroy();
       var text = this.add.text(this.player.x - 30, this.player.y - 40, 'Game Over');
