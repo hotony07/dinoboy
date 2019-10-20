@@ -92,11 +92,7 @@ export default class Test2 extends Phaser.Scene {
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     const camera = this.cameras.main;
-<<<<<<< HEAD
     camera.setZoom(5);
-=======
-    camera.setZoom(1);
->>>>>>> abc095466f3571d143c4772ff89ea14d4b114fc3
     camera.startFollow(this.player);
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
@@ -117,8 +113,8 @@ export default class Test2 extends Phaser.Scene {
 
     this.enemyGroup.children.iterate(function(child) {
       child.setScale(0.7);
-      child.x = 200 + Math.floor(Math.random() * 700);
-      child.y = 200 + Math.floor(Math.random() * 700);
+      child.x = 200 + Math.floor(Math.random() * (map.widthInPixels - 200));
+      child.y = 200 + Math.floor(Math.random() * (map.heightInPixels - 200));
       child.health = 1;
       child.boss = false;
     });
