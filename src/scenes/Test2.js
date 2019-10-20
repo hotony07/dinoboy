@@ -352,8 +352,6 @@ export default class Test2 extends Phaser.Scene {
     this.killScore = this.add.text(this.centerX + 100, this. centerY + 120, 'Kills: '+ this.kills).setScrollFactor(0);
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
-
-    this.currentZoom = 1;
   }
 
   update (time, delta) {
