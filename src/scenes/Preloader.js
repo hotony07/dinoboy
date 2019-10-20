@@ -175,7 +175,7 @@ export default class PreloaderScene extends Phaser.Scene {
 
 
       this.load.image("tiles", "./assets/Tilemaps/tiles.png");
-      this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap.json");
+      this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap2.json");
 
 
       // Declare variables for center of the scene
