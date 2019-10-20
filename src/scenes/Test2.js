@@ -172,7 +172,7 @@ export default class Test2 extends Phaser.Scene {
     this.stego = this.physics.add.sprite(stegoSpawn.x, stegoSpawn.y, 'stego');
     this.stego.setCollideWorldBounds(true);
     this.stego.body.setSize(256, 128, stegoSpawn.x, stegoSpawn.y);
-    this.stego.setScale(.5);
+    this.stego.setScale(1.5);
     this.stego.setDepth(-1);
     this.stego.health = 50;
     this.stego.boss = true;
@@ -216,36 +216,36 @@ export default class Test2 extends Phaser.Scene {
           }
           console.log('bullets remaining: ', this.ammo);
         } else {
-          var betweenPoints = Phaser.Math.Angle.BetweenPoints;
-          var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.player, pointer.positionToCamera(camera));
-          console.log(angle);
-          var roundAngle;
-          if (angle < 45 || angle > -45) {
-            roundAngle = 0;
-          }
-          if (angle < 135 && angle > 45) {
-            roundAngle = 90;
-          }
-          if (angle < -135 || angle > 135) {
-            roundAngle = 180;
-          }
-          if (angle > -135 && angle < -45) {
-            roundAngle = -90;
-          }
-
-          if (roundAngle == 0) {
-            this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(roundAngle);
-          }
-          if (roundAngle == 180) {
-            this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(roundAngle);
-          }
-          if (roundAngle == 90) {
-            this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(roundAngle - 90);
-          }
-          if (roundAngle == -90) {
-            this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(roundAngle - 90);
-          }
-          console.log(roundAngle);
+          // var betweenPoints = Phaser.Math.Angle.BetweenPoints;
+          // var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.player, pointer.positionToCamera(camera));
+          // console.log(angle);
+          // var roundAngle;
+          // if (angle < 45 || angle > -45) {
+          //   roundAngle = 0;
+          // }
+          // if (angle < 135 && angle > 45) {
+          //   roundAngle = 90;
+          // }
+          // if (angle < -135 || angle > 135) {
+          //   roundAngle = 180;
+          // }
+          // if (angle > -135 && angle < -45) {
+          //   roundAngle = -90;
+          // }
+          //
+          // if (roundAngle == 0) {
+          //   this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(roundAngle);
+          // }
+          // if (roundAngle == 180) {
+          //   this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(roundAngle);
+          // }
+          // if (roundAngle == 90) {
+          //   this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(roundAngle - 90);
+          // }
+          // if (roundAngle == -90) {
+          //   this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(roundAngle - 90);
+          // }
+          // console.log(roundAngle);
         }
 
       }, this);
@@ -291,8 +291,8 @@ export default class Test2 extends Phaser.Scene {
     this.babyDinoGrowl2 = this.sound.add("baby_dino_growl_2");
     this.dinoHurt = this.sound.add("dino_hurt");
     this.dinoRoar = this.sound.add("dino_roar");
-    this.dinoStep1 = this.sound.add("dino_step1");
-    this.dinoStep2 = this.sound.add("dino_step2");
+    this.dinoStep1 = this.sound.add("dino_step_1");
+    this.dinoStep2 = this.sound.add("dino_step_2");
     this.lassoHit = this.sound.add("lasso_hit");
     this.lassoMiss = this.sound.add("lasso_miss");
 
@@ -344,7 +344,7 @@ export default class Test2 extends Phaser.Scene {
     this.healthScore = this.add.text(this.centerX - 260, this. centerY + 120, 'Health').setScrollFactor(0);
     this.healthGroup = this.add.group({
       key: 'health',
-      repeat: 4,
+      repeat: this.currentHealth - 1,
       setXY: {
         x: this.centerX - 270,
         y: this.centerY + 145,
@@ -400,13 +400,13 @@ export default class Test2 extends Phaser.Scene {
     this.gun.y = this.player.y + 5;
     try {
       this.mount.x = this.player.x;
-      this.mount.y = this.player.y + 50;
+      this.mount.y = this.player.y + 150;
     } catch {}
 
 
     if (this.player.isHit) {
       this.playerHitTimer++;
-      if (this.playerHitTimer >= 60) {
+      if (this.playerHitTimer >= 80) {
         this.playerHit = false;
         this.player.isHit = false;
         this.playerHitTimer = 0;
@@ -453,13 +453,17 @@ export default class Test2 extends Phaser.Scene {
 
     if (this.a.isDown) {
       this.player.anims.play("walk", true);
+      try {
+        this.mount.flipX = true;
+      }
+      catch {}
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
         this.tweens.add({
           targets: [this.player],
           props: {
-            x: { value: '-=100', duration: 200},
+            x: { value: '-=150', duration: 200},
           },
         });
         this.player.dodgeLock = false;
@@ -474,13 +478,17 @@ export default class Test2 extends Phaser.Scene {
       }
     } else if (this.d.isDown) {
       this.player.anims.play("walk", true);
+      try {
+        this.mount.flipX = false;
+      }
+      catch {}
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
         this.tweens.add({
           targets: [this.player],
           props: {
-            x: { value: '+=100', duration: 200},
+            x: { value: '+=150', duration: 200},
           },
         });
         this.player.dodgeLock = false;
@@ -501,7 +509,7 @@ export default class Test2 extends Phaser.Scene {
         this.tweens.add({
           targets: [this.player],
           props: {
-            y: { value: '-=100', duration: 200},
+            y: { value: '-=150', duration: 200},
           },
         });
         this.player.dodgeLock = false;
@@ -522,7 +530,7 @@ export default class Test2 extends Phaser.Scene {
         this.tweens.add({
           targets: [this.player],
           props: {
-            y: { value: '+=100', duration: 200},
+            y: { value: '+=150', duration: 200},
           },
         });
         this.player.dodgeLock = false;
@@ -549,10 +557,10 @@ export default class Test2 extends Phaser.Scene {
     this.playerDodgeTimer++;
     this.playerHit = true;
     //console.log(this.playerDodgeTimer);
-    if (this.playerDodgeTimer >= 25) {
+    if (this.playerDodgeTimer >= 40) {
       this.playerHit = false;
     }
-    if (this.playerDodgeTimer >= 50) {
+    if (this.playerDodgeTimer >= 60) {
       this.playerDodgeTimer = 0;
       this.player.dodgeLock = true;
       console.log('dodge ready');
@@ -741,7 +749,7 @@ export default class Test2 extends Phaser.Scene {
 
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
-          this.mount.setScale(0.5);
+          this.mount.setScale(1.5);
           this.mount.setDepth(-10);
           this.player.isMounted = true;
         } else {

@@ -280,7 +280,7 @@ export default class PreloaderScene extends Phaser.Scene {
       frameWidth: 512,
       frameHeight: 512
     });
-    this.load.audio('theme', './assets/Music/DinoBoyTheme.mp3');
+    this.load.audio('theme', './assets/Music/DinoBoyV2.mp3');
 
     this.centerX = this.cameras.main.width / 2;
     this.centerY = this.cameras.main.height / 2;
