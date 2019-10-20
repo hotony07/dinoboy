@@ -484,7 +484,7 @@ export default class Test2 extends Phaser.Scene {
     if (this.a.isDown) {
       this.player.anims.play("walk", true);
       try {
-        this.mount.flipX = false;
+        this.mount.flipX = true;
       }
       catch {}
 
@@ -509,7 +509,7 @@ export default class Test2 extends Phaser.Scene {
     } else if (this.d.isDown) {
       this.player.anims.play("walk", true);
       try {
-        this.mount.flipX = true;
+        this.mount.flipX = false;
       }
       catch {}
 
@@ -760,6 +760,15 @@ export default class Test2 extends Phaser.Scene {
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
+
+
+          // this.scene.pause();
+          // this.cutscene1.alpha = 1;
+          // this.cameras.main.setZoom(1);
+          // this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
+          // this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
+          // this.cutscene1.depth = 100;
+          // this.cutscene1.play();
 
           this.cutscene1.alpha = 1;
           this.cameras.main.setZoom(1);
