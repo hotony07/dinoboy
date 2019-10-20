@@ -34,7 +34,7 @@ export default class Test2 extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64
     });
-    this.load.image('stego', './assets/dinosaur/stego2.png')
+    this.load.image('stego', './assets/dinosaur/stego3.png')
 
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -92,7 +92,7 @@ export default class Test2 extends Phaser.Scene {
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     const camera = this.cameras.main;
-    camera.setZoom(3);
+    camera.setZoom(5);
     camera.startFollow(this.player);
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
@@ -165,7 +165,7 @@ export default class Test2 extends Phaser.Scene {
     this.stego = this.physics.add.sprite(stegoSpawn.x, stegoSpawn.y, 'stego');
     this.stego.setCollideWorldBounds(true);
     this.stego.body.setSize(256, 128, stegoSpawn.x, stegoSpawn.y);
-    this.stego.setScale(1.5);
+    this.stego.setScale(0.5);
     this.stego.setDepth(-1);
     this.stego.health = 50;
     this.stego.boss = true;
@@ -325,21 +325,31 @@ export default class Test2 extends Phaser.Scene {
       this
     );
 
-    this.healthScore = this.add.text(this.centerX - 260, this. centerY + 120, 'Health').setScrollFactor(0);
+    this.healthScore = this.add.text(this.centerX - 120, this. centerY + 50, 'Health', { fontSize: '12' }).setScrollFactor(0);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: this.currentHealth - 1,
       setXY: {
-        x: this.centerX - 270,
-        y: this.centerY + 145,
-        stepX: 20,
+        x: this.centerX - 120,
+        y: this.centerY + 70,
+        stepX: 10,
         stepY: 0
       }
     });
+    // this.healthGroup = this.add.group({
+    //   key: 'health',
+    //   repeat: this.currentHealth - 1,
+    //   setXY: {
+    //     x: this.centerX - 120,
+    //     y: this.centerY + 60,
+    //     stepX: 20,
+    //     stepY: 0
+    //   }
+    // });
 
     this.healthGroup.children.iterate(function(child) {
       child.setScrollFactor(0);
-      child.setScale(0.6);
+      child.setScale(0.3);
     });
 
     this.playerGroup = this.physics.add.group();
@@ -348,8 +358,8 @@ export default class Test2 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
-    this.ammoScore = this.add.text(this.centerX - 100, this. centerY + 120, 'Ammo: '+ this.ammo).setScrollFactor(0);
-    this.killScore = this.add.text(this.centerX + 100, this. centerY + 120, 'Kills: '+ this.kills).setScrollFactor(0);
+    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 50, 'Ammo: '+ this.ammo, { fontSize: '12' }).setScrollFactor(0);
+    this.killScore = this.add.text(this.centerX + 50, this. centerY + 50, 'Kills: '+ this.kills, { fontSize: '12' }).setScrollFactor(0);
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
   }
@@ -359,6 +369,35 @@ export default class Test2 extends Phaser.Scene {
       this.cutscene1.alpha = 0;
       this.deleteLasso();
       this.cameras.main.setZoom(2);
+      this.ammoScore.x = this.centerX - 100;
+      this.ammoScore.y = this.centerY + 200;
+      this.ammoScore.setFontSize(24);
+
+      this.killScore.x = this.centerX + 120;
+      this.killScore.y = this.centerY + 200;
+      this.killScore.setFontSize(24);
+
+
+      this.healthScore.x = this.centerX - 300;
+      this.healthScore.y = this.centerY + 200;
+      this.healthScore.setFontSize(24);
+      while (this.healthGroup.getChildren().length > 0) {
+        this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
+      }
+      this.healthGroup = this.add.group({
+        key: 'health',
+        repeat: this.currentHealth - 1,
+        setXY: {
+          x: this.centerX - 300,
+          y: this.centerY + 235,
+          stepX: 20,
+          stepY: 0
+        }
+      });
+      this.healthGroup.children.iterate(function(child) {
+        child.setScrollFactor(0);
+        child.setScale(0.6);
+      });
     }
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
@@ -389,7 +428,7 @@ export default class Test2 extends Phaser.Scene {
     this.gun.y = this.player.y + 5;
     try {
       this.mount.x = this.player.x;
-      this.mount.y = this.player.y + 150;
+      this.mount.y = this.player.y + 60;
     } catch {}
 
 
@@ -720,6 +759,15 @@ export default class Test2 extends Phaser.Scene {
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
 
+
+          // this.scene.pause();
+          // this.cutscene1.alpha = 1;
+          // this.cameras.main.setZoom(1);
+          // this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
+          // this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
+          // this.cutscene1.depth = 100;
+          // this.cutscene1.play();
+
           this.cutscene1.alpha = 1;
           this.cameras.main.setZoom(1);
           this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
@@ -727,10 +775,11 @@ export default class Test2 extends Phaser.Scene {
           this.cutscene1.depth = 100;
           this.cutscene1.play();
 
+
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
-          this.mount.setScale(1.5);
-          this.mount.setDepth(-10);
+          this.mount.setScale(0.5);
+          this.mount.setDepth(-8);
           this.player.isMounted = true;
         } else {
           console.log('attempt failed');
