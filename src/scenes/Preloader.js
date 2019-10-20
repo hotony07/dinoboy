@@ -158,7 +158,7 @@ export default class PreloaderScene extends Phaser.Scene {
         frameWidth: 64,
         frameHeight: 64
       });
-      this.load.image('stego', './assets/dinosaur/stego2.png')
+      this.load.image('stego', './assets/dinosaur/stego3.png')
 
 
       this.load.image('gun', './assets/sprites/gun.png');

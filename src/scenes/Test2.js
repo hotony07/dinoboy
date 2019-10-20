@@ -34,7 +34,7 @@ export default class Test2 extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64
     });
-    this.load.image('stego', './assets/dinosaur/stego2.png')
+    this.load.image('stego', './assets/dinosaur/stego3.png')
 
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -165,7 +165,7 @@ export default class Test2 extends Phaser.Scene {
     this.stego = this.physics.add.sprite(stegoSpawn.x, stegoSpawn.y, 'stego');
     this.stego.setCollideWorldBounds(true);
     this.stego.body.setSize(256, 128, stegoSpawn.x, stegoSpawn.y);
-    this.stego.setScale(1.5);
+    this.stego.setScale(0.5);
     this.stego.setDepth(-1);
     this.stego.health = 50;
     this.stego.boss = true;
@@ -394,7 +394,7 @@ export default class Test2 extends Phaser.Scene {
     this.gun.y = this.player.y + 5;
     try {
       this.mount.x = this.player.x;
-      this.mount.y = this.player.y + 150;
+      this.mount.y = this.player.y + 60;
     } catch {}
 
 
@@ -734,8 +734,8 @@ export default class Test2 extends Phaser.Scene {
 
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
-          this.mount.setScale(1.5);
-          this.mount.setDepth(-10);
+          this.mount.setScale(0.5);
+          this.mount.setDepth(-8);
           this.player.isMounted = true;
         } else {
           console.log('attempt failed');
