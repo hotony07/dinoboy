@@ -60,10 +60,9 @@ export default class Test2 extends Phaser.Scene {
   }
 
   create (data) {
-    this.cutscene1 = this.add.video(0, 0, 'cutscene1');
-    this.cutscene1.width = game.config.width;
-    this.cutscene1.height = game.config.height;
-    this.cutscene1.active = false;
+    this.cutscene1 = this.add.video(this.cameras.main.x, this.cameras.main.y, 'cutscene1');
+    this.cutscene1.alpha = 0;
+
     const map = this.make.tilemap({ key: "map" });
     const tileset = map.addTilesetImage("sheet", "tiles");
 
@@ -93,7 +92,11 @@ export default class Test2 extends Phaser.Scene {
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     const camera = this.cameras.main;
+<<<<<<< HEAD
     camera.setZoom(5);
+=======
+    camera.setZoom(1);
+>>>>>>> abc095466f3571d143c4772ff89ea14d4b114fc3
     camera.startFollow(this.player);
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
@@ -206,9 +209,7 @@ export default class Test2 extends Phaser.Scene {
             this.ammo -= 1;
           } else {
             this.gunEmpty.play(this.defaultSoundConfig);
-            console.log('out of ammo');
           }
-          console.log('bullets remaining: ', this.ammo);
         } else {
           // var betweenPoints = Phaser.Math.Angle.BetweenPoints;
           // var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.player, pointer.positionToCamera(camera));
@@ -670,14 +671,11 @@ export default class Test2 extends Phaser.Scene {
         this.gameOver = true;
       }
     }
-    console.log(this.currentHealth);
   }
 
   hitEnemy (bullet, enemy) {
-    console.log('hit');
     bullet.disableBody(true, true);
     enemy.health -= 1;
-    console.log(enemy.health);
 
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
     var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
@@ -694,7 +692,6 @@ export default class Test2 extends Phaser.Scene {
       //dropRate increases when you're low on bullets
       var dropRate = Math.max((20 - this.ammo) / 25, 0);
       if (Math.random() < dropRate) {
-        console.log('the enemy dropped some bullets!');
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
         ammoDrop.setScale(0.5);
         this.ammoDrops.add(ammoDrop);
@@ -712,7 +709,6 @@ export default class Test2 extends Phaser.Scene {
   pickAmmo (player, ammo) {
     ammo.disableBody(true, true);
     this.ammo += 20;
-    console.log('bullets remaining: ', this.ammo);
   }
 
   deadBullet (layer, bullet) {
@@ -729,14 +725,11 @@ export default class Test2 extends Phaser.Scene {
 
           // this.scene.pause();
 
-          //play video
-          this.cutscene1.active = true;
-          // this.cutsceneVideo.addEventListener('ended', (event) =>
-          // {
-          //   element.setVisible(false);
-          //   this.scene.resume("Test2");
-          //   this.deleteLasso();
-          // });
+          this.cutscene1.alpha = 1;
+          this.cutscene1.setPosition(game.config.width / 2, game.config.height / 2);
+          this.cutscene1.setScale(1);
+          this.cutscene1.depth = 100;
+          this.cutscene1.play();
 
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
