@@ -34,7 +34,7 @@ export default class Test2 extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64
     });
-    this.load.image('stego', './assets/dinosaur/stego2.png')
+    this.load.image('stego', './assets/dinosaur/stego3.png')
 
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -165,7 +165,7 @@ export default class Test2 extends Phaser.Scene {
     this.stego = this.physics.add.sprite(stegoSpawn.x, stegoSpawn.y, 'stego');
     this.stego.setCollideWorldBounds(true);
     this.stego.body.setSize(256, 128, stegoSpawn.x, stegoSpawn.y);
-    this.stego.setScale(1.5);
+    this.stego.setScale(.9);
     this.stego.setDepth(-1);
     this.stego.health = 50;
     this.stego.boss = true;
@@ -430,7 +430,7 @@ export default class Test2 extends Phaser.Scene {
     this.gun.y = this.player.y + 5;
     try {
       this.mount.x = this.player.x;
-      this.mount.y = this.player.y + 150;
+      this.mount.y = this.player.y + 100;
     } catch {}
 
 
@@ -484,7 +484,7 @@ export default class Test2 extends Phaser.Scene {
     if (this.a.isDown) {
       this.player.anims.play("walk", true);
       try {
-        this.mount.flipX = true;
+        this.mount.flipX = false;
       }
       catch {}
 
@@ -509,7 +509,7 @@ export default class Test2 extends Phaser.Scene {
     } else if (this.d.isDown) {
       this.player.anims.play("walk", true);
       try {
-        this.mount.flipX = false;
+        this.mount.flipX = true;
       }
       catch {}
 
@@ -761,26 +761,16 @@ export default class Test2 extends Phaser.Scene {
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
 
-<<<<<<< HEAD
-          // this.scene.pause();
-          // this.cutscene1.alpha = 1;
-          // this.cameras.main.setZoom(1);
-          // this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
-          // this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
-          // this.cutscene1.depth = 100;
-          // this.cutscene1.play();
-=======
           this.cutscene1.alpha = 1;
           this.cameras.main.setZoom(1);
           this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
           this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
           this.cutscene1.depth = 100;
           this.cutscene1.play();
->>>>>>> cb765cf766bbb830bddcedda794e49505b440124
 
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
-          this.mount.setScale(1.5);
+          this.mount.setScale(.9);
           this.mount.setDepth(-10);
           this.player.isMounted = true;
         } else {
