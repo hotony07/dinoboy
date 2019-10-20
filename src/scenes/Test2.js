@@ -51,7 +51,7 @@ export default class Test2 extends Phaser.Scene {
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
-    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap.json");
+    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap2.json");
 
 
     // Declare variables for center of the scene
@@ -68,9 +68,6 @@ export default class Test2 extends Phaser.Scene {
     const tileset = map.addTilesetImage("sheet", "tiles");
 
     const belowLayer = map.createStaticLayer("Below", tileset, 0, 0).setDepth(-10);
-    const worldLayer = map.createStaticLayer("World", tileset, 0, 0);
-
-    worldLayer.setCollisionByProperty({ collides: true });
 
     const spawnPoint = map.findObject(
     "Spawns",
@@ -88,9 +85,6 @@ export default class Test2 extends Phaser.Scene {
     this.kills = 0;
     this.player.isHit = false;
 
-
-    this.physics.add.collider(this.player, worldLayer);
-
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -99,7 +93,7 @@ export default class Test2 extends Phaser.Scene {
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     const camera = this.cameras.main;
-    camera.setZoom(3);
+    camera.setZoom(5);
     camera.startFollow(this.player);
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
@@ -326,13 +320,6 @@ export default class Test2 extends Phaser.Scene {
       null,
       this
     );
-    this.physics.add.collider(
-      worldLayer,
-      this.bullets,
-      this.deadBullet,
-      null,
-      this
-    );
     this.physics.add.overlap(
       this.player,
       this.enemyGroup,
@@ -374,6 +361,10 @@ export default class Test2 extends Phaser.Scene {
   update (time, delta) {
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
+
+    if (this.player.isMounted) {
+      this.cameras.main.setZoom(2);
+    }
 
     //Game over
     if (this.gameOver) {
