@@ -8,10 +8,7 @@ export default {
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
   width: 1920,
-  height: 955,
-  dom: {
-    createContainer: true
-  },
+  height: 1080,
   physics: {
     default: 'arcade',
     arcade: {
