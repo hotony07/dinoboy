@@ -366,11 +366,45 @@ export default class Test2 extends Phaser.Scene {
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
+    this.currentZoom = 1;
   }
 
   update (time, delta) {
+    if (this.w.isDown) {
+      if (this.currentZoom <= 3) {
+        this.currentZoom += 0.05;
+        this.cameras.main.setZoom(this.currentZoom);
+      }
+      else
+      {
+        this.currentZoom = 1
+        this.cameras.main.setZoom(this.currentZoom);
+      }
+    }
+    else if(this.s.isDown) {
+      if (this.currentZoom >= 1)
+      {
+        this.currentZoom -= 0.05;
+        this.cameras.main.setZoom(this.currentZoom);
+      }
+      else
+      {
+        this.currentZoom = 3
+        this.cameras.main.setZoom(this.currentZoom);
+      }
+    }
+
+    this.cutscene1.alpha = 1;
+    this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
+    console.log(this.cameras.main.displayWidth + " x " + this.cameras.main.displayHeight);
+    this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
+    // this.cutscene1.depth = 100;
+    this.cutscene1.play();
+
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
+
+    this.player.setPosition(1000, 500);
 
     //Game over
     if (this.gameOver) {
@@ -729,10 +763,9 @@ export default class Test2 extends Phaser.Scene {
           console.log('enemy tamed');
 
           // this.scene.pause();
-
           this.cutscene1.alpha = 1;
-          this.cutscene1.setPosition(game.config.width / 2, game.config.height / 2);
-          this.cutscene1.setScale(1);
+          this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
+          this.cutscene1.setPosition(0, 0);
           this.cutscene1.depth = 100;
           this.cutscene1.play();
 
