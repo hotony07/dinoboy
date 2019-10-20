@@ -399,7 +399,11 @@ export default class Test2 extends Phaser.Scene {
         child.setScale(0.6);
       });
 
-      this.playerHit = false;
+      this.playerHitTimer++;
+      if (this.playerHitTimer >= 120) {
+        this.playerHit = false;
+        this.playerHitTimer = 0;
+      }
     }
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
