@@ -360,14 +360,11 @@ export default class Test2 extends Phaser.Scene {
     if (this.cutscene1.video.ended) {
       this.cutscene1.alpha = 0;
       this.deleteLasso();
+      this.cameras.main.setZoom(2);
     }
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-
-    if (this.player.isMounted) {
-      this.cameras.main.setZoom(2);
-    }
 
     //Game over
     if (this.gameOver) {
