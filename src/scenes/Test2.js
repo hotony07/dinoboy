@@ -357,6 +357,11 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
+    if (this.cutscene1.video.ended) {
+      this.cutscene1.alpha = 0;
+      this.deleteLasso();
+    }
+
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
 
@@ -720,7 +725,6 @@ export default class Test2 extends Phaser.Scene {
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
 
-          // this.scene.pause();
           this.cutscene1.alpha = 1;
           this.cameras.main.setZoom(1);
           this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
