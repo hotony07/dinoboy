@@ -761,7 +761,7 @@ export default class Test2 extends Phaser.Scene {
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
 
-<<<<<<< HEAD
+
           // this.scene.pause();
           // this.cutscene1.alpha = 1;
           // this.cameras.main.setZoom(1);
@@ -769,7 +769,7 @@ export default class Test2 extends Phaser.Scene {
           // this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
           // this.cutscene1.depth = 100;
           // this.cutscene1.play();
-=======
+
           this.cutscene1.alpha = 1;
           this.cameras.main.setZoom(1);
           this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
