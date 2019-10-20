@@ -367,10 +367,9 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
-    this.ammoScore.setText('Ammo: ' + this.ammo);
-    this.killScore.setText('Kills: ' + this.kills);
-
-    if (this.player.isMounted) {
+    if (this.cutscene1.video.ended) {
+      this.cutscene1.alpha = 0;
+      this.deleteLasso();
       this.cameras.main.setZoom(2);
       this.ammoScore.x = this.centerX - 100;
       this.ammoScore.y = this.centerY + 200;
@@ -402,6 +401,9 @@ export default class Test2 extends Phaser.Scene {
         child.setScale(0.6);
       });
     }
+
+    this.ammoScore.setText('Ammo: ' + this.ammo);
+    this.killScore.setText('Kills: ' + this.kills);
 
     //Game over
     if (this.gameOver) {
@@ -759,6 +761,7 @@ export default class Test2 extends Phaser.Scene {
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
 
+<<<<<<< HEAD
           // this.scene.pause();
           // this.cutscene1.alpha = 1;
           // this.cameras.main.setZoom(1);
@@ -766,6 +769,14 @@ export default class Test2 extends Phaser.Scene {
           // this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
           // this.cutscene1.depth = 100;
           // this.cutscene1.play();
+=======
+          this.cutscene1.alpha = 1;
+          this.cameras.main.setZoom(1);
+          this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
+          this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
+          this.cutscene1.depth = 100;
+          this.cutscene1.play();
+>>>>>>> cb765cf766bbb830bddcedda794e49505b440124
 
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
