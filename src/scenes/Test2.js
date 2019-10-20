@@ -776,7 +776,7 @@ export default class Test2 extends Phaser.Scene {
           this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
           this.cutscene1.depth = 100;
           this.cutscene1.play();
->>>>>>> cb765cf766bbb830bddcedda794e49505b440124
+
 
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
