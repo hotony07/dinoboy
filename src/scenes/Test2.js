@@ -367,27 +367,95 @@ export default class Test2 extends Phaser.Scene {
     this.killScore = this.add.text(this.centerX + 50, this. centerY + 50, 'Kills: '+ this.kills, { fontSize: '12' }).setScrollFactor(0);
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
+
+    const bigSpawn1 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Big Spawn 1"
+    );
+
+    this.B1X = bigSpawn1.x;
+    this.B1Y = bigSpawn1.y;
+
+    const bigSpawn2 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Big Spawn 2"
+    );
+
+    this.B2X = bigSpawn2.x;
+    this.B2Y = bigSpawn2.y;
+
+    const bigSpawn3 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Big Spawn 3"
+    );
+
+    this.B3X = bigSpawn3.x;
+    this.B3Y = bigSpawn3.y;
   }
 
   update (time, delta) {
-<<<<<<< HEAD
-    if (!this.stegoSpawned && this.kills == 0) {
-=======
     //stego is spawned
     if (!this.stegoSpawned && this.kills == 5) {
->>>>>>> 1c7edc3c511aefcd9bf1531026863e0ec40d5e2f
       this.stegoSpawned = true;
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
           this.stego.setCollideWorldBounds(true);
           this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
-          this.stego.setScale(.5);
+          this.stego.setScale(1.5);
           this.stego.setDepth(-1);
           this.stego.health = 50;
           this.stego.boss = true;
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
+    if (this.stegoSpawned && this.kills == 50) {
+      this.stegoSpawned = false;
+
+          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
+          this.stego1.setCollideWorldBounds(true);
+          this.stego1.body.setSize(256, 128, this.B1X, this.B1Y);
+          this.stego1.setScale(1.5);
+          this.stego1.setDepth(-1);
+          this.stego1.health = 50;
+          this.stego1.boss = true;
+          this.enemyGroup.add(this.stego1);
+          this.stego1.anims.play('step', true);
+    }
+    if (!this.stegoSpawned && this.kills == 100) {
+      this.stegoSpawned = true;
+
+          this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
+          this.stego1b.setCollideWorldBounds(true);
+          this.stego1b.body.setSize(256, 128, this.B1X, this.B1Y);
+          this.stego1b.setScale(1.5);
+          this.stego1b.setDepth(-1);
+          this.stego1b.health = 50;
+          this.stego1b.boss = true;
+          this.enemyGroup.add(this.stego1b);
+          this.stego1b.anims.play('step', true);
+
+          this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
+          this.stego2.setCollideWorldBounds(true);
+          this.stego2.body.setSize(256, 128, this.B2X, this.B2Y);
+          this.stego2.setScale(1.5);
+          this.stego2.setDepth(-1);
+          this.stego2.health = 50;
+          this.stego2.boss = true;
+          this.enemyGroup.add(this.stego2);
+          this.stego2.anims.play('step', true);
+
+          this.stego3 = this.physics.add.sprite(this.B3X, this.B3Y, 'stego');
+          this.stego3.setCollideWorldBounds(true);
+          this.stego3.body.setSize(256, 128, this.B3X, this.B3Y);
+          this.stego3.setScale(1.5);
+          this.stego3.setDepth(-1);
+          this.stego3.health = 50;
+          this.stego3.boss = true;
+          this.enemyGroup.add(this.stego3);
+          this.stego3.anims.play('step', true);
+    }
+
+
     if (this.cutscene1.video.ended) {
       this.cutscene1.alpha = 0;
       this.deleteLasso();
@@ -517,7 +585,7 @@ export default class Test2 extends Phaser.Scene {
       this.player.anims.play("walk", true);
       try {
         this.mount.flipX = true;
-        this.mount.body.setOffset(30, 350);
+        this.mount.body.setOffset(90, 350);
       }
       catch {}
 
@@ -543,7 +611,7 @@ export default class Test2 extends Phaser.Scene {
       this.player.anims.play("walk", true);
       try {
         this.mount.flipX = false;
-        this.mount.body.setOffset(630, 350);
+        this.mount.body.setOffset(570, 350);
       }
       catch {}
 
@@ -850,15 +918,11 @@ export default class Test2 extends Phaser.Scene {
           this.playerHit = true;
 
           enemy.disableBody(true, true);
-<<<<<<< HEAD
-          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
-=======
-          this.mount = this.add.sprite(this.player.x, this.player.y, 'stegoWalk');
->>>>>>> 1c7edc3c511aefcd9bf1531026863e0ec40d5e2f
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stegoWalk');
           this.mount.setScale(.9);
           this.mount.setDepth(-10);
           this.mount.body.setSize(64, 64);
-          this.mount.body.setOffset(630, 350);
+          this.mount.body.setOffset(570, 350);
           this.player.isMounted = true;
         } else {
           console.log('attempt failed');
