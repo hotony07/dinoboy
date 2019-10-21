@@ -370,7 +370,7 @@ export default class Test2 extends Phaser.Scene {
 
   update (time, delta) {
     //stego is spawned
-    if (!this.stegoSpawned && this.kills == 50) {
+    if (!this.stegoSpawned && this.kills == 5) {
       this.stegoSpawned = true;
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
