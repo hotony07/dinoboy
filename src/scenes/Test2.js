@@ -12,7 +12,6 @@ export default class Test2 extends Phaser.Scene {
   preload () {
     // Preload assets
     this.load.image('bullet', './assets/sprites/bullet.png')
-    //this.load.audio("music", './assets/Music/8TownRoad.wav');
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
 

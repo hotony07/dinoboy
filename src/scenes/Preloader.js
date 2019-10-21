@@ -137,7 +137,6 @@ export default class PreloaderScene extends Phaser.Scene {
       //logo.setScale(0.8);
       // Preload assets
       this.load.image('bullet', './assets/sprites/bullet.png')
-      //this.load.audio("music", './assets/Music/8TownRoad.wav');
       this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
       this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
 

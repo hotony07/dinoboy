@@ -4,18 +4,14 @@ export default class Tutorial1 extends Phaser.Scene {
     super('Tutorial1');
   }
 
-  init (data) {
-    // Initialization code goes here
-    //this.kils = data.kills;
-  }
+  init() {
 
-  //TODO: implement all sounds
-  //TODO: fix dino stacking issue
+  }
 
   preload () {
     // Preload assets
+    this.load.audio('theme', './assets/Music/DinoBoyV2.mp3');
     this.load.image('bullet', './assets/sprites/bullet.png')
-    //this.load.audio("music", './assets/Music/8TownRoad.wav');
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
 
@@ -210,13 +206,10 @@ export default class Tutorial1 extends Phaser.Scene {
             this.ammo -= 1;
           } else {
             this.gunEmpty.play(this.defaultSoundConfig);
-            console.log('out of ammo');
           }
-          console.log('bullets remaining: ', this.ammo);
         } else {
           var betweenPoints = Phaser.Math.Angle.BetweenPoints;
           var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.player, pointer.positionToCamera(camera));
-          console.log(angle);
           var roundAngle;
           if (angle < 45 || angle > -45) {
             roundAngle = 0;
@@ -243,7 +236,6 @@ export default class Tutorial1 extends Phaser.Scene {
           if (roundAngle == -90) {
             this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(roundAngle - 90);
           }
-          console.log(roundAngle);
         }
 
       }, this);
@@ -362,25 +354,12 @@ export default class Tutorial1 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
-    this.ammoScore = this.add.text(this.centerX - 100, this. centerY + 120, 'Ammo: '+ this.ammo).setScrollFactor(0);
-    this.killScore = this.add.text(this.centerX + 100, this. centerY + 120, 'Kills: '+ this.kills).setScrollFactor(0);
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
   }
 
   update (time, delta) {
-    this.ammoScore.setText('Ammo: ' + this.ammo);
-    this.killScore.setText('Kills: ' + this.kills);
-
-    //Game over
-    if (this.gameOver) {
-      this.player.disableBody(false, false);
-      //this.gun.destroy();
-      var text = this.add.text(this.player.x - 30, this.player.y - 40, 'Game Over');
-      var score = this.add.text(this.player.x - 30, this.player.y + 25, 'Kills: ' + this.kills);
-      this.input.enabled = false;
-    }
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
@@ -415,7 +394,6 @@ export default class Tutorial1 extends Phaser.Scene {
     if (this.a.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
-        console.log('mounted');
       } else {
       this.player.body.setVelocityX(-speed);
     }
@@ -546,14 +524,12 @@ export default class Tutorial1 extends Phaser.Scene {
   if (this.player.rollInvuln) {
     this.playerDodgeTimer++;
     this.playerHit = true;
-    //console.log(this.playerDodgeTimer);
     if (this.playerDodgeTimer >= 25) {
       this.playerHit = false;
     }
     if (this.playerDodgeTimer >= 50) {
       this.playerDodgeTimer = 0;
       this.player.dodgeLock = true;
-      console.log('dodge ready');
       this.player.rollInvuln = false;
     }
   }  // Update the scene
@@ -669,14 +645,11 @@ export default class Tutorial1 extends Phaser.Scene {
         this.gameOver = true;
       }
     }
-    console.log(this.currentHealth);
   }
 
   hitEnemy (bullet, enemy) {
-    console.log('hit');
     bullet.disableBody(true, true);
     enemy.health -= 1;
-    console.log(enemy.health);
 
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
     var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
@@ -693,7 +666,6 @@ export default class Tutorial1 extends Phaser.Scene {
       //dropRate increases when you're low on bullets
       var dropRate = Math.max((20 - this.ammo) / 25, 0);
       if (Math.random() < dropRate) {
-        console.log('the enemy dropped some bullets!');
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
         ammoDrop.setScale(0.5);
         this.ammoDrops.add(ammoDrop);
@@ -711,7 +683,6 @@ export default class Tutorial1 extends Phaser.Scene {
   pickAmmo (player, ammo) {
     ammo.disableBody(true, true);
     this.ammo += 20;
-    console.log('bullets remaining: ', this.ammo);
   }
 
   deadBullet (layer, bullet) {
@@ -724,28 +695,6 @@ export default class Tutorial1 extends Phaser.Scene {
         tameRate = Math.max(100);
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
-          console.log('enemy tamed');
-
-          this.scene.pause();
-          this.cutsceneVideo = document.createElement('video');
-          this.cutsceneVideo.playsinline = false;
-          this.cutsceneVideo.src = './assets/cutscene1.mp4';
-          this.cutsceneVideo.width = this.cameras.main.width;
-          this.cutsceneVideo.height = this.cameras.main.height;
-          this.cutsceneVideo.autoplay = true;
-          var element = this.add.dom(this.cameras.main.worldView.x + this.cameras.main.width / 2, this.cameras.main.worldView.y + this.cameras.main.height / 2, this.cutsceneVideo);
-          element.setVisible(true);
-
-          //puts it in the corner but not the right size to fit the screen
-          //element.cameras.main.setViewport(1200, 1000, 800, 600)
-
-
-          this.cutsceneVideo.addEventListener('ended', (event) =>
-          {
-            element.setVisible(false);
-            this.scene.resume("Test2");
-            this.deleteLasso();
-          });
 
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
@@ -753,7 +702,6 @@ export default class Tutorial1 extends Phaser.Scene {
           this.mount.setDepth(-10);
           this.player.isMounted = true;
         } else {
-          console.log('attempt failed');
         }
       }
   }
