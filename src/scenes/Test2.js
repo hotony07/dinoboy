@@ -473,7 +473,6 @@ export default class Test2 extends Phaser.Scene {
     if (this.a.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
-        this.mount.anims.play('step', true);
         console.log('mounted');
       } else {
       this.player.body.setVelocityX(-speed);
@@ -481,7 +480,6 @@ export default class Test2 extends Phaser.Scene {
     } else if (this.d.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
-        this.mount.anims.play('step', true);
       } else {
       this.player.body.setVelocityX(speed);
     }
@@ -511,6 +509,9 @@ export default class Test2 extends Phaser.Scene {
 
     if (this.a.isDown) {
       this.player.anims.play("walk", true);
+      if(this.player.isMounted){
+      this.mount.anims.play('step', true);
+      }
       try {
         this.mount.flipX = true;
       }
@@ -536,6 +537,9 @@ export default class Test2 extends Phaser.Scene {
       }
     } else if (this.d.isDown) {
       this.player.anims.play("walk", true);
+      if(this.player.isMounted){
+      this.mount.anims.play('step', true);
+      }
       try {
         this.mount.flipX = false;
       }
@@ -561,6 +565,9 @@ export default class Test2 extends Phaser.Scene {
       }
     } else if (this.w.isDown) {
       this.player.anims.play("walk", true);
+      if(this.player.isMounted){
+      this.mount.anims.play('step', true);
+      }
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
@@ -582,6 +589,9 @@ export default class Test2 extends Phaser.Scene {
       }
     } else if (this.s.isDown) {
       this.player.anims.play("walk", true);
+      if(this.player.isMounted){
+      this.mount.anims.play('step', true);
+      }
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
@@ -603,6 +613,9 @@ export default class Test2 extends Phaser.Scene {
       }
     } else {
       this.player.anims.play("idle", true);
+      if(this.player.isMounted){
+      this.mount.anims.stop();
+      }
 
       //summon lasso
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
