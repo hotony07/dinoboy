@@ -34,6 +34,10 @@ export default class Test2 extends Phaser.Scene {
       frameHeight: 64
     });
     this.load.image('stego', './assets/dinosaur/stego3.png')
+    this.load.spritesheet('stegoWalk', './assets/dinosaur/dinoWalk.png', {
+      frameWidth: 721,
+      frameHeight: 720
+    });
 
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -257,6 +261,12 @@ export default class Test2 extends Phaser.Scene {
       frameRate: 10,
       repeat: -1
     });
+    this.anims.create({
+      key: "step",
+      frames: this.anims.generateFrameNumbers("stegoWalk", { start: 0, end: 1 }),
+      frameRate: 5,
+      repeat: -1
+    });
 
     this.music = this.sound.add("theme");
     var musicConfig = {
@@ -360,17 +370,23 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
+<<<<<<< HEAD
     if (!this.stegoSpawned && this.kills == 0) {
+=======
+    //stego is spawned
+    if (!this.stegoSpawned && this.kills == 5) {
+>>>>>>> 1c7edc3c511aefcd9bf1531026863e0ec40d5e2f
       this.stegoSpawned = true;
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
           this.stego.setCollideWorldBounds(true);
           this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
-          this.stego.setScale(.9);
+          this.stego.setScale(.5);
           this.stego.setDepth(-1);
           this.stego.health = 50;
           this.stego.boss = true;
           this.enemyGroup.add(this.stego);
+          this.stego.anims.play('step', true);
     }
     if (this.cutscene1.video.ended) {
       this.cutscene1.alpha = 0;
@@ -444,7 +460,7 @@ export default class Test2 extends Phaser.Scene {
     this.gun.y = this.player.y + 5;
     try {
       this.mount.x = this.player.x;
-      this.mount.y = this.player.y + 100;
+      this.mount.y = this.player.y + 80;
     } catch {}
 
 
@@ -461,6 +477,7 @@ export default class Test2 extends Phaser.Scene {
     if (this.a.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
+        this.mount.anims.play('step', true);
         console.log('mounted');
       } else {
       this.player.body.setVelocityX(-speed);
@@ -468,6 +485,7 @@ export default class Test2 extends Phaser.Scene {
     } else if (this.d.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
+        this.mount.anims.play('step', true);
       } else {
       this.player.body.setVelocityX(speed);
     }
@@ -832,7 +850,11 @@ export default class Test2 extends Phaser.Scene {
           this.playerHit = true;
 
           enemy.disableBody(true, true);
+<<<<<<< HEAD
           this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
+=======
+          this.mount = this.add.sprite(this.player.x, this.player.y, 'stegoWalk');
+>>>>>>> 1c7edc3c511aefcd9bf1531026863e0ec40d5e2f
           this.mount.setScale(.9);
           this.mount.setDepth(-10);
           this.mount.body.setSize(64, 64);
