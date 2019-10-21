@@ -88,6 +88,8 @@ export default class Tutorial1 extends Phaser.Scene {
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
     const camera = this.cameras.main;
     camera.setZoom(3);
@@ -196,17 +198,20 @@ export default class Tutorial1 extends Phaser.Scene {
 
     this.ammo = 20;
     //When pointer is down and you have ammo, run function shoot
-      this.input.on("pointerdown", function(pointer) {
-        if (pointer.leftButtonDown()) {
-          if (this.ammo > 0){
-            this.shoot(pointer.positionToCamera(camera));
-            this.ammo -= 1;
-          } else {
-            this.gunEmpty.play(this.defaultSoundConfig);
-          }
+    this.input.on("pointerdown", function(pointer) {
+      if (pointer.leftButtonDown()) {
+        if (this.didWalk) {
+          this.tutorial_shoot.destroy();
+          this.didShoot = true;
         }
-
-      }, this);
+        if (this.ammo > 0){
+          this.shoot(pointer.positionToCamera(camera));
+          this.ammo -= 1;
+        } else {
+          this.gunEmpty.play(this.defaultSoundConfig);
+        }
+      }
+    }, this);
 
 
     //Anims
@@ -305,9 +310,72 @@ export default class Tutorial1 extends Phaser.Scene {
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
+    this.tutorial_wasd = this.add.text(this.player.x, this.player.y - 100, "W, S - up, down\nA, D - left, right\n[SHIFT] - dodge\nTry walking and dodging!", {
+      fontSize: '20px'
+    });
+
+    this.tutorial_shoot = this.add.text(this.player.x, this.player.y - 100, "Left click - shoot\nShoot one of the baby dinos!");
+
+    this.tutorial_lasso = this.add.text(this.player.x, this.player.y - 100, "[SPACE] - lasso\nTry taming a giant Stego!");
+
+    this.tutorial_complete = this.add.text(this.player.x, this.player.y - 100, "[ESC] to go back to menu\nOR\n[ENTER] to start game!");
+
+    // tutorial checkpoints
+    this.didWalk = false;
+    this.didW = false;
+    this.didA = false;
+    this.didS = false;
+    this.didD = false;
+    this.didDodge = false;
+
+    this.didShoot = false;
+    this.didLasso = false;
   }
 
   update (time, delta) {
+    this.tutorial_wasd.x = this.player.x;
+    this.tutorial_wasd.y = this.player.y - 100;
+
+    if (!this.didWalk) {
+      this.tutorial_shoot.alpha = 0;
+    }
+    else {
+      this.tutorial_shoot.alpha = 1;
+      this.tutorial_shoot.x = this.player.x;
+      this.tutorial_shoot.y = this.player.y - 100;
+    }
+
+    if (!this.didShoot) {
+      this.tutorial_lasso.alpha = 0;
+    }
+    else {
+      this.tutorial_lasso.alpha = 1;
+      this.tutorial_lasso.x = this.player.x;
+      this.tutorial_lasso.y = this.player.y - 100;
+    }
+
+    if (this.didW && this.didA && this.didS && this.didD && this.didDodge) {
+      this.tutorial_wasd.destroy();
+      this.didWalk = true;
+    }
+
+    if (!this.didLasso) {
+      this.tutorial_complete.alpha = 0;
+    }
+    else {
+      this.tutorial_lasso.destroy();
+      this.tutorial_complete.alpha = 1;
+      this.tutorial_complete.x = this.player.x;
+      this.tutorial_complete.y = this.player.y - 100;
+
+      if (this.esc.isDown) {
+        this.scene.start("Boot");
+      }
+      else if(this.enter.isDown) {
+        this.scene.start("Test2");
+      }
+    }
+
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
@@ -333,12 +401,14 @@ export default class Tutorial1 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown) {
+      this.didA = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
       } else {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown) {
+      this.didD = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
       } else {
@@ -348,12 +418,14 @@ export default class Tutorial1 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown) {
+      this.didW = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
     }
     } else if (this.s.isDown) {
+      this.didS = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(300);
       } else {
@@ -373,6 +445,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
+        this.didDodge = true;
         this.tweens.add({
           targets: [this.player],
           props: {
@@ -393,6 +466,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
+        this.didDodge = true;
         this.tweens.add({
           targets: [this.player],
           props: {
@@ -413,6 +487,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
+        this.didDodge = true;
         this.tweens.add({
           targets: [this.player],
           props: {
@@ -433,6 +508,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
+        this.didDodge = true;
         this.tweens.add({
           targets: [this.player],
           props: {
@@ -532,17 +608,6 @@ export default class Tutorial1 extends Phaser.Scene {
       });
     }
 
-    this.enemyGroup.children.iterate(function(child) {
-      if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150) {
-          this.tweens.add({
-            targets: child,
-            x: this.player.x,
-            y: this.player.y,
-            duration: 1000 + Math.floor(Math.random() * 2000)
-          });
-      }
-    }.bind(this));
-
     this.timedEvent = this.time.delayedCall(1000, this.deleteLasso, [], this);
   }
 
@@ -624,7 +689,7 @@ export default class Tutorial1 extends Phaser.Scene {
       if (enemy.boss) {
         tameRate = Math.max(100);
         if (Math.random() < tameRate) {
-
+          this.didLasso = true;
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
           this.mount.setScale(0.5);
