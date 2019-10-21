@@ -123,6 +123,8 @@ export default class Test2 extends Phaser.Scene {
       child.boss = false;
     });
 
+    this.mountGroup = this.physics.add.group();
+
     var enemy = this.physics.add.sprite(100, 100, 'enemy');
     var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
     var enemy3 = this.physics.add.sprite(100, 300, 'enemy');
@@ -735,6 +737,20 @@ export default class Test2 extends Phaser.Scene {
       }.bind(this)
     );
 
+    this.mountGroup.children.each(
+      function (b) {
+        if (b.active) {
+          this.physics.add.overlap(
+            b,
+            this.enemyGroup,
+            this.chompEnemy,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
+
     this.lassos.children.each(
       function (l) {
         if (l.active) {
@@ -937,6 +953,7 @@ export default class Test2 extends Phaser.Scene {
           this.mount.body.setSize(64, 64);
           this.mount.body.setOffset(570, 350);
           this.player.isMounted = true;
+          this.mountGroup.add(this.mount);
         } else {
           console.log('attempt failed');
         }
