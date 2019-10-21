@@ -180,6 +180,7 @@ export default class Test2 extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.ammoDrops, this.pickAmmo, null, this);
 
 
+
     // Event listener for movement of mouse pointer
     this.input.on(
       "pointermove",
@@ -359,7 +360,7 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
-    if (!this.stegoSpawned && this.kills == 50) {
+    if (!this.stegoSpawned && this.kills == 0) {
       this.stegoSpawned = true;
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
@@ -371,7 +372,6 @@ export default class Test2 extends Phaser.Scene {
           this.stego.boss = true;
           this.enemyGroup.add(this.stego);
     }
-
     if (this.cutscene1.video.ended) {
       this.cutscene1.alpha = 0;
       this.deleteLasso();
@@ -499,6 +499,7 @@ export default class Test2 extends Phaser.Scene {
       this.player.anims.play("walk", true);
       try {
         this.mount.flipX = true;
+        this.mount.body.setOffset(30, 350);
       }
       catch {}
 
@@ -524,6 +525,7 @@ export default class Test2 extends Phaser.Scene {
       this.player.anims.play("walk", true);
       try {
         this.mount.flipX = false;
+        this.mount.body.setOffset(630, 350);
       }
       catch {}
 
@@ -563,7 +565,7 @@ export default class Test2 extends Phaser.Scene {
 
       //summon lasso
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso2(0, -75, 180);
+        this.makeLasso2(0, -75, 180);
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
       }
     } else if (this.s.isDown) {
@@ -633,6 +635,7 @@ export default class Test2 extends Phaser.Scene {
         }
       }.bind(this)
     );
+
     this.lassos.children.each(
       function (l) {
         if (l.active) {
@@ -646,6 +649,7 @@ export default class Test2 extends Phaser.Scene {
         }
       }.bind(this)
     );
+
     if (this.ammoDrops.countActive(true) != 0) {
       this.availDrop = false;
     } else {
@@ -660,7 +664,7 @@ export default class Test2 extends Phaser.Scene {
     }
 
     //If there ar eno enemies left, create more
-    if (this.enemyGroup.countActive(true) < 4) {
+    if (this.enemyGroup.countActive(true) < 40) {
       this.enemyGroup = this.physics.add.group({
         key: "enemy",
         repeat: 100
@@ -684,6 +688,8 @@ export default class Test2 extends Phaser.Scene {
           });
       }
     }.bind(this));
+
+    //this.physics.add.overlap(this.mount, this.enemyGroup, this.chompEnemy, null, this);
 
     this.timedEvent = this.time.delayedCall(1000, this.deleteLasso, [], this);
 
@@ -751,11 +757,52 @@ export default class Test2 extends Phaser.Scene {
     }
   }
 
+  chompEnemy (dino, enemy) {
+    //10 damage chomp
+    if (enemy.health < 11) {
+      enemy.health = 0;
+    } else {
+      enemy.health -= 10;
+    }
+    var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
+    var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
+    var volume = deltaVolume * distFromPlayerToEnemy + 1
+
+    var dinoHurtSoundConfig = this.defaultSoundConfig;
+    this.dinoHurt.volume = volume
+
+    this.dinoHurt.play(this.dinoHurtSoundConfig);
+    if (enemy.health == 0) {
+      enemy.disableBody(true, true);
+      this.kills += 1;
+      // Random ammo drop after enemy kill
+      //dropRate increases when you're low on bullets
+      var dropRate = Math.max((20 - this.ammo) / 25, 0);
+      if (Math.random() < dropRate) {
+        var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
+        ammoDrop.setScale(0.5);
+        this.ammoDrops.add(ammoDrop);
+      }
+    }
+  }
+
   makeLasso (xCo, yCo, angle) {
-    this.lassos.add(this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso').setAngle(angle));
+    this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso');
+    var x = this.lasso.widthInPixels;
+    var y = this.lasso.heightInPixels;
+    this.lasso.setAngle(angle);
+    this.lasso.setSize(120, 50);
+    //this.lasso.setOffset(-x/2, -y/2);
+    this.lassos.add(this.lasso);
   }
   makeLasso2 (xCo, yCo, angle) {
-    this.lassos.add(this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'uplasso').setAngle(angle));
+    this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'uplasso');
+    var x = this.lasso.widthInPixels;
+    var y = this.lasso.heightInPixels;
+    this.lasso.setAngle(angle);
+    this.lasso.setSize(50, 120);
+    //this.lasso.setOffset(x/2, -y/2);
+    this.lassos.add(this.lasso);
   }
 
   pickAmmo (player, ammo) {
@@ -775,7 +822,6 @@ export default class Test2 extends Phaser.Scene {
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
 
-
           // this.scene.pause();
           this.cutscene1.alpha = 1;
           this.cameras.main.setZoom(1);
@@ -786,9 +832,11 @@ export default class Test2 extends Phaser.Scene {
           this.playerHit = true;
 
           enemy.disableBody(true, true);
-          this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
           this.mount.setScale(.9);
           this.mount.setDepth(-10);
+          this.mount.body.setSize(64, 64);
+          this.mount.body.setOffset(630, 350);
           this.player.isMounted = true;
         } else {
           console.log('attempt failed');
