@@ -401,7 +401,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
           this.stego.setCollideWorldBounds(true);
           this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
-          this.stego.setScale(1.5);
+          this.stego.setScale(0.5);
           this.stego.setDepth(-1);
           this.stego.health = 50;
           this.stego.boss = true;
@@ -414,7 +414,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
           this.stego1.setCollideWorldBounds(true);
           this.stego1.body.setSize(256, 128, this.B1X, this.B1Y);
-          this.stego1.setScale(1.5);
+          this.stego1.setScale(0.5);
           this.stego1.setDepth(-1);
           this.stego1.health = 50;
           this.stego1.boss = true;
@@ -427,7 +427,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
           this.stego1b.setCollideWorldBounds(true);
           this.stego1b.body.setSize(256, 128, this.B1X, this.B1Y);
-          this.stego1b.setScale(1.5);
+          this.stego1b.setScale(0.5);
           this.stego1b.setDepth(-1);
           this.stego1b.health = 50;
           this.stego1b.boss = true;
@@ -437,7 +437,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
           this.stego2.setCollideWorldBounds(true);
           this.stego2.body.setSize(256, 128, this.B2X, this.B2Y);
-          this.stego2.setScale(1.5);
+          this.stego2.setScale(0.5);
           this.stego2.setDepth(-1);
           this.stego2.health = 50;
           this.stego2.boss = true;
@@ -447,7 +447,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego3 = this.physics.add.sprite(this.B3X, this.B3Y, 'stego');
           this.stego3.setCollideWorldBounds(true);
           this.stego3.body.setSize(256, 128, this.B3X, this.B3Y);
-          this.stego3.setScale(1.5);
+          this.stego3.setScale(0.5);
           this.stego3.setDepth(-1);
           this.stego3.health = 50;
           this.stego3.boss = true;
