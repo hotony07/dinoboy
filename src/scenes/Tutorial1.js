@@ -19,8 +19,6 @@ export default class Tutorial1 extends Phaser.Scene {
     this.load.audio("baby_dino_growl_2", './assets/sfx/dinosaur/baby_dino_growl_02.mp3');
     this.load.audio("dino_hurt", './assets/sfx/dinosaur/dino_hurt.mp3');
     this.load.audio("dino_roar", './assets/sfx/dinosaur/dino_roar.mp3');
-    this.load.audio("dino_step_1", './assets/sfx/dinosaur/dino_step_01.mp3');
-    this.load.audio("dino_step_2", './assets/sfx/dinosaur/dino_step_02.mp3');
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
     this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
 
@@ -50,7 +48,6 @@ export default class Tutorial1 extends Phaser.Scene {
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
     this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap.json");
-
 
     // Declare variables for center of the scene
     this.centerX = this.cameras.main.width / 2;
@@ -207,35 +204,6 @@ export default class Tutorial1 extends Phaser.Scene {
           } else {
             this.gunEmpty.play(this.defaultSoundConfig);
           }
-        } else {
-          var betweenPoints = Phaser.Math.Angle.BetweenPoints;
-          var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.player, pointer.positionToCamera(camera));
-          var roundAngle;
-          if (angle < 45 || angle > -45) {
-            roundAngle = 0;
-          }
-          if (angle < 135 && angle > 45) {
-            roundAngle = 90;
-          }
-          if (angle < -135 || angle > 135) {
-            roundAngle = 180;
-          }
-          if (angle > -135 && angle < -45) {
-            roundAngle = -90;
-          }
-
-          if (roundAngle == 0) {
-            this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(roundAngle);
-          }
-          if (roundAngle == 180) {
-            this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(roundAngle);
-          }
-          if (roundAngle == 90) {
-            this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(roundAngle - 90);
-          }
-          if (roundAngle == -90) {
-            this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(roundAngle - 90);
-          }
         }
 
       }, this);
@@ -281,8 +249,6 @@ export default class Tutorial1 extends Phaser.Scene {
     this.babyDinoGrowl2 = this.sound.add("baby_dino_growl_2");
     this.dinoHurt = this.sound.add("dino_hurt");
     this.dinoRoar = this.sound.add("dino_roar");
-    this.dinoStep1 = this.sound.add("dino_step1");
-    this.dinoStep2 = this.sound.add("dino_step2");
     this.lassoHit = this.sound.add("lasso_hit");
     this.lassoMiss = this.sound.add("lasso_miss");
 
@@ -331,26 +297,8 @@ export default class Tutorial1 extends Phaser.Scene {
       this
     );
 
-    this.healthScore = this.add.text(this.centerX - 260, this. centerY + 120, 'Health').setScrollFactor(0);
-    this.healthGroup = this.add.group({
-      key: 'health',
-      repeat: 4,
-      setXY: {
-        x: this.centerX - 270,
-        y: this.centerY + 145,
-        stepX: 20,
-        stepY: 0
-      }
-    });
-
-    this.healthGroup.children.iterate(function(child) {
-      child.setScrollFactor(0);
-      child.setScale(0.6);
-    });
-
     this.playerGroup = this.physics.add.group();
     this.playerGroup.add(this.player);
-    // this.playerGroup.add(this.gun);
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
@@ -363,13 +311,6 @@ export default class Tutorial1 extends Phaser.Scene {
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
-
-    // var timeElapsed = 0;
-    // timeElapsed += game.timer.elapsed();
-    // if (timeElapsed >= 0.5) {
-    //   timeElapsed = 0;
-    //   this.lasso.disableBody(true, true);
-    // }
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
@@ -446,7 +387,6 @@ export default class Tutorial1 extends Phaser.Scene {
       //summon lasso
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
         this.lasso = this.makeLasso(-75, 0, 180);
-        //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
       }
     } else if (this.d.isDown) {
       this.player.anims.play("walk", true);
@@ -467,7 +407,6 @@ export default class Tutorial1 extends Phaser.Scene {
       //summon lasso
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
         this.lasso = this.makeLasso(75, 0, 0);
-        //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
       }
     } else if (this.w.isDown) {
       this.player.anims.play("walk", true);
@@ -488,7 +427,6 @@ export default class Tutorial1 extends Phaser.Scene {
       //summon lasso
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
         this.lasso = this.makeLasso2(0, -75, 180);
-        //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
       }
     } else if (this.s.isDown) {
       this.player.anims.play("walk", true);
@@ -509,7 +447,6 @@ export default class Tutorial1 extends Phaser.Scene {
       //summon lasso
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
         this.lasso = this.makeLasso2(0, 75, 0);
-        //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
       }
     } else {
       this.player.anims.play("idle", true);
@@ -517,7 +454,6 @@ export default class Tutorial1 extends Phaser.Scene {
       //summon lasso
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
         this.lasso = this.makeLasso(75, 0, 0);
-        //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
       }
   }
 
@@ -608,8 +544,6 @@ export default class Tutorial1 extends Phaser.Scene {
     }.bind(this));
 
     this.timedEvent = this.time.delayedCall(1000, this.deleteLasso, [], this);
-
-    //this.ammoCount = this.add.text(this.centerX - 100, this. centerY + 100, 'Ammo: '+ this.ammo).setScrollFactor(0);
   }
 
   deleteLasso() {
@@ -640,10 +574,6 @@ export default class Tutorial1 extends Phaser.Scene {
       this.currentHealth--;
       this.playerHit = true;
       this.player.isHit = true;
-      this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
-      if (this.currentHealth == 0) {
-        this.gameOver = true;
-      }
     }
   }
 
@@ -652,7 +582,7 @@ export default class Tutorial1 extends Phaser.Scene {
     enemy.health -= 1;
 
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
-    var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
+    var deltaVolume = (0.1 - 0.5) / 500
     var volume = deltaVolume * distFromPlayerToEnemy + 1
 
     var dinoHurtSoundConfig = this.defaultSoundConfig;
@@ -663,7 +593,7 @@ export default class Tutorial1 extends Phaser.Scene {
       enemy.disableBody(true, true);
       this.kills += 1;
       // Random ammo drop after enemy kill
-      //dropRate increases when you're low on bullets
+      // dropRate increases when you're low on bullets
       var dropRate = Math.max((20 - this.ammo) / 25, 0);
       if (Math.random() < dropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
@@ -693,7 +623,6 @@ export default class Tutorial1 extends Phaser.Scene {
     var tameRate;
       if (enemy.boss) {
         tameRate = Math.max(100);
-        // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
 
           enemy.disableBody(true, true);
