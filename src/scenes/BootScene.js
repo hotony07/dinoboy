@@ -22,8 +22,8 @@ export default class BootScene extends Phaser.Scene {
     this.centerY = this.cameras.main.height / 2;
 
     this.load.spritesheet('enemy', './assets/dinosaur/smallDino.png', {
-      frameWidth: 64,
-      frameHeight: 64
+      frameWidth: 35,
+      frameHeight: 43
     });
   }
 

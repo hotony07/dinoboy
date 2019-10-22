@@ -154,8 +154,8 @@ export default class PreloaderScene extends Phaser.Scene {
         frameHeight: 64
       });
       this.load.spritesheet('enemy', './assets/dinosaur/smallDino.png', {
-        frameWidth: 64,
-        frameHeight: 64
+        frameWidth: 35,
+        frameHeight: 43
       });
       this.load.image('stego', './assets/dinosaur/stego3.png')
 
