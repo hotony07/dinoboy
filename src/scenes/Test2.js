@@ -965,6 +965,20 @@ export default class Test2 extends Phaser.Scene {
         } else {
           console.log('attempt failed');
         }
+      } else {
+        enemy.health--;
+        if (enemy.health == 0) {
+          enemy.disableBody(true, true);
+          this.kills += 1;
+          // Random ammo drop after enemy kill
+          //dropRate increases when you're low on bullets
+          var dropRate = Math.max((20 - this.ammo) / 25, 0);
+          if (Math.random() < dropRate) {
+            var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
+            ammoDrop.setScale(0.5);
+            this.ammoDrops.add(ammoDrop);
+          }
+        }
       }
   }
 }
