@@ -94,6 +94,7 @@ export default class Test2 extends Phaser.Scene {
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    this.cursors = this.input.keyboard.createCursorKeys();
 
     const camera = this.cameras.main;
     camera.setZoom(5);
@@ -544,14 +545,14 @@ export default class Test2 extends Phaser.Scene {
     }
 
     // Horizontal movement
-    if (this.a.isDown) {
+    if (this.a.isDown || this.cursors.left.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
         console.log('mounted');
       } else {
       this.player.body.setVelocityX(-speed);
     }
-    } else if (this.d.isDown) {
+    } else if (this.d.isDown || this.cursors.right.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
       } else {
@@ -560,13 +561,13 @@ export default class Test2 extends Phaser.Scene {
     }
 
     // Vertical movement
-    if (this.w.isDown) {
+    if (this.w.isDown || this.cursors.up.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
     }
-    } else if (this.s.isDown) {
+    } else if (this.s.isDown || this.cursors.down.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityY(300);
       } else {
@@ -581,7 +582,7 @@ export default class Test2 extends Phaser.Scene {
       this.player.body.velocity.normalize().scale(speed);
     }
 
-    if (this.a.isDown) {
+    if (this.a.isDown || this.cursors.left.isDown) {
       this.player.anims.play("walk", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
@@ -610,7 +611,7 @@ export default class Test2 extends Phaser.Scene {
         this.lasso = this.makeLasso(-75, 0, 180);
         //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
       }
-    } else if (this.d.isDown) {
+    } else if (this.d.isDown || this.cursors.right.isDown) {
       this.player.anims.play("walk", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
@@ -639,7 +640,7 @@ export default class Test2 extends Phaser.Scene {
         this.lasso = this.makeLasso(75, 0, 0);
         //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
       }
-    } else if (this.w.isDown) {
+    } else if (this.w.isDown || this.cursors.up.isDown) {
       this.player.anims.play("walk", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
@@ -663,7 +664,7 @@ export default class Test2 extends Phaser.Scene {
         this.makeLasso2(0, -75, 180);
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
       }
-    } else if (this.s.isDown) {
+    } else if (this.s.isDown || this.cursors.down.isDown) {
       this.player.anims.play("walk", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
