@@ -78,6 +78,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.playerDodgeTimer = 0;
     this.kills = 0;
     this.player.isHit = false;
+    this.lassoTimer = 0;
 
 
     this.physics.add.collider(this.player, worldLayer);
@@ -90,6 +91,8 @@ export default class Tutorial1 extends Phaser.Scene {
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+    this.cursors = this.input.keyboard.createCursorKeys();
+
 
     const camera = this.cameras.main;
     camera.setZoom(3);
@@ -210,6 +213,42 @@ export default class Tutorial1 extends Phaser.Scene {
         } else {
           this.gunEmpty.play(this.defaultSoundConfig);
         }
+      } else {
+        var betweenPoints = Phaser.Math.Angle.BetweenPoints;
+        var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.player, pointer.positionToCamera(camera));
+        console.log(angle);
+        var roundAngle;
+        if (angle < 45 || angle > -45) {
+          roundAngle = 0;
+        }
+        if (angle < 135 && angle > 45) {
+          roundAngle = 90;
+        }
+        if (angle < -135 || angle > 135) {
+          roundAngle = 180;
+        }
+        if (angle > -135 && angle < -45) {
+          roundAngle = -90;
+        }
+
+        if (roundAngle == 0 && this.lassos.countActive(true) < 1) {
+          //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(roundAngle);
+          this.lasso = this.makeLasso(75, 0, 0);
+
+        }
+        if (roundAngle == 180 && this.lassos.countActive(true) < 1) {
+          //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(roundAngle);
+          this.lasso = this.makeLasso(-75, 0, 180);
+
+        }
+        if (roundAngle == 90 && this.lassos.countActive(true) < 1) {
+          //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(roundAngle - 90);
+          this.lasso = this.makeLasso2(0, 75, 0);
+        }
+        if (roundAngle == -90 && this.lassos.countActive(true) < 1) {
+          //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(roundAngle - 90);
+          this.makeLasso2(0, -75, 180);
+        }
       }
     }, this);
 
@@ -316,7 +355,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
     this.tutorial_shoot = this.add.text(this.player.x, this.player.y - 100, "Left click - shoot\nShoot one of the baby dinos!");
 
-    this.tutorial_lasso = this.add.text(this.player.x, this.player.y - 100, "[SPACE] - lasso\nTry taming a giant Stego!");
+    this.tutorial_lasso = this.add.text(this.player.x, this.player.y - 100, "Right click - lasso\nTry taming a giant Stego!");
 
     this.tutorial_complete = this.add.text(this.player.x, this.player.y - 100, "[ESC] to go back to menu\nOR\n[ENTER] to start game!");
 
@@ -400,14 +439,14 @@ export default class Tutorial1 extends Phaser.Scene {
     }
 
     // Horizontal movement
-    if (this.a.isDown) {
+    if (this.a.isDown || this.cursors.left.isDown) {
       this.didA = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
       } else {
       this.player.body.setVelocityX(-speed);
     }
-    } else if (this.d.isDown) {
+    } else if (this.d.isDown || this.cursors.right.isDown) {
       this.didD = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
@@ -417,14 +456,14 @@ export default class Tutorial1 extends Phaser.Scene {
     }
 
     // Vertical movement
-    if (this.w.isDown) {
+    if (this.w.isDown || this.cursors.up.isDown) {
       this.didW = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
     }
-    } else if (this.s.isDown) {
+    } else if (this.s.isDown || this.cursors.down.isDown) {
       this.didS = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(300);
@@ -440,7 +479,7 @@ export default class Tutorial1 extends Phaser.Scene {
       this.player.body.velocity.normalize().scale(speed);
     }
 
-    if (this.a.isDown) {
+    if (this.a.isDown || this.cursors.left.isDown) {
       this.player.anims.play("walk", true);
 
       //dodge roll
@@ -461,7 +500,7 @@ export default class Tutorial1 extends Phaser.Scene {
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
         this.lasso = this.makeLasso(-75, 0, 180);
       }
-    } else if (this.d.isDown) {
+    } else if (this.d.isDown || this.cursors.right.isDown) {
       this.player.anims.play("walk", true);
 
       //dodge roll
@@ -482,7 +521,7 @@ export default class Tutorial1 extends Phaser.Scene {
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
         this.lasso = this.makeLasso(75, 0, 0);
       }
-    } else if (this.w.isDown) {
+    } else if (this.w.isDown || this.cursors.up.isDown) {
       this.player.anims.play("walk", true);
 
       //dodge roll
@@ -503,7 +542,7 @@ export default class Tutorial1 extends Phaser.Scene {
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
         this.lasso = this.makeLasso2(0, -75, 180);
       }
-    } else if (this.s.isDown) {
+    } else if (this.s.isDown || this.cursors.down.isDown) {
       this.player.anims.play("walk", true);
 
       //dodge roll
@@ -608,7 +647,14 @@ export default class Tutorial1 extends Phaser.Scene {
       });
     }
 
-    this.timedEvent = this.time.delayedCall(1000, this.deleteLasso, [], this);
+    if (this.lassos.getChildren().length > 0) {
+      this.lassoTimer++
+      if (this.lassoTimer > 20) {
+        this.lassos.getChildren()[0].disableBody(true, true);
+        this.lassos.getChildren()[0].destroy();
+        this.lassoTimer = 0;
+      }
+    }
   }
 
   deleteLasso() {
