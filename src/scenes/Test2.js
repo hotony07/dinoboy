@@ -397,7 +397,7 @@ export default class Test2 extends Phaser.Scene {
 
   update (time, delta) {
     //stego is spawned
-    if (!this.stegoSpawned && this.kills == 50) {
+    if (!this.stegoSpawned && this.kills == 10) {
       this.stegoSpawned = true;
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
@@ -407,6 +407,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego.setDepth(-1);
           this.stego.health = 50;
           this.stego.boss = true;
+          this.stego.flipX = true;
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
