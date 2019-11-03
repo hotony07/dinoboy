@@ -114,7 +114,7 @@ export default class Test2 extends Phaser.Scene {
 
     this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
     this.gun.setOrigin(0.5);
-    this.gun.setScale(0.25);
+    this.gun.setScale(0.15);
 
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
@@ -582,8 +582,8 @@ export default class Test2 extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
-    this.gun.x = this.player.x + 13;
-    this.gun.y = this.player.y + 5;
+    this.gun.x = this.player.x + 10;
+    this.gun.y = this.player.y + 4;
     try {
       this.mount.x = this.player.x;
       this.mount.y = this.player.y + 80;
@@ -974,6 +974,7 @@ export default class Test2 extends Phaser.Scene {
   }
 
   makeLasso (xCo, yCo, angle) {
+    this.lassoMiss.play(this.defaultSoundConfig);
     this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso');
     var x = this.lasso.widthInPixels;
     var y = this.lasso.heightInPixels;
@@ -983,6 +984,7 @@ export default class Test2 extends Phaser.Scene {
     this.lassos.add(this.lasso);
   }
   makeLasso2 (xCo, yCo, angle) {
+    this.lassoMiss.play(this.defaultSoundConfig);
     this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'uplasso');
     var x = this.lasso.widthInPixels;
     var y = this.lasso.heightInPixels;
@@ -1018,6 +1020,7 @@ export default class Test2 extends Phaser.Scene {
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
+          this.lassoHit.play(this.defaultSoundConfig);
 
           // this.scene.pause();
           this.cutscene1.alpha = 1;
@@ -1040,6 +1043,7 @@ export default class Test2 extends Phaser.Scene {
           console.log('attempt failed');
         }
       } else {
+        this.lassoHit.play(this.defaultSoundConfig);
         enemy.health--;
         if (enemy.health == 0) {
           enemy.disableBody(true, true);
