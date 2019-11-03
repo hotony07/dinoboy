@@ -112,6 +112,7 @@ export default class Test2 extends Phaser.Scene {
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.cursors = this.input.keyboard.createCursorKeys();
 
     const camera = this.cameras.main;
@@ -629,8 +630,14 @@ export default class Test2 extends Phaser.Scene {
       }
       this.player.disableBody(false, false);
       //this.gun.destroy();
-      var text = this.add.text(this.player.x - 30, this.player.y - 40, 'Game Over');
-      var score = this.add.text(this.player.x - 30, this.player.y + 25, 'Kills: ' + this.kills);
+      this.gameOverText = this.add.text(this.player.x - 40, this.player.y - 40, 'Game Over');
+      this.finalScore = this.add.text(this.player.x - 40, this.player.y + 25, 'Kills: ' + this.kills);
+      this.restartText = this.add.text(this.player.x - 125, this.player.y + 75, 'Press ESC to restart the game');
+      this.input.enabled = false;
+      if (this.esc.isDown) {
+        this.gameOver = false;
+        this.scene.restart();
+      }
       this.input.enabled = false;
     }
     // Update the scene
