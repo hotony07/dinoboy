@@ -29,7 +29,15 @@ export default class Test2 extends Phaser.Scene {
       frameHeight: 253
     });
 
-    this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
+    this.load.spritesheet('cowboyIdle', './assets/sprites/cowboy_idle_spritesheet.png', {
+      frameWidth: 64,
+      frameHeight: 64
+    });
+    this.load.spritesheet('cowboyWalk', './assets/sprites/cowboy_walk_spritesheet.png', {
+      frameWidth: 64,
+      frameHeight: 64
+    });
+    this.load.spritesheet('cowboyRoll', './assets/sprites/cowboy_roll_spritesheet.png', {
       frameWidth: 64,
       frameHeight: 64
     });
@@ -263,15 +271,51 @@ export default class Test2 extends Phaser.Scene {
     //Anims
     const anims = this.anims;
     this.anims.create({
-      key: "walk",
-      frames: this.anims.generateFrameNumbers("cowboy", { start: 0, end: 2 }),
+      key: "walkForward",
+      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 0, end: 1 }),
       frameRate: 10,
       repeat: -1
     });
     this.anims.create({
-      key: "idle",
-      frames: [{ key: "cowboy", frame: 0 }],
-      frameRate: 5,
+      key: "walkBackward",
+      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 2, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "walkLeft",
+      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 4, end: 5 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "walkRight",
+      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 6, end: 7 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleForward",
+      frames: [{ key: "cowboyIdle", frame: 0 }],
+      frameRate: 1,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleBackward",
+      frames: [{ key: "cowboyIdle", frame: 1 }],
+      frameRate: 1,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleLeft",
+      frames: [{ key: "cowboyIdle", frame: 2 }],
+      frameRate: 1,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleRight",
+      frames: [{ key: "cowboyIdle", frame: 3 }],
+      frameRate: 1,
       repeat: -1
     });
     this.anims.create({
@@ -616,6 +660,7 @@ export default class Test2 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
+      this.lastMoveKey = "a";
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
         console.log('mounted');
@@ -623,6 +668,7 @@ export default class Test2 extends Phaser.Scene {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
+      this.lastMoveKey = "d";
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
       } else {
@@ -632,12 +678,14 @@ export default class Test2 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
+      this.lastMoveKey = "w";
       if (this.player.isMounted){
         this.player.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
     }
     } else if (this.s.isDown || this.cursors.down.isDown) {
+      this.lastMoveKey = "s";
       if (this.player.isMounted){
         this.player.body.setVelocityY(300);
       } else {
@@ -653,7 +701,7 @@ export default class Test2 extends Phaser.Scene {
     }
 
     if (this.a.isDown || this.cursors.left.isDown) {
-      this.player.anims.play("walk", true);
+      this.player.anims.play("walkLeft", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -682,7 +730,7 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
       }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-      this.player.anims.play("walk", true);
+      this.player.anims.play("walkRight", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -711,7 +759,7 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
       }
     } else if (this.w.isDown || this.cursors.up.isDown) {
-      this.player.anims.play("walk", true);
+      this.player.anims.play("walkBackward", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -735,7 +783,7 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
       }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-      this.player.anims.play("walk", true);
+      this.player.anims.play("walkForward", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -759,7 +807,23 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
       }
     } else {
-      this.player.anims.play("idle", true);
+      switch (this.lastMoveKey) {
+        case "s":
+          this.player.anims.play("idleForward", true);
+          break;
+        case "w":
+          this.player.anims.play("idleBackward", true);
+          break;
+        case "a":
+          this.player.anims.play("idleLeft", true);
+          break;
+        case "d":
+          this.player.anims.play("idleRight", true);
+          break;
+        default:
+          this.player.anims.play("idleForward", true);
+          break;
+      }
       if(this.player.isMounted){
       this.mount.anims.stop();
       }
