@@ -22,7 +22,15 @@ export default class Tutorial1 extends Phaser.Scene {
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
     this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
 
-    this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
+    this.load.spritesheet('cowboyIdle', './assets/sprites/cowboy_idle_spritesheet.png', {
+      frameWidth: 64,
+      frameHeight: 64
+    });
+    this.load.spritesheet('cowboyWalk', './assets/sprites/cowboy_walk_spritesheet.png', {
+      frameWidth: 64,
+      frameHeight: 64
+    });
+    this.load.spritesheet('cowboyRoll', './assets/sprites/cowboy_roll_spritesheet.png', {
       frameWidth: 64,
       frameHeight: 64
     });
@@ -47,7 +55,8 @@ export default class Tutorial1 extends Phaser.Scene {
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
-    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap.json");
+    this.load.tilemapTiledJSON("tutorialMap", "./assets/Tilemaps/bgmap.json");
+    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap2.json");
 
     // Declare variables for center of the scene
     this.centerX = this.cameras.main.width / 2;
@@ -55,7 +64,7 @@ export default class Tutorial1 extends Phaser.Scene {
   }
 
   create (data) {
-    const map = this.make.tilemap({ key: "map" });
+    const map = this.make.tilemap({ key: "tutorialMap" });
     const tileset = map.addTilesetImage("sheet", "tiles");
 
     const belowLayer = map.createStaticLayer("Below", tileset, 0, 0).setDepth(-10);
@@ -103,6 +112,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.nextFire = 0;
     this.fireRate = 200;
     this.speed = 1000;
+    this.lastMoveKey = "";
 
     this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
     this.gun.setOrigin(0.5);
@@ -111,7 +121,7 @@ export default class Tutorial1 extends Phaser.Scene {
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
       key: "enemy",
-      repeat: 100
+      repeat: 40
     });
 
     this.enemyGroup.children.iterate(function(child) {
@@ -185,9 +195,9 @@ export default class Tutorial1 extends Phaser.Scene {
     });
 
     this.ammoDrops = this.physics.add.group();
+    this.healthDrops = this.physics.add.group();
     this.availDrop = true;
     this.physics.add.overlap(this.player, this.ammoDrops, this.pickAmmo, null, this);
-
 
     // Event listener for movement of mouse pointer
     this.input.on(
@@ -216,7 +226,7 @@ export default class Tutorial1 extends Phaser.Scene {
       } else {
         var betweenPoints = Phaser.Math.Angle.BetweenPoints;
         var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.player, pointer.positionToCamera(camera));
-        console.log(angle);
+        //console.log(angle);
         var roundAngle;
         if (angle < 45 || angle > -45) {
           roundAngle = 0;
@@ -256,24 +266,59 @@ export default class Tutorial1 extends Phaser.Scene {
     //Anims
     const anims = this.anims;
     this.anims.create({
-      key: "walk",
-      frames: this.anims.generateFrameNumbers("cowboy", { start: 0, end: 2 }),
+      key: "walkForward",
+      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 0, end: 1 }),
       frameRate: 10,
       repeat: -1
     });
     this.anims.create({
-      key: "idle",
-      frames: [{ key: "cowboy", frame: 0 }],
-      frameRate: 5,
+      key: "walkBackward",
+      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 2, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "walkLeft",
+      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 4, end: 5 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "walkRight",
+      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 6, end: 7 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleForward",
+      frames: [{ key: "cowboyIdle", frame: 0 }],
+      frameRate: 1,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleBackward",
+      frames: [{ key: "cowboyIdle", frame: 1 }],
+      frameRate: 1,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleLeft",
+      frames: [{ key: "cowboyIdle", frame: 2 }],
+      frameRate: 1,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleRight",
+      frames: [{ key: "cowboyIdle", frame: 3 }],
+      frameRate: 1,
       repeat: -1
     });
     this.anims.create({
       key: "dodge",
-      frames: this.anims.generateFrameNumbers("cowboy", { start: 3, end: 8 }),
+      frames: this.anims.generateFrameNumbers("cowboyRoll", { start: 0, end: 5 }),
       frameRate: 10,
       repeat: -1
     });
-
     this.music = this.sound.add("theme");
     var musicConfig = {
       mute: false,
@@ -345,6 +390,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.playerGroup.add(this.player);
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
+    this.ammoScore = this.add.text(this.centerX - 20, this. centerY + 150, 'Ammo: '+ this.ammo, { fontSize: '12' }).setScrollFactor(0);
 
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
@@ -353,7 +399,7 @@ export default class Tutorial1 extends Phaser.Scene {
       fontSize: '20px'
     });
 
-    this.tutorial_shoot = this.add.text(this.player.x, this.player.y - 100, "Left click - shoot\nShoot one of the baby dinos!");
+    this.tutorial_shoot = this.add.text(this.player.x, this.player.y - 100, "Left click - shoot\nShoot one of the baby dinos!\nWatch your ammo!");
 
     this.tutorial_lasso = this.add.text(this.player.x, this.player.y - 100, "Right click - lasso\nTry taming a giant Stego!");
 
@@ -372,6 +418,7 @@ export default class Tutorial1 extends Phaser.Scene {
   }
 
   update (time, delta) {
+    this.ammoScore.setText('Ammo: ' + this.ammo);
     this.tutorial_wasd.x = this.player.x;
     this.tutorial_wasd.y = this.player.y - 100;
 
@@ -402,6 +449,9 @@ export default class Tutorial1 extends Phaser.Scene {
       this.tutorial_complete.alpha = 0;
     }
     else {
+      try {
+        this.tutorial_wasd.destroy();
+      } catch {}
       this.tutorial_lasso.destroy();
       this.tutorial_complete.alpha = 1;
       this.tutorial_complete.x = this.player.x;
@@ -440,6 +490,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
+        this.lastMoveKey = "a";
       this.didA = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
@@ -447,6 +498,7 @@ export default class Tutorial1 extends Phaser.Scene {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
+        this.lastMoveKey = "d";
       this.didD = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
@@ -457,6 +509,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
+        this.lastMoveKey = "w";
       this.didW = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(-300);
@@ -464,6 +517,7 @@ export default class Tutorial1 extends Phaser.Scene {
       this.player.body.setVelocityY(-speed);
     }
     } else if (this.s.isDown || this.cursors.down.isDown) {
+        this.lastMoveKey = "s";
       this.didS = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(300);
@@ -480,7 +534,7 @@ export default class Tutorial1 extends Phaser.Scene {
     }
 
     if (this.a.isDown || this.cursors.left.isDown) {
-      this.player.anims.play("walk", true);
+      this.player.anims.play("walkLeft", true);
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
@@ -501,7 +555,7 @@ export default class Tutorial1 extends Phaser.Scene {
         this.lasso = this.makeLasso(-75, 0, 180);
       }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-      this.player.anims.play("walk", true);
+      this.player.anims.play("walkRight", true);
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
@@ -522,7 +576,7 @@ export default class Tutorial1 extends Phaser.Scene {
         this.lasso = this.makeLasso(75, 0, 0);
       }
     } else if (this.w.isDown || this.cursors.up.isDown) {
-      this.player.anims.play("walk", true);
+      this.player.anims.play("walkBackward", true);
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
@@ -543,7 +597,7 @@ export default class Tutorial1 extends Phaser.Scene {
         this.lasso = this.makeLasso2(0, -75, 180);
       }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-      this.player.anims.play("walk", true);
+      this.player.anims.play("walkForward", true);
 
       //dodge roll
       if (this.shift.isDown && this.player.dodgeLock) {
@@ -564,8 +618,23 @@ export default class Tutorial1 extends Phaser.Scene {
         this.lasso = this.makeLasso2(0, 75, 0);
       }
     } else {
-      this.player.anims.play("idle", true);
-
+      switch (this.lastMoveKey) {
+        case "s":
+          this.player.anims.play("idleForward", true);
+          break;
+        case "w":
+          this.player.anims.play("idleBackward", true);
+          break;
+        case "a":
+          this.player.anims.play("idleLeft", true);
+          break;
+        case "d":
+          this.player.anims.play("idleRight", true);
+          break;
+        default:
+          this.player.anims.play("idleForward", true);
+          break;
+      }
       //summon lasso
       if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
         this.lasso = this.makeLasso(75, 0, 0);
@@ -675,7 +744,8 @@ export default class Tutorial1 extends Phaser.Scene {
     bullet.setAngle(Phaser.Math.RAD_TO_DEG * angle);
     bullet
       .enableBody(true, this.gun.x, this.gun.y, true, true)
-      .setVelocity(velocity.x, velocity.y);
+      .setVelocity(velocity.x, velocity.y)
+      .setScale(0.5);
 
     this.gunshot.play(this.defaultSoundConfig);
   }
