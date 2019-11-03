@@ -2,7 +2,7 @@
 import BootScene from './scenes/BootScene.js';
 //import Scene1 from './scenes/Scene1.js';
 import Config from './config/config.js';
-import Preloader from './scenes/Preloader.js';
+import Preloader from './scenes/PreloaderScene.js';
 import Test2 from './scenes/Test2.js';
 import Tutorial1 from './scenes/Tutorial1.js';
 
