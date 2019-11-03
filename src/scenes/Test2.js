@@ -57,8 +57,12 @@ export default class Test2 extends Phaser.Scene {
     this.load.image('lasso', './assets/sprites/lasso.png');
     this.load.image('uplasso', './assets/sprites/uplasso.png');
     this.load.spritesheet("lasso_ss", './assets/sprites/lasso_spritesheet.png', {
-      frameWidth: 124,
-      frameHeight: 44
+      frameWidth: 128,
+      frameHeight: 64
+    });
+    this.load.spritesheet("uplasso_ss", './assets/sprites/uplasso_spritesheet.png', {
+      frameWidth: 64,
+      frameHeight: 128
     });
 
     this.load.image('tree', './assets/Scene1/tree.png');
@@ -332,7 +336,18 @@ export default class Test2 extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers("chomp", { start: 0, end: 1 }),
       frameRate: 2,
       repeat: 2
-
+    });
+    this.anims.create({
+      key: "lasso",
+      frames: this.anims.generateFrameNumbers("lasso_ss", { start: 0, end: 2 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "uplasso",
+      frames: this.anims.generateFrameNumbers("uplasso_ss", { start: 0, end: 2 }),
+      frameRate: 10,
+      repeat: -1
     });
 
     //this.music = this.sound.add("theme");
@@ -1053,6 +1068,7 @@ export default class Test2 extends Phaser.Scene {
     this.lasso.setSize(120, 50);
     //this.lasso.setOffset(-x/2, -y/2);
     this.lassos.add(this.lasso);
+    this.lasso.anims.play("lasso", true);
   }
   makeLasso2 (xCo, yCo, angle) {
     this.lassoMiss.play(this.defaultSoundConfig);
@@ -1063,6 +1079,7 @@ export default class Test2 extends Phaser.Scene {
     this.lasso.setSize(50, 120);
     //this.lasso.setOffset(x/2, -y/2);
     this.lassos.add(this.lasso);
+    this.lasso.anims.play("uplasso", true);
   }
 
   pickAmmo (player, ammo) {
