@@ -140,6 +140,7 @@ export default class Test2 extends Phaser.Scene {
       child.y = 200 + Math.floor(Math.random() * (map.heightInPixels - 200));
       child.health = 1;
       child.boss = false;
+      child.boss2 = false;
     });
 
     this.mountGroup = this.physics.add.group();
@@ -515,27 +516,29 @@ export default class Test2 extends Phaser.Scene {
     if (!this.stegoSpawned && this.kills == 10) {
       this.stegoSpawned = true;
 
-          this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
+          this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'trex');
           this.stego.setCollideWorldBounds(true);
           this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
-          this.stego.setScale(0.5);
+          this.stego.setScale(0.6);
           this.stego.setDepth(-1);
           this.stego.health = 50;
-          this.stego.boss = true;
+          this.stego.boss = false;
+          this.stego.boss2 = true;
           this.stego.flipX = true;
           this.enemyGroup.add(this.stego);
-          this.stego.anims.play('step', true);
+          //this.stego.anims.play('step', true);
     }
     if (this.stegoSpawned && this.kills == 100) {
       this.stegoSpawned = false;
 
-          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'trex');
+          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
           this.stego1.setCollideWorldBounds(true);
           this.stego1.body.setSize(256, 128, this.B1X, this.B1Y);
-          this.stego1.setScale(0.5);
+          this.stego1.setScale(0.4);
           this.stego1.setDepth(-1);
           this.stego1.health = 50;
           this.stego1.boss = true;
+          this.stego1.boss2 = false;
           this.enemyGroup.add(this.stego1);
           //this.stego1.anims.play('step', true);
     }
@@ -549,6 +552,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego1b.setDepth(-1);
           this.stego1b.health = 50;
           this.stego1b.boss = true;
+          this.stego1b.boss2 = false;
           this.enemyGroup.add(this.stego1b);
           this.stego1b.anims.play('step', true);
 
@@ -559,6 +563,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego2.setDepth(-1);
           this.stego2.health = 50;
           this.stego2.boss = true;
+          this.stego1b.boss2 = false;
           this.enemyGroup.add(this.stego2);
           this.stego2.anims.play('step', true);
 
@@ -645,7 +650,7 @@ export default class Test2 extends Phaser.Scene {
     this.gun.y = this.player.y + 4;
     try {
       this.mount.x = this.player.x;
-      this.mount.y = this.player.y + 80;
+      this.mount.y = this.player.y + 60;
     } catch {}
 
 
@@ -1024,6 +1029,11 @@ export default class Test2 extends Phaser.Scene {
     } else {
       enemy.health -= 10;
     }
+
+    var walkAn = this.anims.get('step');
+    var newFrames = this.anims.generateFrameNames('chomp');
+    walkAn.addFrame(newFrames);
+
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
     var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
     var volume = deltaVolume * distFromPlayerToEnemy + 1
@@ -1031,11 +1041,6 @@ export default class Test2 extends Phaser.Scene {
     var dinoHurtSoundConfig = this.defaultSoundConfig;
     this.dinoHurt.volume = volume
 
-    var walkAn = this.anims.get('step');
-    var newFrames = this.anims.generateFrameNames('chomp');
-    walkAn.addFrame(newFrames);
-
-    this.mount.anims.stop();
 
     this.dinoHurt.play(this.dinoHurtSoundConfig);
     if (enemy.health == 0) {
@@ -1114,16 +1119,48 @@ export default class Test2 extends Phaser.Scene {
 
           enemy.disableBody(true, true);
           this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stegoWalk');
-          this.mount.setScale(.9);
+          this.mount.setScale(.7);
           this.mount.setDepth(-10);
           this.mount.body.setSize(64, 64);
           this.mount.body.setOffset(570, 350);
           this.player.isMounted = true;
+          this.mount.boss = false;
+          this.mount.boss2 = true;
           this.mountGroup.add(this.mount);
         } else {
           console.log('attempt failed');
         }
-      } else {
+      } else if (enemy.boss2){
+        tameRate = Math.max(100);
+        // tameRate = Math.max((45 - enemy.health) / 25, 0);
+        if (Math.random() < tameRate) {
+          console.log('enemy tamed');
+          this.lassoHit.play(this.defaultSoundConfig);
+
+          // this.scene.pause();
+          this.cutscene1.alpha = 1;
+          this.cameras.main.setZoom(1);
+          this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
+          this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
+          this.cutscene1.depth = 100;
+          this.cutscene1.play();
+          this.playerHit = true;
+
+          enemy.disableBody(true, true);
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'trex');
+          this.mount.setScale(.7);
+          this.mount.setDepth(-10);
+          this.mount.body.setSize(64, 64);
+          this.mount.body.setOffset(570, 350);
+          this.player.isMounted = true;
+          this.mount.boss = false;
+          this.mount.boss2 = true;
+          this.mountGroup.add(this.mount);
+        } else {
+          console.log('attempt failed');
+        }
+
+      } else{
         this.lassoHit.play(this.defaultSoundConfig);
         enemy.health--;
         if (enemy.health == 0) {
