@@ -45,8 +45,12 @@ export default class Tutorial1 extends Phaser.Scene {
     this.load.image('lasso', './assets/sprites/lasso.png');
     this.load.image('uplasso', './assets/sprites/uplasso.png');
     this.load.spritesheet("lasso_ss", './assets/sprites/lasso_spritesheet.png', {
-      frameWidth: 124,
-      frameHeight: 44
+      frameWidth: 128,
+      frameHeight: 64
+    });
+    this.load.spritesheet("uplasso_ss", './assets/sprites/uplasso_spritesheet.png', {
+      frameWidth: 64,
+      frameHeight: 128
     });
 
     this.load.image('tree', './assets/Scene1/tree.png');
@@ -319,6 +323,19 @@ export default class Tutorial1 extends Phaser.Scene {
       frameRate: 10,
       repeat: -1
     });
+    this.anims.create({
+      key: "lasso",
+      frames: this.anims.generateFrameNumbers("lasso_ss", { start: 0, end: 2 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "uplasso",
+      frames: this.anims.generateFrameNumbers("uplasso_ss", { start: 0, end: 2 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
     this.music = this.sound.add("theme");
     var musicConfig = {
       mute: false,
@@ -786,11 +803,15 @@ export default class Tutorial1 extends Phaser.Scene {
 
   makeLasso (xCo, yCo, angle) {
     this.lassoMiss.play(this.defaultSoundConfig);
-    this.lassos.add(this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso').setAngle(angle));
+    this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso');
+    this.lassos.add(this.lasso.setAngle(angle));
+    this.lasso.anims.play("lasso", true);
   }
   makeLasso2 (xCo, yCo, angle) {
     this.lassoMiss.play(this.defaultSoundConfig);
-    this.lassos.add(this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'uplasso').setAngle(angle));
+    this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'uplasso');
+    this.lassos.add(this.lasso.setAngle(angle));
+    this.lasso.anims.play("uplasso", true);
   }
 
   pickAmmo (player, ammo) {
