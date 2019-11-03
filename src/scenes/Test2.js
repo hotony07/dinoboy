@@ -43,6 +43,10 @@ export default class Test2 extends Phaser.Scene {
       frameHeight: 720
     });
 
+    this.load.spritesheet('trexWalk', './assets/dinosaur/Wobble.png', {
+      frameWidth: 300,
+      frameHeight: 300
+    });
 
     this.load.image('gun', './assets/sprites/gun.png');
     this.load.image('lasso', './assets/sprites/lasso.png');
@@ -472,7 +476,7 @@ export default class Test2 extends Phaser.Scene {
     if (!this.stegoSpawned && this.kills == 10) {
       this.stegoSpawned = true;
 
-          this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'trex');
+          this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
           this.stego.setCollideWorldBounds(true);
           this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
           this.stego.setScale(0.6);
@@ -482,7 +486,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego.boss2 = true;
           this.stego.flipX = true;
           this.enemyGroup.add(this.stego);
-          //this.stego.anims.play('step', true);
+          this.stego.anims.play('step', true);
     }
     if (this.stegoSpawned && this.kills == 100) {
       this.stegoSpawned = false;
@@ -605,8 +609,14 @@ export default class Test2 extends Phaser.Scene {
     this.gun.x = this.player.x + 10;
     this.gun.y = this.player.y + 4;
     try {
-      this.mount.x = this.player.x;
-      this.mount.y = this.player.y + 60;
+      if (this.mount.boss = true){
+        this.mount.x = this.player.x;
+        this.mount.y = this.player.y + 60;
+      } else if (this.mount.boss2 = true){
+        this.mount.x = this.player.x ;
+        this.mount.y = this.player.y - 50;
+      }
+
     } catch {}
 
 

@@ -14,6 +14,7 @@ export default class Level2 extends Phaser.Scene {
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
+        this.load.image('trex', './assets/dinosaur/trex.png');
 
     this.load.audio("theme", './assets/Music/DinoBoyV2.mp3');
     this.load.audio("baby_dino_growl_1", './assets/sfx/dinosaur/baby_dino_growl_01.mp3');
@@ -48,6 +49,10 @@ export default class Level2 extends Phaser.Scene {
       frameHeight: 720
     });
 
+    this.load.spritesheet('trexWalk', './assets/dinosaur/Wobble.png', {
+      frameWidth: 300,
+      frameHeight: 300
+    });
 
     this.load.image('gun', './assets/sprites/gun.png');
     this.load.image('lasso', './assets/sprites/lasso.png');
