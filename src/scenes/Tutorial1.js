@@ -508,7 +508,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
-        this.lastMoveKey = "a";
+      this.lastMoveKey = "a";
       this.didA = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
@@ -516,7 +516,7 @@ export default class Tutorial1 extends Phaser.Scene {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-        this.lastMoveKey = "d";
+      this.lastMoveKey = "d";
       this.didD = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
@@ -527,7 +527,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
-        this.lastMoveKey = "w";
+      this.lastMoveKey = "w";
       this.didW = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(-300);
@@ -535,7 +535,7 @@ export default class Tutorial1 extends Phaser.Scene {
       this.player.body.setVelocityY(-speed);
     }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-        this.lastMoveKey = "s";
+      this.lastMoveKey = "s";
       this.didS = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(300);
