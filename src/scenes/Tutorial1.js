@@ -418,7 +418,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
     this.tutorial_shoot = this.add.text(this.player.x, this.player.y - 100, "Left click - shoot\nShoot one of the baby dinos!\nWatch your ammo!");
 
-    this.tutorial_lasso = this.add.text(this.player.x, this.player.y - 100, "Right click - lasso\nTry taming a giant Stego!");
+    this.tutorial_lasso = this.add.text(this.player.x, this.player.y - 100, "Right click - lasso\nUse it to interact with dinosaurs!\nTry taming a giant Stego!");
 
     this.tutorial_complete = this.add.text(this.player.x, this.player.y - 100, "[ESC] to go back to menu\nOR\n[ENTER] to start game!");
 
@@ -468,6 +468,7 @@ export default class Tutorial1 extends Phaser.Scene {
     else {
       try {
         this.tutorial_wasd.destroy();
+        this.tutorial_shoot.destroy();
       } catch {}
       this.tutorial_lasso.destroy();
       this.tutorial_complete.alpha = 1;
@@ -507,7 +508,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
-        this.lastMoveKey = "a";
+      this.lastMoveKey = "a";
       this.didA = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
@@ -515,7 +516,7 @@ export default class Tutorial1 extends Phaser.Scene {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-        this.lastMoveKey = "d";
+      this.lastMoveKey = "d";
       this.didD = true;
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
@@ -526,7 +527,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
-        this.lastMoveKey = "w";
+      this.lastMoveKey = "w";
       this.didW = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(-300);
@@ -534,7 +535,7 @@ export default class Tutorial1 extends Phaser.Scene {
       this.player.body.setVelocityY(-speed);
     }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-        this.lastMoveKey = "s";
+      this.lastMoveKey = "s";
       this.didS = true;
       if (this.player.isMounted){
         this.player.body.setVelocityY(300);
@@ -827,14 +828,34 @@ export default class Tutorial1 extends Phaser.Scene {
     var tameRate;
       if (enemy.boss) {
         tameRate = Math.max(100);
+        // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
           this.lassoHit.play(this.defaultSoundConfig);
           this.didLasso = true;
           enemy.disableBody(true, true);
-          this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
-          this.mount.setScale(0.5);
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
+          this.mount.setScale(.7);
           this.mount.setDepth(-10);
+          this.mount.body.setSize(64, 64);
+          this.mount.body.setOffset(570, 350);
           this.player.isMounted = true;
+        } else {
+          console.log('attempt failed');
+        }
+      } else{
+        this.lassoHit.play(this.defaultSoundConfig);
+        enemy.health--;
+        if (enemy.health == 0) {
+          enemy.disableBody(true, true);
+          this.kills += 1;
+          // Random ammo drop after enemy kill
+          //dropRate increases when you're low on bullets
+          var dropRate = Math.max((20 - this.ammo) / 25, 0);
+          if (Math.random() < dropRate) {
+            var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
+            ammoDrop.setScale(0.5);
+            this.ammoDrops.add(ammoDrop);
+          }
         }
       }
   }
