@@ -15,7 +15,6 @@ export default class Test2 extends Phaser.Scene {
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
 
-    this.load.audio("theme", './assets/Music/DinoBoyV2.mp3');
     this.load.audio("baby_dino_growl_1", './assets/sfx/dinosaur/baby_dino_growl_01.mp3');
     this.load.audio("baby_dino_growl_2", './assets/sfx/dinosaur/baby_dino_growl_02.mp3');
     this.load.audio("dino_hurt", './assets/sfx/dinosaur/dino_hurt.mp3');
@@ -30,15 +29,7 @@ export default class Test2 extends Phaser.Scene {
       frameHeight: 253
     });
 
-    this.load.spritesheet('cowboyIdle', './assets/sprites/cowboy_idle_spritesheet.png', {
-      frameWidth: 64,
-      frameHeight: 64
-    });
-    this.load.spritesheet('cowboyWalk', './assets/sprites/cowboy_walk_spritesheet.png', {
-      frameWidth: 64,
-      frameHeight: 64
-    });
-    this.load.spritesheet('cowboyRoll', './assets/sprites/cowboy_roll_spritesheet.png', {
+    this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
       frameWidth: 64,
       frameHeight: 64
     });
@@ -64,6 +55,7 @@ export default class Test2 extends Phaser.Scene {
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
     this.load.image('health', './assets/Scene1/Heart.png');
+    this.load.image('trex', './assets/dinosaur/trex.png');
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
@@ -108,7 +100,6 @@ export default class Test2 extends Phaser.Scene {
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-    this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.cursors = this.input.keyboard.createCursorKeys();
 
     const camera = this.cameras.main;
@@ -120,7 +111,6 @@ export default class Test2 extends Phaser.Scene {
     this.nextFire = 0;
     this.fireRate = 200;
     this.speed = 1000;
-    this.lastMoveKey = "";
 
     this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
     this.gun.setOrigin(0.5);
@@ -262,62 +252,27 @@ export default class Test2 extends Phaser.Scene {
             this.makeLasso2(0, -75, 180);
           }
         }
+
       }, this);
 
 
     //Anims
     const anims = this.anims;
     this.anims.create({
-      key: "walkForward",
-      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 0, end: 1 }),
+      key: "walk",
+      frames: this.anims.generateFrameNumbers("cowboy", { start: 0, end: 2 }),
       frameRate: 10,
       repeat: -1
     });
     this.anims.create({
-      key: "walkBackward",
-      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 2, end: 3 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: "walkLeft",
-      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 4, end: 5 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: "walkRight",
-      frames: this.anims.generateFrameNumbers("cowboyWalk", { start: 6, end: 7 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: "idleForward",
-      frames: [{ key: "cowboyIdle", frame: 0 }],
-      frameRate: 1,
-      repeat: -1
-    });
-    this.anims.create({
-      key: "idleBackward",
-      frames: [{ key: "cowboyIdle", frame: 1 }],
-      frameRate: 1,
-      repeat: -1
-    });
-    this.anims.create({
-      key: "idleLeft",
-      frames: [{ key: "cowboyIdle", frame: 2 }],
-      frameRate: 1,
-      repeat: -1
-    });
-    this.anims.create({
-      key: "idleRight",
-      frames: [{ key: "cowboyIdle", frame: 3 }],
-      frameRate: 1,
+      key: "idle",
+      frames: [{ key: "cowboy", frame: 0 }],
+      frameRate: 5,
       repeat: -1
     });
     this.anims.create({
       key: "dodge",
-      frames: this.anims.generateFrameNumbers("cowboyRoll", { start: 0, end: 5 }),
+      frames: this.anims.generateFrameNumbers("cowboy", { start: 3, end: 8 }),
       frameRate: 10,
       repeat: -1
     });
@@ -515,7 +470,7 @@ export default class Test2 extends Phaser.Scene {
     if (this.stegoSpawned && this.kills == 100) {
       this.stegoSpawned = false;
 
-          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
+          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'trex');
           this.stego1.setCollideWorldBounds(true);
           this.stego1.body.setSize(256, 128, this.B1X, this.B1Y);
           this.stego1.setScale(0.5);
@@ -523,7 +478,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego1.health = 50;
           this.stego1.boss = true;
           this.enemyGroup.add(this.stego1);
-          this.stego1.anims.play('step', true);
+          //this.stego1.anims.play('step', true);
     }
     if (!this.stegoSpawned && this.kills == 150) {
       this.stegoSpawned = true;
@@ -610,14 +565,9 @@ export default class Test2 extends Phaser.Scene {
       }
       this.player.disableBody(false, false);
       //this.gun.destroy();
-      this.gameOverText = this.add.text(this.player.x - 40, this.player.y - 40, 'Game Over');
-      this.finalScore = this.add.text(this.player.x - 40, this.player.y + 25, 'Kills: ' + this.kills);
-      this.restartText = this.add.text(this.player.x - 125, this.player.y + 75, 'Press ESC to restart the game');
+      var text = this.add.text(this.player.x - 30, this.player.y - 40, 'Game Over');
+      var score = this.add.text(this.player.x - 30, this.player.y + 25, 'Kills: ' + this.kills);
       this.input.enabled = false;
-      if (this.esc.isDown) {
-        this.gameOver = false;
-        this.scene.restart();
-      }
     }
     // Update the scene
     const speed = 175;
@@ -651,7 +601,6 @@ export default class Test2 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
-      this.lastMoveKey = "a";
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
         console.log('mounted');
@@ -659,7 +608,6 @@ export default class Test2 extends Phaser.Scene {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-      this.lastMoveKey = "d";
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
       } else {
@@ -669,14 +617,12 @@ export default class Test2 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
-      this.lastMoveKey = "w";
       if (this.player.isMounted){
         this.player.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
     }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-      this.lastMoveKey = "s";
       if (this.player.isMounted){
         this.player.body.setVelocityY(300);
       } else {
@@ -692,7 +638,7 @@ export default class Test2 extends Phaser.Scene {
     }
 
     if (this.a.isDown || this.cursors.left.isDown) {
-      this.player.anims.play("walkLeft", true);
+      this.player.anims.play("walk", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -721,7 +667,7 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
       }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-      this.player.anims.play("walkRight", true);
+      this.player.anims.play("walk", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -750,7 +696,7 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
       }
     } else if (this.w.isDown || this.cursors.up.isDown) {
-      this.player.anims.play("walkBackward", true);
+      this.player.anims.play("walk", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -774,7 +720,7 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
       }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-      this.player.anims.play("walkForward", true);
+      this.player.anims.play("walk", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -798,23 +744,7 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
       }
     } else {
-      switch (this.lastMoveKey) {
-        case "s":
-          this.player.anims.play("idleForward", true);
-          break;
-        case "w":
-          this.player.anims.play("idleBackward", true);
-          break;
-        case "a":
-          this.player.anims.play("idleLeft", true);
-          break;
-        case "d":
-          this.player.anims.play("idleRight", true);
-          break;
-        default:
-          this.player.anims.play("idleForward", true);
-          break;
-      }
+      this.player.anims.play("idle", true);
       if(this.player.isMounted){
       this.mount.anims.stop();
       }
@@ -898,7 +828,7 @@ export default class Test2 extends Phaser.Scene {
     }
     if (this.ammo == 0 && this.availDrop) {
       var ammoDrop = this.physics.add.sprite(16, 16, 'bullet');
-      ammoDrop.setScale(0.3);
+      ammoDrop.setScale(2);
       this.ammoDrops.add(ammoDrop);
       ammoDrop.setRandomPosition(0, 0, game.config.width, game.config.height);
       this.availDrop = false;
@@ -999,11 +929,10 @@ export default class Test2 extends Phaser.Scene {
       var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
       if (Math.random() < healthDropRate) {
         var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
-        healthDrop.setDepth(-1);
         this.healthDrops.add(healthDrop);
       } else if (Math.random() < ammoDropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-        ammoDrop.setScale(0.3);
+        ammoDrop.setScale(0.5);
         this.ammoDrops.add(ammoDrop);
       }
     }
@@ -1038,7 +967,7 @@ export default class Test2 extends Phaser.Scene {
       var dropRate = Math.max((20 - this.ammo) / 25, 0);
       if (Math.random() < dropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-        ammoDrop.setScale(0.3);
+        ammoDrop.setScale(0.5);
         this.ammoDrops.add(ammoDrop);
       }
     }
@@ -1120,7 +1049,7 @@ export default class Test2 extends Phaser.Scene {
           var dropRate = Math.max((20 - this.ammo) / 25, 0);
           if (Math.random() < dropRate) {
             var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-            ammoDrop.setScale(0.3);
+            ammoDrop.setScale(0.5);
             this.ammoDrops.add(ammoDrop);
           }
         }
