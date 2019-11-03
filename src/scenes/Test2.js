@@ -53,6 +53,8 @@ export default class Test2 extends Phaser.Scene {
 
 
     this.load.image('gun', './assets/sprites/gun.png');
+    this.load.image('gun_backward', './assets/sprites/gun_backward.png');
+    this.load.image('gun_forward', './assets/sprites/gun_forward.png');
     this.load.image('lasso', './assets/sprites/lasso.png');
     this.load.image('uplasso', './assets/sprites/uplasso.png');
     this.load.spritesheet("lasso_ss", './assets/sprites/lasso_spritesheet.png', {
