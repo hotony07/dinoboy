@@ -25,6 +25,10 @@ export default class Test2 extends Phaser.Scene {
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
     this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
     this.load.video("cutscene1", './assets/cutscene1.mp4');
+    this.load.spritesheet("chomp", "./assets/dinosaur/dinoChomp.png",{
+      frameWidth: 580,
+      frameHeight: 253
+    });
 
     this.load.spritesheet('cowboyIdle', './assets/sprites/cowboy_idle_spritesheet.png', {
       frameWidth: 64,
@@ -323,8 +327,15 @@ export default class Test2 extends Phaser.Scene {
       frameRate: 5,
       repeat: -1
     });
+    this.anims.create({
+      key: "chomp",
+      frames: this.anims.generateFrameNumbers("chomp", { start: 0, end: 1 }),
+      frameRate: 2,
+      repeat: 2
 
-    this.music = this.sound.add("theme");
+    });
+
+    //this.music = this.sound.add("theme");
     var musicConfig = {
       mute: false,
       volume: 1,
@@ -335,7 +346,7 @@ export default class Test2 extends Phaser.Scene {
       delay: 0
     }
 
-    this.music.play(musicConfig);
+    //this.music.play(musicConfig);
 
     this.gunshot = this.sound.add("gunshot");
     this.gunEmpty = this.sound.add("gun_empty");
@@ -893,6 +904,7 @@ export default class Test2 extends Phaser.Scene {
       this.availDrop = false;
     }
 
+
     //If there ar eno enemies left, create more
     // if (this.enemyGroup.countActive(true) < 40) {
     //   this.enemyGroup = this.physics.add.group({
@@ -947,10 +959,12 @@ export default class Test2 extends Phaser.Scene {
     bullet
       .enableBody(true, this.gun.x, this.gun.y, true, true)
       .setVelocity(velocity.x, velocity.y)
-      .setScale(.5);
+      .setScale(.5),
 
     this.gunshot.play(this.defaultSoundConfig);
+    //this.bullet.setCollideWorldBounds(true);
   }
+
 
   takeDamage (player, enemy) {
     if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
@@ -1009,11 +1023,17 @@ export default class Test2 extends Phaser.Scene {
     var dinoHurtSoundConfig = this.defaultSoundConfig;
     this.dinoHurt.volume = volume
 
+    var walkAn = this.anims.get('step');
+    var newFrames = this.anims.generateFrameNames('chomp');
+    walkAn.addFrame(newFrames);
+
+    this.mount.anims.stop();
+
     this.dinoHurt.play(this.dinoHurtSoundConfig);
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
       this.kills += 1;
-      // Random ammo drop after enemy kill
+      // Random ammo drop after enemy killaw
       //dropRate increases when you're low on bullets
       var dropRate = Math.max((20 - this.ammo) / 25, 0);
       if (Math.random() < dropRate) {
