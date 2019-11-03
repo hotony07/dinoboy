@@ -116,7 +116,7 @@ export default class Tutorial1 extends Phaser.Scene {
 
     this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
     this.gun.setOrigin(0.5);
-    this.gun.setScale(0.25);
+    this.gun.setScale(0.15);
 
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
@@ -471,8 +471,8 @@ export default class Tutorial1 extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
-    this.gun.x = this.player.x + 13;
-    this.gun.y = this.player.y + 5;
+    this.gun.x = this.player.x + 10;
+    this.gun.y = this.player.y + 4;
     try {
       this.mount.x = this.player.x;
       this.mount.y = this.player.y + 50;
@@ -785,9 +785,11 @@ export default class Tutorial1 extends Phaser.Scene {
   }
 
   makeLasso (xCo, yCo, angle) {
+    this.lassoMiss.play(this.defaultSoundConfig);
     this.lassos.add(this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso').setAngle(angle));
   }
   makeLasso2 (xCo, yCo, angle) {
+    this.lassoMiss.play(this.defaultSoundConfig);
     this.lassos.add(this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'uplasso').setAngle(angle));
   }
 
@@ -805,13 +807,13 @@ export default class Tutorial1 extends Phaser.Scene {
       if (enemy.boss) {
         tameRate = Math.max(100);
         if (Math.random() < tameRate) {
+          this.lassoHit.play(this.defaultSoundConfig);
           this.didLasso = true;
           enemy.disableBody(true, true);
           this.mount = this.add.sprite(this.player.x, this.player.y, 'stego');
           this.mount.setScale(0.5);
           this.mount.setDepth(-10);
           this.player.isMounted = true;
-        } else {
         }
       }
   }
