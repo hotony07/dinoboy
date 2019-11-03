@@ -786,19 +786,19 @@ export default class Test2 extends Phaser.Scene {
     }
 
     //If there ar eno enemies left, create more
-    if (this.enemyGroup.countActive(true) < 40) {
-      this.enemyGroup = this.physics.add.group({
-        key: "enemy",
-        repeat: 20
-      });
-
-      this.enemyGroup.children.iterate(function(child) {
-        child.setScale(0.7);
-        child.x = Math.floor(Math.random() * 900) ,
-        child.y = Math.floor(Math.random() * 900)
-        child.health = 1;
-      });
-    }
+    // if (this.enemyGroup.countActive(true) < 40) {
+    //   this.enemyGroup = this.physics.add.group({
+    //     key: "enemy",
+    //     repeat: 20
+    //   });
+    //
+    //   this.enemyGroup.children.iterate(function(child) {
+    //     child.setScale(0.7);
+    //     child.x = Math.floor(Math.random() * 900) ,
+    //     child.y = Math.floor(Math.random() * 900)
+    //     child.health = 1;
+    //   });
+    // }
 
     this.enemyGroup.children.iterate(function(child) {
       if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150) {
@@ -838,7 +838,8 @@ export default class Test2 extends Phaser.Scene {
     bullet.setAngle(Phaser.Math.RAD_TO_DEG * angle);
     bullet
       .enableBody(true, this.gun.x, this.gun.y, true, true)
-      .setVelocity(velocity.x, velocity.y);
+      .setVelocity(velocity.x, velocity.y)
+      .setScale(.5);
 
     this.gunshot.play(this.defaultSoundConfig);
   }
