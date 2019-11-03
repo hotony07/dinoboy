@@ -174,7 +174,7 @@ export default class BootScene extends Phaser.Scene {
     });
 
     button.on("pointerup", function () {
-       this.scene.start('Preloader');
+       this.scene.start('Test2');
      }, this
     );
 
