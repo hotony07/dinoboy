@@ -184,9 +184,10 @@ export default class Test2 extends Phaser.Scene {
     });
 
     this.ammoDrops = this.physics.add.group();
+    this.healthDrops = this.physics.add.group();
     this.availDrop = true;
     this.physics.add.overlap(this.player, this.ammoDrops, this.pickAmmo, null, this);
-
+    this.physics.add.overlap(this.player, this.healthDrops, this.pickHealth, null, this);
 
 
     // Event listener for movement of mouse pointer
@@ -212,7 +213,7 @@ export default class Test2 extends Phaser.Scene {
         } else {
           var betweenPoints = Phaser.Math.Angle.BetweenPoints;
           var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.player, pointer.positionToCamera(camera));
-          console.log(angle);
+          //console.log(angle);
           var roundAngle;
           if (angle < 45 || angle > -45) {
             roundAngle = 0;
@@ -403,6 +404,42 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
+    if (this.currentHealth != this.healthGroup.getChildren().length) {
+      while (this.healthGroup.getChildren().length > 0) {
+        this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
+      }
+      if (this.isMounted) {
+        this.healthGroup = this.add.group({
+          key: 'health',
+          repeat: this.currentHealth - 1,
+          setXY: {
+            x: this.centerX - 300,
+            y: this.centerY + 235,
+            stepX: 20,
+            stepY: 0
+          }
+        });
+        this.healthGroup.children.iterate(function(child) {
+          child.setScrollFactor(0);
+          child.setScale(0.6);
+        });
+      } else {
+        this.healthGroup = this.add.group({
+          key: 'health',
+          repeat: this.currentHealth - 1,
+          setXY: {
+            x: this.centerX - 120,
+            y: this.centerY + 70,
+            stepX: 10,
+            stepY: 0
+          }
+        });
+        this.healthGroup.children.iterate(function(child) {
+          child.setScrollFactor(0);
+          child.setScale(0.3);
+        });
+      }
+    }
     //stego is spawned
     if (!this.stegoSpawned && this.kills == 10) {
       this.stegoSpawned = true;
@@ -717,7 +754,7 @@ export default class Test2 extends Phaser.Scene {
     if (this.playerDodgeTimer >= 60) {
       this.playerDodgeTimer = 0;
       this.player.dodgeLock = true;
-      console.log('dodge ready');
+      //console.log('dodge ready');
       this.player.rollInvuln = false;
     }
   }  // Update the scene
@@ -786,19 +823,19 @@ export default class Test2 extends Phaser.Scene {
     }
 
     //If there ar eno enemies left, create more
-    if (this.enemyGroup.countActive(true) < 40) {
-      this.enemyGroup = this.physics.add.group({
-        key: "enemy",
-        repeat: 20
-      });
-
-      this.enemyGroup.children.iterate(function(child) {
-        child.setScale(0.7);
-        child.x = Math.floor(Math.random() * 900) ,
-        child.y = Math.floor(Math.random() * 900)
-        child.health = 1;
-      });
-    }
+    // if (this.enemyGroup.countActive(true) < 40) {
+    //   this.enemyGroup = this.physics.add.group({
+    //     key: "enemy",
+    //     repeat: 20
+    //   });
+    //
+    //   this.enemyGroup.children.iterate(function(child) {
+    //     child.setScale(0.7);
+    //     child.x = Math.floor(Math.random() * 900) ,
+    //     child.y = Math.floor(Math.random() * 900)
+    //     child.health = 1;
+    //   });
+    // }
 
     this.enemyGroup.children.iterate(function(child) {
       if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150) {
@@ -838,7 +875,8 @@ export default class Test2 extends Phaser.Scene {
     bullet.setAngle(Phaser.Math.RAD_TO_DEG * angle);
     bullet
       .enableBody(true, this.gun.x, this.gun.y, true, true)
-      .setVelocity(velocity.x, velocity.y);
+      .setVelocity(velocity.x, velocity.y)
+      .setScale(.5);
 
     this.gunshot.play(this.defaultSoundConfig);
   }
@@ -872,8 +910,12 @@ export default class Test2 extends Phaser.Scene {
       this.kills += 1;
       // Random ammo drop after enemy kill
       //dropRate increases when you're low on bullets
-      var dropRate = Math.max((20 - this.ammo) / 25, 0);
-      if (Math.random() < dropRate) {
+      var healthDropRate = 0.10;
+      var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+      if (Math.random() < healthDropRate) {
+        var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+        this.healthDrops.add(healthDrop);
+      } else if (Math.random() < ammoDropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
         ammoDrop.setScale(0.5);
         this.ammoDrops.add(ammoDrop);
@@ -932,6 +974,16 @@ export default class Test2 extends Phaser.Scene {
   pickAmmo (player, ammo) {
     ammo.disableBody(true, true);
     this.ammo += 20;
+  }
+
+  pickHealth (player, health) {
+    if (this.currentHealth < this.maxHealth){
+      health.disableBody(true, true);
+      this.currentHealth++;
+    } else {
+      console.log('full health!');
+    }
+
   }
 
   deadBullet (layer, bullet) {
