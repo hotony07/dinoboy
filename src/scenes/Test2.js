@@ -15,6 +15,7 @@ export default class Test2 extends Phaser.Scene {
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
 
+    this.load.audio("theme", './assets/Music/DinoBoyV2.mp3');
     this.load.audio("baby_dino_growl_1", './assets/sfx/dinosaur/baby_dino_growl_01.mp3');
     this.load.audio("baby_dino_growl_2", './assets/sfx/dinosaur/baby_dino_growl_02.mp3');
     this.load.audio("dino_hurt", './assets/sfx/dinosaur/dino_hurt.mp3');
