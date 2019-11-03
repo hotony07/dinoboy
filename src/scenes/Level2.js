@@ -63,7 +63,7 @@ export default class Level2 extends Phaser.Scene {
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
-    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap2.json");
+    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap3.json");
 
 
     // Declare variables for center of the scene
