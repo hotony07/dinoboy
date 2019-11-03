@@ -1,7 +1,7 @@
 /*global Phaser*/
-export default class Test2 extends Phaser.Scene {
+export default class Level2 extends Phaser.Scene {
   constructor () {
-    super('Test2');
+    super('Level2');
   }
 
   init (data) {
@@ -63,7 +63,7 @@ export default class Test2 extends Phaser.Scene {
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
-    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap2.json");
+    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap3.json");
 
 
     // Declare variables for center of the scene
@@ -116,6 +116,7 @@ export default class Test2 extends Phaser.Scene {
     this.nextFire = 0;
     this.fireRate = 200;
     this.speed = 1000;
+    this.lastMoveKey = "";
 
     this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
     this.gun.setOrigin(0.5);
@@ -287,8 +288,26 @@ export default class Test2 extends Phaser.Scene {
       repeat: -1
     });
     this.anims.create({
-      key: "idle",
+      key: "idleForward",
       frames: [{ key: "cowboyIdle", frame: 0 }],
+      frameRate: 1,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleBackward",
+      frames: [{ key: "cowboyIdle", frame: 1 }],
+      frameRate: 1,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleLeft",
+      frames: [{ key: "cowboyIdle", frame: 2 }],
+      frameRate: 1,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "idleRight",
+      frames: [{ key: "cowboyIdle", frame: 3 }],
       frameRate: 1,
       repeat: -1
     });
@@ -621,6 +640,7 @@ export default class Test2 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
+      this.lastMoveKey = "a";
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
         console.log('mounted');
@@ -628,6 +648,7 @@ export default class Test2 extends Phaser.Scene {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
+      this.lastMoveKey = "d";
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
       } else {
@@ -637,12 +658,14 @@ export default class Test2 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
+      this.lastMoveKey = "w";
       if (this.player.isMounted){
         this.player.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
     }
     } else if (this.s.isDown || this.cursors.down.isDown) {
+      this.lastMoveKey = "s";
       if (this.player.isMounted){
         this.player.body.setVelocityY(300);
       } else {
@@ -764,7 +787,23 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
       }
     } else {
-      this.player.anims.play("idle", true);
+      switch (this.lastMoveKey) {
+        case "s":
+          this.player.anims.play("idleForward", true);
+          break;
+        case "w":
+          this.player.anims.play("idleBackward", true);
+          break;
+        case "a":
+          this.player.anims.play("idleLeft", true);
+          break;
+        case "d":
+          this.player.anims.play("idleRight", true);
+          break;
+        default:
+          this.player.anims.play("idleForward", true);
+          break;
+      }
       if(this.player.isMounted){
       this.mount.anims.stop();
       }
