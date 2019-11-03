@@ -95,6 +95,7 @@ export default class Test2 extends Phaser.Scene {
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.cursors = this.input.keyboard.createCursorKeys();
 
     const camera = this.cameras.main;
@@ -247,7 +248,6 @@ export default class Test2 extends Phaser.Scene {
             this.makeLasso2(0, -75, 180);
           }
         }
-
       }, this);
 
 
@@ -816,7 +816,7 @@ export default class Test2 extends Phaser.Scene {
     }
     if (this.ammo == 0 && this.availDrop) {
       var ammoDrop = this.physics.add.sprite(16, 16, 'bullet');
-      ammoDrop.setScale(2);
+      ammoDrop.setScale(0.3);
       this.ammoDrops.add(ammoDrop);
       ammoDrop.setRandomPosition(0, 0, game.config.width, game.config.height);
       this.availDrop = false;
@@ -914,10 +914,11 @@ export default class Test2 extends Phaser.Scene {
       var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
       if (Math.random() < healthDropRate) {
         var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+        healthDrop.setDepth(-1);
         this.healthDrops.add(healthDrop);
       } else if (Math.random() < ammoDropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-        ammoDrop.setScale(0.5);
+        ammoDrop.setScale(0.3);
         this.ammoDrops.add(ammoDrop);
       }
     }
@@ -946,7 +947,7 @@ export default class Test2 extends Phaser.Scene {
       var dropRate = Math.max((20 - this.ammo) / 25, 0);
       if (Math.random() < dropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-        ammoDrop.setScale(0.5);
+        ammoDrop.setScale(0.3);
         this.ammoDrops.add(ammoDrop);
       }
     }
@@ -1028,7 +1029,7 @@ export default class Test2 extends Phaser.Scene {
           var dropRate = Math.max((20 - this.ammo) / 25, 0);
           if (Math.random() < dropRate) {
             var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-            ammoDrop.setScale(0.5);
+            ammoDrop.setScale(0.3);
             this.ammoDrops.add(ammoDrop);
           }
         }
