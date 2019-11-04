@@ -54,8 +54,12 @@ export default class Level2 extends Phaser.Scene {
     this.load.image('lasso', './assets/sprites/lasso.png');
     this.load.image('uplasso', './assets/sprites/uplasso.png');
     this.load.spritesheet("lasso_ss", './assets/sprites/lasso_spritesheet.png', {
-      frameWidth: 124,
-      frameHeight: 44
+      frameWidth: 128,
+      frameHeight: 64
+    });
+    this.load.spritesheet("uplasso_ss", './assets/sprites/uplasso_spritesheet.png', {
+      frameWidth: 64,
+      frameHeight: 128
     });
 
     this.load.image('tree', './assets/Scene1/tree.png');
@@ -322,6 +326,18 @@ export default class Level2 extends Phaser.Scene {
       key: "step",
       frames: this.anims.generateFrameNumbers("stegoWalk", { start: 0, end: 1 }),
       frameRate: 5,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "lasso",
+      frames: this.anims.generateFrameNumbers("lasso_ss", { start: 0, end: 2 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "uplasso",
+      frames: this.anims.generateFrameNumbers("uplasso_ss", { start: 0, end: 2 }),
+      frameRate: 10,
       repeat: -1
     });
 
@@ -1033,6 +1049,7 @@ export default class Level2 extends Phaser.Scene {
   }
 
   makeLasso (xCo, yCo, angle) {
+    this.lassoMiss.play(this.defaultSoundConfig);
     this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso');
     var x = this.lasso.widthInPixels;
     var y = this.lasso.heightInPixels;
@@ -1040,8 +1057,10 @@ export default class Level2 extends Phaser.Scene {
     this.lasso.setSize(120, 50);
     //this.lasso.setOffset(-x/2, -y/2);
     this.lassos.add(this.lasso);
+    this.lasso.anims.play("lasso", true);
   }
   makeLasso2 (xCo, yCo, angle) {
+    this.lassoMiss.play(this.defaultSoundConfig);
     this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'uplasso');
     var x = this.lasso.widthInPixels;
     var y = this.lasso.heightInPixels;
@@ -1049,6 +1068,7 @@ export default class Level2 extends Phaser.Scene {
     this.lasso.setSize(50, 120);
     //this.lasso.setOffset(x/2, -y/2);
     this.lassos.add(this.lasso);
+    this.lasso.anims.play("uplasso", true);
   }
 
   pickAmmo (player, ammo) {
@@ -1077,6 +1097,7 @@ export default class Level2 extends Phaser.Scene {
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
           console.log('enemy tamed');
+          this.lassoHit.play(this.defaultSoundConfig);
 
           // this.scene.pause();
           this.cutscene1.alpha = 1;
