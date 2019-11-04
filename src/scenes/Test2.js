@@ -105,6 +105,11 @@ export default class Test2 extends Phaser.Scene {
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+<<<<<<< HEAD
+=======
+    this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+>>>>>>> 3ffd4837ce0f373d2fd2480e0956346a3b1ef374
     this.cursors = this.input.keyboard.createCursorKeys();
 
     const camera = this.cameras.main;
@@ -124,7 +129,7 @@ export default class Test2 extends Phaser.Scene {
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
       key: "enemy",
-      repeat: 100
+      repeat: 70
     });
 
     this.enemyGroup.children.iterate(function(child) {
@@ -485,7 +490,7 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
-    if (this.stegoSpawned && this.kills == 100) {
+    if (this.stegoSpawned && this.kills == 30) {
       this.stegoSpawned = false;
 
           this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -499,7 +504,7 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego1);
           //this.stego1.anims.play('step', true);
     }
-    if (!this.stegoSpawned && this.kills == 150) {
+    if (!this.stegoSpawned && this.kills == 50) {
       this.stegoSpawned = true;
 
           this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -589,6 +594,13 @@ export default class Test2 extends Phaser.Scene {
       var text = this.add.text(this.player.x - 30, this.player.y - 40, 'Game Over');
       var score = this.add.text(this.player.x - 30, this.player.y + 25, 'Kills: ' + this.kills);
       this.input.enabled = false;
+    }
+
+    if (this.kills > 60) {
+      this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next').setScrollFactor(0);
+      if (this.enter.isDown) {
+        this.scene.start("Level2");
+      }
     }
     // Update the scene
     const speed = 175;
@@ -956,10 +968,12 @@ export default class Test2 extends Phaser.Scene {
       var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
       if (Math.random() < healthDropRate) {
         var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+        healthDrop.setDepth(-1);
+        healthDrop.setScale(0.3);
         this.healthDrops.add(healthDrop);
       } else if (Math.random() < ammoDropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-        ammoDrop.setScale(0.5);
+        ammoDrop.setScale(0.3);
         this.ammoDrops.add(ammoDrop);
       }
     }
@@ -991,10 +1005,16 @@ export default class Test2 extends Phaser.Scene {
       this.kills += 1;
       // Random ammo drop after enemy killaw
       //dropRate increases when you're low on bullets
-      var dropRate = Math.max((20 - this.ammo) / 25, 0);
-      if (Math.random() < dropRate) {
+      var healthDropRate = 0.10;
+      var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+      if (Math.random() < healthDropRate) {
+        var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+        healthDrop.setDepth(-1);
+        healthDrop.setScale(0.3);
+        this.healthDrops.add(healthDrop);
+      } else if (Math.random() < ammoDropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-        ammoDrop.setScale(0.5);
+        ammoDrop.setScale(0.3);
         this.ammoDrops.add(ammoDrop);
       }
     }
@@ -1111,10 +1131,16 @@ export default class Test2 extends Phaser.Scene {
           this.kills += 1;
           // Random ammo drop after enemy kill
           //dropRate increases when you're low on bullets
-          var dropRate = Math.max((20 - this.ammo) / 25, 0);
-          if (Math.random() < dropRate) {
+          var healthDropRate = 0.10;
+          var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+          if (Math.random() < healthDropRate) {
+            var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+            healthDrop.setDepth(-1);
+            healthDrop.setScale(0.3);
+            this.healthDrops.add(healthDrop);
+          } else if (Math.random() < ammoDropRate) {
             var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-            ammoDrop.setScale(0.5);
+            ammoDrop.setScale(0.3);
             this.ammoDrops.add(ammoDrop);
           }
         }

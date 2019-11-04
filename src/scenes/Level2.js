@@ -64,7 +64,7 @@ export default class Level2 extends Phaser.Scene {
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
-    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmap3.json");
+    this.load.tilemapTiledJSON("map2", "./assets/Tilemaps/bgmap3.json");
 
 
     // Declare variables for center of the scene
@@ -76,7 +76,7 @@ export default class Level2 extends Phaser.Scene {
     this.cutscene1 = this.add.video(this.cameras.main.x, this.cameras.main.y, 'cutscene1');
     this.cutscene1.alpha = 0;
 
-    const map = this.make.tilemap({ key: "map" });
+    const map = this.make.tilemap({ key: "map2" });
     const tileset = map.addTilesetImage("sheet", "tiles");
 
     const belowLayer = map.createStaticLayer("Below", tileset, 0, 0).setDepth(-10);
@@ -987,6 +987,7 @@ export default class Level2 extends Phaser.Scene {
       if (Math.random() < healthDropRate) {
         var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
         healthDrop.setDepth(-1);
+        healthDrop.setScale(0.3);
         this.healthDrops.add(healthDrop);
       } else if (Math.random() < ammoDropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
@@ -1016,8 +1017,14 @@ export default class Level2 extends Phaser.Scene {
       this.kills += 1;
       // Random ammo drop after enemy kill
       //dropRate increases when you're low on bullets
-      var dropRate = Math.max((20 - this.ammo) / 25, 0);
-      if (Math.random() < dropRate) {
+      var healthDropRate = 0.10;
+      var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+      if (Math.random() < healthDropRate) {
+        var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+        healthDrop.setDepth(-1);
+        healthDrop.setScale(0.3);
+        this.healthDrops.add(healthDrop);
+      } else if (Math.random() < ammoDropRate) {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
         ammoDrop.setScale(0.3);
         this.ammoDrops.add(ammoDrop);
@@ -1098,8 +1105,14 @@ export default class Level2 extends Phaser.Scene {
           this.kills += 1;
           // Random ammo drop after enemy kill
           //dropRate increases when you're low on bullets
-          var dropRate = Math.max((20 - this.ammo) / 25, 0);
-          if (Math.random() < dropRate) {
+          var healthDropRate = 0.10;
+          var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+          if (Math.random() < healthDropRate) {
+            var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+            healthDrop.setDepth(-1);
+            healthDrop.setScale(0.3);
+            this.healthDrops.add(healthDrop);
+          } else if (Math.random() < ammoDropRate) {
             var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
             ammoDrop.setScale(0.3);
             this.ammoDrops.add(ammoDrop);
