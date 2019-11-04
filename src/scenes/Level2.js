@@ -688,7 +688,7 @@ export default class Level2 extends Phaser.Scene {
       }
       try {
         this.mount.flipX = true;
-        this.mount.body.setOffset(90, 350);
+        this.mount.body.setOffset(5, 40);
       }
       catch {}
 
@@ -717,7 +717,7 @@ export default class Level2 extends Phaser.Scene {
       }
       try {
         this.mount.flipX = false;
-        this.mount.body.setOffset(570, 350);
+        this.mount.body.setOffset(230, 30);
       }
       catch {}
 
