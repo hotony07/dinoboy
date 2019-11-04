@@ -649,7 +649,7 @@ export default class Test2 extends Phaser.Scene {
     }
 
     if (this.kills > 60) {
-      this.restartText = this.add.text(this.player.x - 125, this.player.y + 75, 'Press ENTER to go next');
+      this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next').setScrollFactor(0);
       if (this.enter.isDown) {
         this.scene.start("Level2");
       }
