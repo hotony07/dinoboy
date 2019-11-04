@@ -14,7 +14,7 @@ export default class Level2 extends Phaser.Scene {
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
-        this.load.image('trex', './assets/dinosaur/trex.png');
+    this.load.image('trex', './assets/dinosaur/trex.png');
 
     this.load.audio("theme", './assets/Music/DinoBoyV2.mp3');
     this.load.audio("baby_dino_growl_1", './assets/sfx/dinosaur/baby_dino_growl_01.mp3');
@@ -43,16 +43,12 @@ export default class Level2 extends Phaser.Scene {
       frameWidth: 35,
       frameHeight: 43
     });
-    this.load.image('stego', './assets/dinosaur/stego3.png')
-    this.load.spritesheet('stegoWalk', './assets/dinosaur/dinoWalk.png', {
-      frameWidth: 721,
-      frameHeight: 720
+    this.load.image('stego', './assets/dinosaur/trex.png')
+    this.load.spritesheet('stegoWalk', './assets/dinosaur/wobble.png', {
+      frameWidth: 299,
+      frameHeight: 299
     });
 
-    this.load.spritesheet('trexWalk', './assets/dinosaur/Wobble.png', {
-      frameWidth: 300,
-      frameHeight: 300
-    });
 
     this.load.image('gun', './assets/sprites/gun.png');
     this.load.image('lasso', './assets/sprites/lasso.png');
@@ -368,8 +364,8 @@ export default class Level2 extends Phaser.Scene {
       child.setScale(0.7);
       child.x = Math.floor(Math.random() * 900) ,
       child.y = Math.floor(Math.random() * 900)
-      child.body.setSize(32, 30);
-      child.body.setOffset(72, 130);
+      child.body.setSize(15, 30);
+      child.body.setOffset(32, 50);
       child.body.immovable = true;
     });
 
@@ -497,7 +493,7 @@ export default class Level2 extends Phaser.Scene {
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
           this.stego.setCollideWorldBounds(true);
-          this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
+          this.stego.body.setSize(288, 289, this.sStegoX, this.sStegoY);
           this.stego.setScale(0.5);
           this.stego.setDepth(-1);
           this.stego.health = 50;
@@ -511,7 +507,7 @@ export default class Level2 extends Phaser.Scene {
 
           this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
           this.stego1.setCollideWorldBounds(true);
-          this.stego1.body.setSize(256, 128, this.B1X, this.B1Y);
+          this.stego1.body.setSize(288, 289, this.B1X, this.B1Y);
           this.stego1.setScale(0.5);
           this.stego1.setDepth(-1);
           this.stego1.health = 50;
@@ -524,7 +520,7 @@ export default class Level2 extends Phaser.Scene {
 
           this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
           this.stego1b.setCollideWorldBounds(true);
-          this.stego1b.body.setSize(256, 128, this.B1X, this.B1Y);
+          this.stego1b.body.setSize(288, 289, this.B1X, this.B1Y);
           this.stego1b.setScale(0.5);
           this.stego1b.setDepth(-1);
           this.stego1b.health = 50;
@@ -534,7 +530,7 @@ export default class Level2 extends Phaser.Scene {
 
           this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
           this.stego2.setCollideWorldBounds(true);
-          this.stego2.body.setSize(256, 128, this.B2X, this.B2Y);
+          this.stego2.body.setSize(288, 289, this.B2X, this.B2Y);
           this.stego2.setScale(0.5);
           this.stego2.setDepth(-1);
           this.stego2.health = 50;
@@ -544,7 +540,7 @@ export default class Level2 extends Phaser.Scene {
 
           this.stego3 = this.physics.add.sprite(this.B3X, this.B3Y, 'stego');
           this.stego3.setCollideWorldBounds(true);
-          this.stego3.body.setSize(256, 128, this.B3X, this.B3Y);
+          this.stego3.body.setSize(288, 289, this.B3X, this.B3Y);
           this.stego3.setScale(0.5);
           this.stego3.setDepth(-1);
           this.stego3.health = 50;
@@ -629,8 +625,8 @@ export default class Level2 extends Phaser.Scene {
     this.gun.x = this.player.x + 13;
     this.gun.y = this.player.y + 5;
     try {
-      this.mount.x = this.player.x;
-      this.mount.y = this.player.y + 80;
+      this.mount.x = this.player.x + 10 ;
+      this.mount.y = this.player.y + 30;
     } catch {}
 
 
@@ -1085,11 +1081,11 @@ export default class Level2 extends Phaser.Scene {
           this.playerHit = true;
 
           enemy.disableBody(true, true);
-          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stegoWalk');
-          this.mount.setScale(.9);
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
+          this.mount.setScale(.7);
           this.mount.setDepth(-10);
           this.mount.body.setSize(64, 64);
-          this.mount.body.setOffset(570, 350);
+          this.mount.body.setOffset(10, 10);
           this.player.isMounted = true;
           this.mountGroup.add(this.mount);
         } else {
