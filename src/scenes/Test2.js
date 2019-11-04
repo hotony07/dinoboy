@@ -105,11 +105,10 @@ export default class Test2 extends Phaser.Scene {
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-<<<<<<< HEAD
-=======
+
     this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
->>>>>>> 3ffd4837ce0f373d2fd2480e0956346a3b1ef374
+
     this.cursors = this.input.keyboard.createCursorKeys();
 
     const camera = this.cameras.main;
