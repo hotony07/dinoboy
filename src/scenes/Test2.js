@@ -683,6 +683,7 @@ export default class Test2 extends Phaser.Scene {
       try {
         this.mount.flipX = true;
         this.mount.body.setOffset(90, 350);
+
       }
       catch {}
 
@@ -989,6 +990,18 @@ export default class Test2 extends Phaser.Scene {
     var walkAn = this.anims.get('step');
     var newFrames = this.anims.generateFrameNames('chomp');
     walkAn.addFrame(newFrames);
+    this.mount.body.setOffset(570, 350);
+
+    // if(this.player.isMounted){
+    // this.mount.anims.pause();
+    // this.mount.anims.play('chomp', true);
+    // this.mount.anims.resume();
+    // }
+    // try {
+    //   this.mount.flipX = false;
+    //   this.mount.body.setOffset(570, 350);
+    // }
+    // catch {}
 
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
     var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
@@ -1109,7 +1122,7 @@ export default class Test2 extends Phaser.Scene {
           this.playerHit = true;
 
           enemy.disableBody(true, true);
-          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'trex');
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
           this.mount.setScale(.7);
           this.mount.setDepth(-10);
           this.mount.body.setSize(64, 64);

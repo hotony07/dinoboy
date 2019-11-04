@@ -320,6 +320,12 @@ export default class Level2 extends Phaser.Scene {
     });
     this.anims.create({
       key: "step",
+      frames: this.anims.generateFrameNumbers("stegoWalk", { start: 2, end: 3 }),
+      frameRate: 5,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "stepBack",
       frames: this.anims.generateFrameNumbers("stegoWalk", { start: 0, end: 1 }),
       frameRate: 5,
       repeat: -1
@@ -742,7 +748,8 @@ export default class Level2 extends Phaser.Scene {
     } else if (this.w.isDown || this.cursors.up.isDown) {
       this.player.anims.play("walkBackward", true);
       if(this.player.isMounted){
-      this.mount.anims.play('step', true);
+      this.mount.anims.play('stepBack', true);
+      this.mount.body.setOffset(113, 10);
       }
 
       //dodge roll
