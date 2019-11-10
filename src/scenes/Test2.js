@@ -50,6 +50,10 @@ export default class Test2 extends Phaser.Scene {
       frameWidth: 721,
       frameHeight: 720
     });
+    this.load.spritesheet('backWalk', './assets/dinosaur/backStego.png', {
+      frameWidth: 230,
+      frameHeight: 255
+    });
 
     this.load.image('gun', './assets/sprites/gun.png');
     this.load.image('gun_forward', './assets/sprites/gun_forward.png');
@@ -339,6 +343,13 @@ export default class Test2 extends Phaser.Scene {
       frameRate: 5,
       repeat: -1
     });
+    this.anims.create({
+      key: "stepBack",
+      frames: this.anims.generateFrameNumbers("backWalk", { start: 0, end: 1 }),
+      frameRate: 2,
+      repeat: -1
+    });
+
     this.anims.create({
       key: "chomp",
       frames: this.anims.generateFrameNumbers("chomp", { start: 0, end: 1 }),
@@ -807,6 +818,7 @@ export default class Test2 extends Phaser.Scene {
       this.walk(this.lastDirection);
       if (this.player.isMounted) {
         this.player.body.setVelocityY(-300);
+
         this.gun.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
@@ -891,7 +903,7 @@ export default class Test2 extends Phaser.Scene {
       }
     } else if (this.w.isDown || this.cursors.up.isDown) {
       if(this.player.isMounted){
-      this.mount.anims.play('step', true);
+      this.mount.anims.play('stepBack', true);
       }
 
       //dodge roll
