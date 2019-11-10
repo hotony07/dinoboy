@@ -38,8 +38,11 @@ export default class Tutorial1 extends Phaser.Scene {
       frameWidth: 35,
       frameHeight: 43
     });
-    this.load.image('stego', './assets/dinosaur/stego2.png')
-
+    //this.load.image('stego', './assets/dinosaur/stego2.png')
+    this.load.spritesheet('stego', './assets/dinosaur/dinoWalk.png', {
+      frameWidth: 721,
+      frameHeight: 720
+    });
 
     this.load.image('gun', './assets/sprites/gun.png');
     this.load.image('lasso', './assets/sprites/lasso.png');
