@@ -51,9 +51,9 @@ export default class Test2 extends Phaser.Scene {
       frameHeight: 720
     });
 
-
-
     this.load.image('gun', './assets/sprites/gun.png');
+    this.load.image('gun_forward', './assets/sprites/gun_forward.png');
+    this.load.image('gun_backward', './assets/sprites/gun_backward.png');
     this.load.image('lasso', './assets/sprites/lasso.png');
     this.load.image('uplasso', './assets/sprites/uplasso.png');
     this.load.spritesheet("lasso_ss", './assets/sprites/lasso_spritesheet.png', {
@@ -715,20 +715,30 @@ export default class Test2 extends Phaser.Scene {
       case "left":
         this.gun.x = this.player.x - 10;
         this.gun.y = this.player.y + 4;
+        this.gun.setTexture('gun');
         this.gun.flipY = true;
         break;
       case "right":
         this.gun.x = this.player.x + 10;
         this.gun.y = this.player.y + 4;
+        this.gun.setTexture('gun');
         this.gun.flipY = false;
         break;
       case "forward":
         this.gun.x = this.player.x - 10;
-        this.gun.y = this.player.y + 4;
+        this.gun.y = this.player.y + 8;
+        this.gun.flipY = false;
+        this.gun.setTexture('gun_forward');
+        this.gun.setRotation(Phaser.Math.DegToRad(0));
+        this.gun.setDepth(this.player.depth + 1);
         break;
       case "backward":
         this.gun.x = this.player.x + 10;
-        this.gun.y = this.player.y - 4;
+        this.gun.y = this.player.y + 5;
+        this.gun.flipY = false;
+        this.gun.setTexture('gun_backward');
+        this.gun.setRotation(Phaser.Math.DegToRad(0));
+        this.gun.setDepth(this.player.depth - 1);
         break;
       default:
         break;
