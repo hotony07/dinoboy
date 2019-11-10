@@ -57,6 +57,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.load.image('ammo', './assets/sprites/ammo.png');
     this.load.image('health', './assets/Scene1/Heart.png');
 
+    this.load.image('back', './assets/dinosaur/background.png');
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
     this.load.tilemapTiledJSON("tutorialMap", "./assets/Tilemaps/bgmap.json");

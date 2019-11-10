@@ -113,6 +113,7 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
     this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
     this.load.video("cutscene1", './assets/cutscene1.mp4');
+    this.load.image('back', './assets/dinosaur/background.png');
 
     this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
       frameWidth: 64,
@@ -157,7 +158,7 @@ export default class PreloaderScene extends Phaser.Scene {
     var progressBar = this.add.graphics();
     var progressBox = this.add.graphics();
 
-    
+
   }
 
   ready () {
