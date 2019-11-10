@@ -1154,7 +1154,6 @@ export default class Test2 extends Phaser.Scene {
     var walkAn = this.anims.get('step');
     var newFrames = this.anims.generateFrameNames('chomp');
     walkAn.addFrame(newFrames);
-    this.mount.body.setOffset(570, 350);
 
     // if(this.player.isMounted){
     // this.mount.anims.pause();
