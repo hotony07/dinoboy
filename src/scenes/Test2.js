@@ -138,46 +138,48 @@ export default class Test2 extends Phaser.Scene {
       child.health = 1;
       child.boss = false;
       child.boss2 = false;
+      child.isStunned = false;
+      child.stunTimer = 0;
     });
 
     this.mountGroup = this.physics.add.group();
-
-    var enemy = this.physics.add.sprite(100, 100, 'enemy');
-    var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
-    var enemy3 = this.physics.add.sprite(100, 300, 'enemy');
-    var enemy4 = this.physics.add.sprite(100, 400, 'enemy');
-
-
-    var tween = this.tweens.add({
-      targets: [enemy, enemy3],
-      props: {
-        x: { value: '+=600', duration: 7000, flipX: true},
-        y: { value: '570', duration: 7500, ease: 'Sine.easeInOut'}
-      },
-      delay: 100,
-      yoyo: true,
-      loop: -1
-    })
-
-    this.tweens.add({
-      targets: [enemy2, enemy4],
-      props: {
-        x: { value: '500', duration: 7000, flipX: true},
-        y: { value: '170', duration: 7500, ease: 'Sine.easeInOut'}
-      },
-      delay: 100,
-      yoyo: true,
-      loop: -1
-    })
-
-    this.enemyGroup.add(enemy);
-    this.enemyGroup.add(enemy2);
-    this.enemyGroup.add(enemy3);
-    this.enemyGroup.add(enemy4);
-    enemy.health = 1;
-    enemy2.health = 1;
-    enemy3.health = 1;
-    enemy4.health = 1;
+    //
+    // var enemy = this.physics.add.sprite(100, 100, 'enemy');
+    // var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
+    // var enemy3 = this.physics.add.sprite(100, 300, 'enemy');
+    // var enemy4 = this.physics.add.sprite(100, 400, 'enemy');
+    //
+    //
+    // var tween = this.tweens.add({
+    //   targets: [enemy, enemy3],
+    //   props: {
+    //     x: { value: '+=600', duration: 7000, flipX: true},
+    //     y: { value: '570', duration: 7500, ease: 'Sine.easeInOut'}
+    //   },
+    //   delay: 100,
+    //   yoyo: true,
+    //   loop: -1
+    // })
+    //
+    // this.tweens.add({
+    //   targets: [enemy2, enemy4],
+    //   props: {
+    //     x: { value: '500', duration: 7000, flipX: true},
+    //     y: { value: '170', duration: 7500, ease: 'Sine.easeInOut'}
+    //   },
+    //   delay: 100,
+    //   yoyo: true,
+    //   loop: -1
+    // })
+    //
+    // this.enemyGroup.add(enemy);
+    // this.enemyGroup.add(enemy2);
+    // this.enemyGroup.add(enemy3);
+    // this.enemyGroup.add(enemy4);
+    // enemy.health = 1;
+    // enemy2.health = 1;
+    // enemy3.health = 1;
+    // enemy4.health = 1;
 
     //stegosaurus
     const stegoSpawn = map.findObject(
@@ -486,6 +488,8 @@ export default class Test2 extends Phaser.Scene {
           this.stego.boss = false;
           this.stego.boss2 = true;
           this.stego.flipX = true;
+          this.stego.stunTimer = 0;
+          this.stego.isStunned = false;
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
@@ -500,6 +504,8 @@ export default class Test2 extends Phaser.Scene {
           this.stego1.health = 50;
           this.stego1.boss = true;
           this.stego1.boss2 = false;
+          this.stego1.stunTimer = 0;
+          this.stego1.isStunned = false;
           this.enemyGroup.add(this.stego1);
           //this.stego1.anims.play('step', true);
     }
@@ -514,6 +520,8 @@ export default class Test2 extends Phaser.Scene {
           this.stego1b.health = 50;
           this.stego1b.boss = true;
           this.stego1b.boss2 = false;
+          this.stego1b.stunTimer = 0;
+          this.stego1b.isStunned = false;
           this.enemyGroup.add(this.stego1b);
           this.stego1b.anims.play('step', true);
 
@@ -525,6 +533,8 @@ export default class Test2 extends Phaser.Scene {
           this.stego2.health = 50;
           this.stego2.boss = true;
           this.stego1b.boss2 = false;
+          this.stego2.stunTimer = 0;
+          this.stego2.isStunned = false;
           this.enemyGroup.add(this.stego2);
           this.stego2.anims.play('step', true);
 
@@ -535,6 +545,8 @@ export default class Test2 extends Phaser.Scene {
           this.stego3.setDepth(-1);
           this.stego3.health = 50;
           this.stego3.boss = true;
+          this.stego3.stunTimer = 0;
+          this.stego3.isStunned = false;
           this.enemyGroup.add(this.stego3);
           this.stego3.anims.play('step', true);
     }
@@ -889,15 +901,22 @@ export default class Test2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
-      if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150) {
+      if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
           this.tweens.add({
             targets: child,
             x: this.player.x,
             y: this.player.y,
             duration: 1000 + Math.floor(Math.random() * 2000)
           });
+      } else {
+        child.stunTimer++;
+        if (this.stunTimer > 50) {
+          child.isStunned = false;
+          child.stunTimer = 0;
+        }
       }
     }.bind(this));
+
 
     //this.physics.add.overlap(this.mount, this.enemyGroup, this.chompEnemy, null, this);
 
@@ -1124,25 +1143,26 @@ export default class Test2 extends Phaser.Scene {
 
       } else{
         this.lassoHit.play(this.defaultSoundConfig);
-        enemy.health--;
-        if (enemy.health == 0) {
-          enemy.disableBody(true, true);
-          this.kills += 1;
-          // Random ammo drop after enemy kill
-          //dropRate increases when you're low on bullets
-          var healthDropRate = 0.10;
-          var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
-          if (Math.random() < healthDropRate) {
-            var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
-            healthDrop.setDepth(-1);
-            healthDrop.setScale(0.3);
-            this.healthDrops.add(healthDrop);
-          } else if (Math.random() < ammoDropRate) {
-            var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-            ammoDrop.setScale(0.3);
-            this.ammoDrops.add(ammoDrop);
-          }
-        }
+        enemy.isStunned;
+        // enemy.health--;
+        // if (enemy.health == 0) {
+        //   enemy.disableBody(true, true);
+        //   this.kills += 1;
+        //   // Random ammo drop after enemy kill
+        //   //dropRate increases when you're low on bullets
+        //   var healthDropRate = 0.10;
+        //   var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+        //   if (Math.random() < healthDropRate) {
+        //     var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+        //     healthDrop.setDepth(-1);
+        //     healthDrop.setScale(0.3);
+        //     this.healthDrops.add(healthDrop);
+        //   } else if (Math.random() < ammoDropRate) {
+        //     var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
+        //     ammoDrop.setScale(0.3);
+        //     this.ammoDrops.add(ammoDrop);
+        //   }
+        // }
       }
   }
 }
