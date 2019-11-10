@@ -481,6 +481,8 @@ export default class Test2 extends Phaser.Scene {
 
     this.B3X = bigSpawn3.x;
     this.B3Y = bigSpawn3.y;
+
+
   }
 
   update (time, delta) {
@@ -652,7 +654,12 @@ export default class Test2 extends Phaser.Scene {
       //this.gun.destroy();
       this.gameOverText = this.add.text(this.player.x - 40, this.player.y - 40, 'Game Over');
       this.finalScore = this.add.text(this.player.x - 40, this.player.y + 25, 'Kills: ' + this.kills);
-      this.restartText = this.add.text(this.player.x - 125, this.player.y + 75, 'Press ESC to restart the game');
+      this.restartText = this.add.text(this.player.x - 150, this.player.y + 75, 'Press ESC to restart the game', {
+        font: "18px monospace",
+        fill: "#000000",
+        padding: { x: 20, y: 10 },
+        backgroundColor: "#ffffff"
+      });
       this.input.enabled = false;
       if (this.esc.isDown) {
         this.gameOver = false;
@@ -662,7 +669,12 @@ export default class Test2 extends Phaser.Scene {
     }
 
     if (this.kills > 60) {
-      this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next').setScrollFactor(0);
+      this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next', {
+        font: "18px monospace",
+        fill: "#000000",
+        padding: { x: 20, y: 10 },
+        backgroundColor: "#ffffff"
+      }).setScrollFactor(0);
       if (this.enter.isDown) {
         this.scene.start("Level2");
       }
