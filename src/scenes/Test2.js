@@ -130,8 +130,8 @@ export default class Test2 extends Phaser.Scene {
     this.speed = 1000;
     this.lastDirection = "";
 
-    this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
-    this.gun.setOrigin(0.5);
+    this.gun = this.physics.add.sprite(this.player.x + 10, this.player.y + 4, 'gun');
+    this.gun.setDebug(false);
     this.gun.setScale(0.15);
 
     //this.enemies = this.add.group();
@@ -711,20 +711,24 @@ export default class Test2 extends Phaser.Scene {
       }, this
     );
 
-    switch (this.lastDirection) {
+    switch (this.lastDirection)
+    {
       case "left":
+        this.gun.body.setOffset(this.player.x - 10, this.player.y + 4);
         this.gun.x = this.player.x - 10;
         this.gun.y = this.player.y + 4;
         this.gun.setTexture('gun');
         this.gun.flipY = true;
         break;
       case "right":
+        this.gun.body.setOffset(this.player.x + 10, this.player.y + 4);
         this.gun.x = this.player.x + 10;
         this.gun.y = this.player.y + 4;
         this.gun.setTexture('gun');
         this.gun.flipY = false;
         break;
       case "forward":
+        this.gun.body.setOffset(this.player.x - 10, this.player.y + 8);
         this.gun.x = this.player.x - 10;
         this.gun.y = this.player.y + 8;
         this.gun.flipY = false;
@@ -733,6 +737,7 @@ export default class Test2 extends Phaser.Scene {
         this.gun.setDepth(this.player.depth + 1);
         break;
       case "backward":
+        this.gun.body.setOffset(this.player.x + 10, this.player.y + 5);
         this.gun.x = this.player.x + 10;
         this.gun.y = this.player.y + 5;
         this.gun.flipY = false;
@@ -753,6 +758,7 @@ export default class Test2 extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
+    this.gun.body.setVelocity(0);
     try {
       if (this.mount.boss = true){
         this.mount.x = this.player.x;
@@ -779,16 +785,20 @@ export default class Test2 extends Phaser.Scene {
       this.walk(this.lastDirection);
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
+        this.gun.body.setVelocityX(-300);
         //console.log('mounted');
       } else {
       this.player.body.setVelocityX(-speed);
+      this.gun.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
       this.walk(this.lastDirection);
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
+        this.gun.body.setVelocityX(300);
       } else {
       this.player.body.setVelocityX(speed);
+      this.gun.body.setVelocityX(speed);
     }
     }
 
@@ -797,23 +807,29 @@ export default class Test2 extends Phaser.Scene {
       this.walk(this.lastDirection);
       if (this.player.isMounted) {
         this.player.body.setVelocityY(-300);
+        this.gun.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
+      this.gun.body.setVelocityY(-speed);
       }
     } else if (this.s.isDown || this.cursors.down.isDown) {
       this.walk(this.lastDirection);
         if (this.player.isMounted){
           this.player.body.setVelocityY(300);
+          this.gun.body.setVelocityY(300);
         } else {
         this.player.body.setVelocityY(speed);
+        this.gun.body.setVelocityY(speed);
       }
     }
 
     // Normalize and scale the velocity so that player can't move faster along a diagonal
     if (this.player.isMounted) {
       this.player.body.velocity.normalize().scale(300);
+      this.gun.body.velocity.normalize().scale(300);
     } else {
       this.player.body.velocity.normalize().scale(speed);
+      this.gun.body.velocity.normalize().scale(speed);
     }
 
     if (this.a.isDown || this.cursors.left.isDown) {
