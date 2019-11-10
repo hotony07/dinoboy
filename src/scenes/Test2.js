@@ -699,6 +699,29 @@ export default class Test2 extends Phaser.Scene {
       }, this
     );
 
+    switch (this.lastDirection) {
+      case "left":
+        this.gun.x = this.player.x - 10;
+        this.gun.y = this.player.y + 4;
+        this.gun.flipY = true;
+        break;
+      case "right":
+        this.gun.x = this.player.x + 10;
+        this.gun.y = this.player.y + 4;
+        this.gun.flipY = false;
+        break;
+      case "forward":
+        this.gun.x = this.player.x - 10;
+        this.gun.y = this.player.y + 4;
+        break;
+      case "backward":
+        this.gun.x = this.player.x + 10;
+        this.gun.y = this.player.y - 4;
+        break;
+      default:
+        break;
+    }
+
     // var timeElapsed = 0;
     // timeElapsed += game.timer.elapsed();
     // if (timeElapsed >= 0.5) {
@@ -708,8 +731,6 @@ export default class Test2 extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
-    this.gun.x = this.player.x + 10;
-    this.gun.y = this.player.y + 4;
     try {
       if (this.mount.boss = true){
         this.mount.x = this.player.x;
