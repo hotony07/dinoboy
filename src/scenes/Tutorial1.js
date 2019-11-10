@@ -57,7 +57,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.load.image('ammo', './assets/sprites/ammo.png');
     this.load.image('health', './assets/Scene1/Heart.png');
 
-    this.load.image('back', './assets/dinosaur/background.png');
+    this.load.image('back', './assets/dinosaur/back2.png');
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
     this.load.tilemapTiledJSON("tutorialMap", "./assets/Tilemaps/bgmap.json");
@@ -408,13 +408,18 @@ export default class Tutorial1 extends Phaser.Scene {
     this.playerGroup.add(this.player);
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
+    this.backText = this.add.sprite(this.centerX - 832, this. centerY + 375, 'back');
+    this.backText.setScale(0.3);
+    //this.backText.setScrollFactor(0);
+
     this.ammoScore = this.add.text(this.centerX - 20, this. centerY + 150, 'Ammo: '+ this.ammo, { fontSize: '12' }).setScrollFactor(0);
 
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
-    this.tutorial_wasd = this.add.text(this.player.x, this.player.y - 100, "W, S - up, down\nA, D - left, right\n[SHIFT] - dodge\nTry walking and dodging!", {
-      fontSize: '20px'
+    this.tutorial_wasd = this.add.text(this.player.x - 800, this.player.y + 375, "W, S - up, down\nA, D - left, right\n[SHIFT] - dodge\nTry walking and dodging!", {
+      fontSize: '10px',
+      color: 0xff00ff
     });
 
     this.tutorial_shoot = this.add.text(this.player.x, this.player.y - 100, "Left click - shoot\nShoot one of the baby dinos!\nWatch your ammo!");
@@ -437,8 +442,10 @@ export default class Tutorial1 extends Phaser.Scene {
 
   update (time, delta) {
     this.ammoScore.setText('Ammo: ' + this.ammo);
-    this.tutorial_wasd.x = this.player.x;
-    this.tutorial_wasd.y = this.player.y - 100;
+    this.tutorial_wasd.x = this.player.x - 62;
+    this.tutorial_wasd.y = this.player.y +30;
+    //this.backText.x = this.player.x - 832;
+    //this.backText.y = this.player.y +375;
 
     if (!this.didWalk) {
       this.tutorial_shoot.alpha = 0;
