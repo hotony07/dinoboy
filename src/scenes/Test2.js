@@ -732,7 +732,7 @@ export default class Test2 extends Phaser.Scene {
     if (this.a.isDown || this.cursors.left.isDown) {
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
-        console.log('mounted');
+        //console.log('mounted');
       } else {
       this.player.body.setVelocityX(-speed);
     }
@@ -925,13 +925,13 @@ export default class Test2 extends Phaser.Scene {
             this
           );
           if (b.y < 0) {
-            b.setActive(false);
-          } else if (b.y > this.cameras.main.height) {
-            b.setActive(false);
+            b.disableBody(true, true);
+          } else if (b.y > game.config.height) {
+            b.disableBody(true, true);
           } else if (b.x < 0) {
-            b.setActive(false);
-          } else if (b.x > this.cameras.main.width) {
-            b.setActive(false);
+            b.disableBody(true, true);
+          } else if (b.x > game.config.width) {
+            b.disableBody(true, true);
           }
         }
       }.bind(this)
@@ -1183,7 +1183,7 @@ export default class Test2 extends Phaser.Scene {
       health.disableBody(true, true);
       this.currentHealth++;
     } else {
-      console.log('full health!');
+      //console.log('full health!');
     }
 
   }
@@ -1198,7 +1198,7 @@ export default class Test2 extends Phaser.Scene {
         tameRate = Math.max(100);
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
-          console.log('enemy tamed');
+          //console.log('enemy tamed');
           this.lassoHit.play(this.defaultSoundConfig);
 
           // this.scene.pause();
@@ -1221,13 +1221,13 @@ export default class Test2 extends Phaser.Scene {
           this.mount.boss2 = true;
           this.mountGroup.add(this.mount);
         } else {
-          console.log('attempt failed');
+          //console.log('attempt failed');
         }
       } else if (enemy.boss2){
         tameRate = Math.max(100);
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
-          console.log('enemy tamed');
+          //console.log('enemy tamed');
           this.lassoHit.play(this.defaultSoundConfig);
 
           // this.scene.pause();
@@ -1250,7 +1250,7 @@ export default class Test2 extends Phaser.Scene {
           this.mount.boss2 = true;
           this.mountGroup.add(this.mount);
         } else {
-          console.log('attempt failed');
+          //console.log('attempt failed');
         }
 
       } else{
