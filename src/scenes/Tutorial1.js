@@ -436,7 +436,10 @@ export default class Tutorial1 extends Phaser.Scene {
       color: 0xff00ff
     });
 
-    this.tutorial_complete = this.add.text(this.player.x, this.player.y - 100, "[ESC] to go back to menu\nOR\n[ENTER] to start game!");
+    this.tutorial_complete = this.add.text(this.player.x, this.player.y - 100, "[ESC] to go back to menu\nOR\n[ENTER] to start game!",{
+      fontSize: '10px',
+      color: 0xff00ff
+    });
 
     // tutorial checkpoints
     this.didWalk = false;
@@ -491,8 +494,10 @@ export default class Tutorial1 extends Phaser.Scene {
       } catch {}
       this.tutorial_lasso.destroy();
       this.tutorial_complete.alpha = 1;
-      this.tutorial_complete.x = this.player.x;
+      this.tutorial_complete.x = this.player.x - 67;
       this.tutorial_complete.y = this.player.y - 100;
+      this.backText.x = this.player.x + 4  ;
+      this.backText.y = this.player.y - 80 ;
 
       if (this.esc.isDown) {
         this.scene.start("Boot");
