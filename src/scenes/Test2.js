@@ -639,7 +639,10 @@ export default class Test2 extends Phaser.Scene {
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-
+    if (this.esc.isDown) {
+      this.gameOver = false;
+      this.scene.restart();
+      }
     //Game over
     if (this.gameOver) {
       while (this.healthGroup.getChildren().length > 0) {
@@ -647,8 +650,14 @@ export default class Test2 extends Phaser.Scene {
       }
       this.player.disableBody(false, false);
       //this.gun.destroy();
-      var text = this.add.text(this.player.x - 30, this.player.y - 40, 'Game Over');
-      var score = this.add.text(this.player.x - 30, this.player.y + 25, 'Kills: ' + this.kills);
+      this.gameOverText = this.add.text(this.player.x - 40, this.player.y - 40, 'Game Over');
+      this.finalScore = this.add.text(this.player.x - 40, this.player.y + 25, 'Kills: ' + this.kills);
+      this.restartText = this.add.text(this.player.x - 125, this.player.y + 75, 'Press ESC to restart the game');
+      this.input.enabled = false;
+      if (this.esc.isDown) {
+        this.gameOver = false;
+        this.scene.restart();
+        }
       this.input.enabled = false;
     }
 
