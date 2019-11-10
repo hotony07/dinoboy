@@ -683,14 +683,17 @@ export default class Test2 extends Phaser.Scene {
         }
         if (angle < 135 && angle > 45)
         {
+          this.lastDirection = "forward";
           this.player.anims.play("walkForward", true);
         }
         if (angle < -135 || angle > 135)
         {
+          this.lastDirection = "left";
           this.player.anims.play("walkLeft", true);
         }
         if (angle > -135 && angle < -45)
         {
+          this.lastDirection = "backward";
           this.player.anims.play("walkBackward", true);
         }
       }, this
@@ -730,6 +733,7 @@ export default class Test2 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
+      this.walk(this.lastDirection);
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
         console.log('mounted');
@@ -737,6 +741,7 @@ export default class Test2 extends Phaser.Scene {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
+      this.walk(this.lastDirection);
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
       } else {
@@ -746,12 +751,14 @@ export default class Test2 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
+      this.walk(this.lastDirection);
       if (this.player.isMounted) {
         this.player.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
       }
     } else if (this.s.isDown || this.cursors.down.isDown) {
+      this.walk(this.lastDirection);
         if (this.player.isMounted){
           this.player.body.setVelocityY(300);
         } else {
@@ -1147,6 +1154,28 @@ export default class Test2 extends Phaser.Scene {
         ammoDrop.setScale(0.3);
         this.ammoDrops.add(ammoDrop);
       }
+    }
+  }
+
+  walk(direction)
+  {
+    switch (direction)
+    {
+      case "forward":
+        this.player.anims.play("walkForward", true);
+        break;
+      case "backward":
+        this.player.anims.play("walkBackward", true);
+        break;
+      case "left":
+        this.player.anims.play("walkLeft", true);
+        break;
+      case "right":
+        this.player.anims.play("walkRight", true);
+        break;
+      default:
+        this.player.anims.play("walkForward", true);
+        break;
     }
   }
 
