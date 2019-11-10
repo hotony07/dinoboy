@@ -978,8 +978,14 @@ export default class Test2 extends Phaser.Scene {
             duration: 1000 + Math.floor(Math.random() * 2000)
           });
       } else {
+        this.tweens.add({
+          targets: child,
+          x: child.x,
+          y: child.y,
+          duration: 1
+        });
         child.stunTimer++;
-        if (this.stunTimer > 50) {
+        if (child.stunTimer > 50) {
           child.isStunned = false;
           child.stunTimer = 0;
         }
@@ -1224,7 +1230,7 @@ export default class Test2 extends Phaser.Scene {
 
       } else{
         this.lassoHit.play(this.defaultSoundConfig);
-        enemy.isStunned;
+        enemy.isStunned = true;
         // enemy.health--;
         // if (enemy.health == 0) {
         //   enemy.disableBody(true, true);
