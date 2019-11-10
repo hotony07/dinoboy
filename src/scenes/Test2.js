@@ -128,7 +128,7 @@ export default class Test2 extends Phaser.Scene {
     this.nextFire = 0;
     this.fireRate = 200;
     this.speed = 1000;
-    this.lastMoveKey = "";
+    this.lastDirection = "";
 
     this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
     this.gun.setOrigin(0.5);
@@ -639,7 +639,10 @@ export default class Test2 extends Phaser.Scene {
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-
+    if (this.esc.isDown) {
+      this.gameOver = false;
+      this.scene.restart();
+      }
     //Game over
     if (this.gameOver) {
       while (this.healthGroup.getChildren().length > 0) {
@@ -647,8 +650,14 @@ export default class Test2 extends Phaser.Scene {
       }
       this.player.disableBody(false, false);
       //this.gun.destroy();
-      var text = this.add.text(this.player.x - 30, this.player.y - 40, 'Game Over');
-      var score = this.add.text(this.player.x - 30, this.player.y + 25, 'Kills: ' + this.kills);
+      this.gameOverText = this.add.text(this.player.x - 40, this.player.y - 40, 'Game Over');
+      this.finalScore = this.add.text(this.player.x - 40, this.player.y + 25, 'Kills: ' + this.kills);
+      this.restartText = this.add.text(this.player.x - 125, this.player.y + 75, 'Press ESC to restart the game');
+      this.input.enabled = false;
+      if (this.esc.isDown) {
+        this.gameOver = false;
+        this.scene.restart();
+        }
       this.input.enabled = false;
     }
 
@@ -661,6 +670,31 @@ export default class Test2 extends Phaser.Scene {
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
+
+    this.input.on("pointermove", function (pointer) {
+        var betweenPoints = Phaser.Math.Angle.BetweenPoints;
+        var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.gun, pointer.positionToCamera(this.cameras.main));
+        this.gun.setAngle(angle);
+
+        if (angle < 45 || angle > -45)
+        {
+          this.lastDirection = "right";
+          this.player.anims.play("walkRight", true);
+        }
+        if (angle < 135 && angle > 45)
+        {
+          this.player.anims.play("walkForward", true);
+        }
+        if (angle < -135 || angle > 135)
+        {
+          this.player.anims.play("walkLeft", true);
+        }
+        if (angle > -135 && angle < -45)
+        {
+          this.player.anims.play("walkBackward", true);
+        }
+      }, this
+    );
 
     // var timeElapsed = 0;
     // timeElapsed += game.timer.elapsed();
@@ -696,7 +730,6 @@ export default class Test2 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
-      this.lastMoveKey = "a";
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
         console.log('mounted');
@@ -704,7 +737,6 @@ export default class Test2 extends Phaser.Scene {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-      this.lastMoveKey = "d";
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
       } else {
@@ -714,19 +746,17 @@ export default class Test2 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
-      this.lastMoveKey = "w";
-      if (this.player.isMounted){
+      if (this.player.isMounted) {
         this.player.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
-    }
+      }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-      this.lastMoveKey = "s";
-      if (this.player.isMounted){
-        this.player.body.setVelocityY(300);
-      } else {
-      this.player.body.setVelocityY(speed);
-    }
+        if (this.player.isMounted){
+          this.player.body.setVelocityY(300);
+        } else {
+        this.player.body.setVelocityY(speed);
+      }
     }
 
     // Normalize and scale the velocity so that player can't move faster along a diagonal
@@ -737,7 +767,6 @@ export default class Test2 extends Phaser.Scene {
     }
 
     if (this.a.isDown || this.cursors.left.isDown) {
-      this.player.anims.play("walkLeft", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -767,7 +796,6 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
       }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-      this.player.anims.play("walkRight", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -796,7 +824,6 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
       }
     } else if (this.w.isDown || this.cursors.up.isDown) {
-      this.player.anims.play("walkBackward", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -820,7 +847,6 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
       }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-      this.player.anims.play("walkForward", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }
@@ -844,18 +870,18 @@ export default class Test2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
       }
     } else {
-      switch (this.lastMoveKey)
+      switch (this.lastDirection)
       {
-        case "s":
+        case "forward":
           this.player.anims.play("idleForward", true);
           break;
-        case "w":
+        case "backward":
           this.player.anims.play("idleBackward", true);
           break;
-        case "a":
+        case "left":
           this.player.anims.play("idleLeft", true);
           break;
-        case "d":
+        case "right":
           this.player.anims.play("idleRight", true);
           break;
         default:
@@ -863,7 +889,6 @@ export default class Test2 extends Phaser.Scene {
           break;
       }
 
-      this.player.anims.play("idle", true);
       if(this.player.isMounted){
       this.mount.anims.stop();
       }
@@ -978,8 +1003,14 @@ export default class Test2 extends Phaser.Scene {
             duration: 1000 + Math.floor(Math.random() * 2000)
           });
       } else {
+        this.tweens.add({
+          targets: child,
+          x: child.x,
+          y: child.y,
+          duration: 1
+        });
         child.stunTimer++;
-        if (this.stunTimer > 50) {
+        if (child.stunTimer > 50) {
           child.isStunned = false;
           child.stunTimer = 0;
         }
@@ -1223,7 +1254,7 @@ export default class Test2 extends Phaser.Scene {
 
       } else{
         this.lassoHit.play(this.defaultSoundConfig);
-        enemy.isStunned;
+        enemy.isStunned = true;
         // enemy.health--;
         // if (enemy.health == 0) {
         //   enemy.disableBody(true, true);
