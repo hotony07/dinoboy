@@ -481,6 +481,8 @@ export default class Test2 extends Phaser.Scene {
 
     this.B3X = bigSpawn3.x;
     this.B3Y = bigSpawn3.y;
+
+
   }
 
   update (time, delta) {
@@ -652,7 +654,12 @@ export default class Test2 extends Phaser.Scene {
       //this.gun.destroy();
       this.gameOverText = this.add.text(this.player.x - 40, this.player.y - 40, 'Game Over');
       this.finalScore = this.add.text(this.player.x - 40, this.player.y + 25, 'Kills: ' + this.kills);
-      this.restartText = this.add.text(this.player.x - 125, this.player.y + 75, 'Press ESC to restart the game');
+      this.restartText = this.add.text(this.player.x - 150, this.player.y + 75, 'Press ESC to restart the game', {
+        font: "18px monospace",
+        fill: "#000000",
+        padding: { x: 20, y: 10 },
+        backgroundColor: "#ffffff"
+      });
       this.input.enabled = false;
       if (this.esc.isDown) {
         this.gameOver = false;
@@ -662,7 +669,12 @@ export default class Test2 extends Phaser.Scene {
     }
 
     if (this.kills > 60) {
-      this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next').setScrollFactor(0);
+      this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next', {
+        font: "18px monospace",
+        fill: "#000000",
+        padding: { x: 20, y: 10 },
+        backgroundColor: "#ffffff"
+      }).setScrollFactor(0);
       if (this.enter.isDown) {
         this.scene.start("Level2");
       }
@@ -683,18 +695,44 @@ export default class Test2 extends Phaser.Scene {
         }
         if (angle < 135 && angle > 45)
         {
+          this.lastDirection = "forward";
           this.player.anims.play("walkForward", true);
         }
         if (angle < -135 || angle > 135)
         {
+          this.lastDirection = "left";
           this.player.anims.play("walkLeft", true);
         }
         if (angle > -135 && angle < -45)
         {
+          this.lastDirection = "backward";
           this.player.anims.play("walkBackward", true);
         }
       }, this
     );
+
+    switch (this.lastDirection) {
+      case "left":
+        this.gun.x = this.player.x - 10;
+        this.gun.y = this.player.y + 4;
+        this.gun.flipY = true;
+        break;
+      case "right":
+        this.gun.x = this.player.x + 10;
+        this.gun.y = this.player.y + 4;
+        this.gun.flipY = false;
+        break;
+      case "forward":
+        this.gun.x = this.player.x - 10;
+        this.gun.y = this.player.y + 4;
+        break;
+      case "backward":
+        this.gun.x = this.player.x + 10;
+        this.gun.y = this.player.y - 4;
+        break;
+      default:
+        break;
+    }
 
     // var timeElapsed = 0;
     // timeElapsed += game.timer.elapsed();
@@ -705,8 +743,6 @@ export default class Test2 extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
-    this.gun.x = this.player.x + 10;
-    this.gun.y = this.player.y + 4;
     try {
       if (this.mount.boss = true){
         this.mount.x = this.player.x;
@@ -730,13 +766,15 @@ export default class Test2 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
+      this.walk(this.lastDirection);
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
-        console.log('mounted');
+        //console.log('mounted');
       } else {
       this.player.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
+      this.walk(this.lastDirection);
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
       } else {
@@ -746,12 +784,14 @@ export default class Test2 extends Phaser.Scene {
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
+      this.walk(this.lastDirection);
       if (this.player.isMounted) {
         this.player.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
       }
     } else if (this.s.isDown || this.cursors.down.isDown) {
+      this.walk(this.lastDirection);
         if (this.player.isMounted){
           this.player.body.setVelocityY(300);
         } else {
@@ -925,13 +965,13 @@ export default class Test2 extends Phaser.Scene {
             this
           );
           if (b.y < 0) {
-            b.setActive(false);
-          } else if (b.y > this.cameras.main.height) {
-            b.setActive(false);
+            b.disableBody(true, true);
+          } else if (b.y > game.config.height) {
+            b.disableBody(true, true);
           } else if (b.x < 0) {
-            b.setActive(false);
-          } else if (b.x > this.cameras.main.width) {
-            b.setActive(false);
+            b.disableBody(true, true);
+          } else if (b.x > game.config.width) {
+            b.disableBody(true, true);
           }
         }
       }.bind(this)
@@ -1149,6 +1189,28 @@ export default class Test2 extends Phaser.Scene {
     }
   }
 
+  walk(direction)
+  {
+    switch (direction)
+    {
+      case "forward":
+        this.player.anims.play("walkForward", true);
+        break;
+      case "backward":
+        this.player.anims.play("walkBackward", true);
+        break;
+      case "left":
+        this.player.anims.play("walkLeft", true);
+        break;
+      case "right":
+        this.player.anims.play("walkRight", true);
+        break;
+      default:
+        this.player.anims.play("walkForward", true);
+        break;
+    }
+  }
+
   makeLasso (xCo, yCo, angle) {
     this.lassoMiss.play(this.defaultSoundConfig);
     this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso');
@@ -1182,7 +1244,7 @@ export default class Test2 extends Phaser.Scene {
       health.disableBody(true, true);
       this.currentHealth++;
     } else {
-      console.log('full health!');
+      //console.log('full health!');
     }
 
   }
@@ -1197,7 +1259,7 @@ export default class Test2 extends Phaser.Scene {
         tameRate = Math.max(100);
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
-          console.log('enemy tamed');
+          //console.log('enemy tamed');
           this.lassoHit.play(this.defaultSoundConfig);
 
           // this.scene.pause();
@@ -1220,13 +1282,13 @@ export default class Test2 extends Phaser.Scene {
           this.mount.boss2 = true;
           this.mountGroup.add(this.mount);
         } else {
-          console.log('attempt failed');
+          //console.log('attempt failed');
         }
       } else if (enemy.boss2){
         tameRate = Math.max(100);
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
-          console.log('enemy tamed');
+          //console.log('enemy tamed');
           this.lassoHit.play(this.defaultSoundConfig);
 
           // this.scene.pause();
@@ -1249,7 +1311,7 @@ export default class Test2 extends Phaser.Scene {
           this.mount.boss2 = true;
           this.mountGroup.add(this.mount);
         } else {
-          console.log('attempt failed');
+          //console.log('attempt failed');
         }
 
       } else{
