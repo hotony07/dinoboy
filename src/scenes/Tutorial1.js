@@ -35,8 +35,8 @@ export default class Tutorial1 extends Phaser.Scene {
       frameHeight: 64
     });
     this.load.spritesheet('enemy', './assets/dinosaur/smallDino.png', {
-      frameWidth: 64,
-      frameHeight: 64
+      frameWidth: 35,
+      frameHeight: 43
     });
     this.load.image('stego', './assets/dinosaur/stego2.png')
 
@@ -374,8 +374,8 @@ export default class Tutorial1 extends Phaser.Scene {
       child.setScale(0.7);
       child.x = Math.floor(Math.random() * 900) ,
       child.y = Math.floor(Math.random() * 900)
-      child.body.setSize(32, 30);
-      child.body.setOffset(72, 130);
+      child.body.setSize(15, 30);
+      child.body.setOffset(32, 50);
       child.body.immovable = true;
     });
 
@@ -410,6 +410,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
     this.backText = this.add.sprite(this.centerX - 832, this. centerY + 375, 'back');
     this.backText.setScale(0.3);
+    this.backText.setDepth(-10);
     //this.backText.setScrollFactor(0);
 
     this.ammoScore = this.add.text(this.centerX - 20, this. centerY + 150, 'Ammo: '+ this.ammo, { fontSize: '12' }).setScrollFactor(0);
@@ -422,9 +423,15 @@ export default class Tutorial1 extends Phaser.Scene {
       color: 0xff00ff
     });
 
-    this.tutorial_shoot = this.add.text(this.player.x, this.player.y - 100, "Left click - shoot\nShoot one of the baby dinos!\nWatch your ammo!");
+    this.tutorial_shoot = this.add.text(this.player.x, this.player.y - 100, "Left click - shoot\nShoot the baby dinos!\nWatch your ammo!",{
+      fontSize: '11px',
+      color: 0xff00ff
+    });
 
-    this.tutorial_lasso = this.add.text(this.player.x, this.player.y - 100, "Right click - lasso\nUse it to interact with dinosaurs!\nTry taming a giant Stego!");
+    this.tutorial_lasso = this.add.text(this.player.x, this.player.y - 100, "Right click - lasso\nUse it to interact \nwith dinosaurs!\nTry taming a big Stego!",{
+      fontSize: '10px',
+      color: 0xff00ff
+    });
 
     this.tutorial_complete = this.add.text(this.player.x, this.player.y - 100, "[ESC] to go back to menu\nOR\n[ENTER] to start game!");
 
@@ -442,18 +449,19 @@ export default class Tutorial1 extends Phaser.Scene {
 
   update (time, delta) {
     this.ammoScore.setText('Ammo: ' + this.ammo);
-    this.tutorial_wasd.x = this.player.x - 62;
+    this.tutorial_wasd.x = this.player.x - 67;
     this.tutorial_wasd.y = this.player.y +30;
-    //this.backText.x = this.player.x - 832;
-    //this.backText.y = this.player.y +375;
+
+    this.backText.x = this.player.x ;
+    this.backText.y = this.player.y +55 ;
 
     if (!this.didWalk) {
       this.tutorial_shoot.alpha = 0;
     }
     else {
       this.tutorial_shoot.alpha = 1;
-      this.tutorial_shoot.x = this.player.x;
-      this.tutorial_shoot.y = this.player.y - 100;
+      this.tutorial_shoot.x = this.player.x - 67;
+      this.tutorial_shoot.y = this.player.y + 30;
     }
 
     if (!this.didShoot) {
@@ -461,8 +469,8 @@ export default class Tutorial1 extends Phaser.Scene {
     }
     else {
       this.tutorial_lasso.alpha = 1;
-      this.tutorial_lasso.x = this.player.x;
-      this.tutorial_lasso.y = this.player.y - 100;
+      this.tutorial_lasso.x = this.player.x - 67;
+      this.tutorial_lasso.y = this.player.y + 30;
     }
 
     if (this.didW && this.didA && this.didS && this.didD && this.didDodge) {
