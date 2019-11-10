@@ -863,7 +863,6 @@ export default class Test2 extends Phaser.Scene {
           break;
       }
 
-      this.player.anims.play("idle", true);
       if(this.player.isMounted){
       this.mount.anims.stop();
       }
