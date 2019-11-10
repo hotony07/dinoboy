@@ -726,15 +726,19 @@ export default class Test2 extends Phaser.Scene {
         break;
       case "forward":
         this.gun.x = this.player.x - 10;
-        this.gun.y = this.player.y + 5;
+        this.gun.y = this.player.y + 8;
+        this.gun.flipY = false;
         this.gun.setTexture('gun_forward');
         this.gun.setRotation(Phaser.Math.DegToRad(0));
+        this.gun.setDepth(this.player.depth + 1);
         break;
       case "backward":
         this.gun.x = this.player.x + 10;
         this.gun.y = this.player.y + 5;
+        this.gun.flipY = false;
         this.gun.setTexture('gun_backward');
-        this.gun.setRotation(Phaser.Math.DegToRad(180));
+        this.gun.setRotation(Phaser.Math.DegToRad(0));
+        this.gun.setDepth(this.player.depth - 1);
         break;
       default:
         break;
