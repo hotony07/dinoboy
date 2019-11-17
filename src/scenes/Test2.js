@@ -110,6 +110,7 @@ export default class Test2 extends Phaser.Scene {
     this.player.isHit = false;
     this.stegoSpawned = false;
     this.lassoTimer = 0;
+    this.mobMaxHealth = 3;
 
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
@@ -148,11 +149,12 @@ export default class Test2 extends Phaser.Scene {
       child.setScale(0.7);
       child.x = 200 + Math.floor(Math.random() * (map.widthInPixels - 200));
       child.y = 200 + Math.floor(Math.random() * (map.heightInPixels - 200));
-      child.health = 1;
+      child.health = 3;
       child.boss = false;
       child.boss2 = false;
       child.isStunned = false;
       child.stunTimer = 0;
+      child.shootTimer = 0;
     });
 
     this.mountGroup = this.physics.add.group();
@@ -206,6 +208,11 @@ export default class Test2 extends Phaser.Scene {
     this.bullets = this.physics.add.group({
       defaultKey: "bullet",
       maxSize: 20
+    });
+
+    //change the enemy projectile asset here
+    this.enemyBullets = this.physics.add.group({
+      defaultKey: "bullet",
     });
 
     this.lassos = this.physics.add.group({
@@ -1015,6 +1022,29 @@ export default class Test2 extends Phaser.Scene {
       }.bind(this)
     );
 
+    this.enemyBullets.children.each(
+      function (b) {
+        if (b.active) {
+          this.physics.add.overlap(
+            b,
+            this.player,
+            this.hitPlayer,
+            null,
+            this
+          )
+          if (b.y < 0) {
+            b.disableBody(true, true);
+          } else if (b.y > game.config.height) {
+            b.disableBody(true, true);
+          } else if (b.x < 0) {
+            b.disableBody(true, true);
+          } else if (b.x > game.config.width) {
+            b.disableBody(true, true);
+          }
+        }
+      }.bind(this)
+    );
+
     this.mountGroup.children.each(
       function (b) {
         if (b.active) {
@@ -1073,6 +1103,14 @@ export default class Test2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
+      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 250 && Math.abs(child.y - this.player.y) < 250 ) {
+        this.tweens.add({
+          targets: child,
+          x: this.player.x,
+          y: this.player.y,
+          duration: 1000
+        });
+      }
       if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
           this.tweens.add({
             targets: child,
@@ -1080,7 +1118,8 @@ export default class Test2 extends Phaser.Scene {
             y: this.player.y,
             duration: 1000 + Math.floor(Math.random() * 2000)
           });
-      } else {
+      }
+      if (child.isStunned) {
         this.tweens.add({
           targets: child,
           x: child.x,
@@ -1155,6 +1194,14 @@ export default class Test2 extends Phaser.Scene {
     this.dinoHurt.volume = volume
 
     this.dinoHurt.play(this.dinoHurtSoundConfig);
+
+    this.tweens.add({
+      targets: enemy,
+      x: this.player.x,
+      y: this.player.y,
+      duration: 1000
+    });
+
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
       this.kills += 1;
@@ -1171,6 +1218,19 @@ export default class Test2 extends Phaser.Scene {
         var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
         ammoDrop.setScale(0.3);
         this.ammoDrops.add(ammoDrop);
+      }
+    }
+  }
+
+  hitPlayer (bullet, enemy) {
+    bullet.disableBody(true, true);
+    if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
+      this.currentHealth--;
+      this.playerHit = true;
+      this.player.isHit = true;
+      this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
+      if (this.currentHealth == 0) {
+        this.gameOver = true;
       }
     }
   }
@@ -1355,25 +1415,27 @@ export default class Test2 extends Phaser.Scene {
       } else{
         this.lassoHit.play(this.defaultSoundConfig);
         enemy.isStunned = true;
-        // enemy.health--;
-        // if (enemy.health == 0) {
-        //   enemy.disableBody(true, true);
-        //   this.kills += 1;
-        //   // Random ammo drop after enemy kill
-        //   //dropRate increases when you're low on bullets
-        //   var healthDropRate = 0.10;
-        //   var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
-        //   if (Math.random() < healthDropRate) {
-        //     var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
-        //     healthDrop.setDepth(-1);
-        //     healthDrop.setScale(0.3);
-        //     this.healthDrops.add(healthDrop);
-        //   } else if (Math.random() < ammoDropRate) {
-        //     var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-        //     ammoDrop.setScale(0.3);
-        //     this.ammoDrops.add(ammoDrop);
-        //   }
-        // }
+        if (this.ammo == 0) {
+          enemy.health--;
+        }
+        if (enemy.health == 0) {
+          enemy.disableBody(true, true);
+          this.kills += 1;
+          // Random ammo drop after enemy kill
+          //dropRate increases when you're low on bullets
+          var healthDropRate = 0.10;
+          var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+          if (Math.random() < healthDropRate) {
+            var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+            healthDrop.setDepth(-1);
+            healthDrop.setScale(0.3);
+            this.healthDrops.add(healthDrop);
+          } else if (Math.random() < ammoDropRate) {
+            var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
+            ammoDrop.setScale(0.3);
+            this.ammoDrops.add(ammoDrop);
+          }
+        }
       }
   }
 }
