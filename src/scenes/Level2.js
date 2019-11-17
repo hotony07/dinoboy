@@ -49,7 +49,11 @@ export default class Level2 extends Phaser.Scene {
       frameHeight: 299
     });
 
-    this.load.image('dilo', './assets/dinosaur/dilo.png');
+    this.load.image('dilo', './assets/dinosaur/dilo3.png');
+    this.load.spritesheet('diloRun', './assets/dinosaur/diloRun.png', {
+      frameWidth: 1297,
+      frameHeight: 618
+    });
 
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -340,6 +344,12 @@ export default class Level2 extends Phaser.Scene {
       repeat: -1
     });
     this.anims.create({
+      key: "dstep",
+      frames: this.anims.generateFrameNumbers("diloRun", { start: 0, end: 2 }),
+      frameRate: 5,
+      repeat: -1
+    });
+    this.anims.create({
       key: "lasso",
       frames: this.anims.generateFrameNumbers("lasso_ss", { start: 0, end: 2 }),
       frameRate: 10,
@@ -560,7 +570,7 @@ export default class Level2 extends Phaser.Scene {
           this.stego1b.stunTimer = 0;
           this.stego1b.isStunned = false;
           this.enemyGroup.add(this.stego1b);
-          //this.stego1b.anims.play('step', true);
+          this.stego1b.anims.play('dstep', true);
 
           this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
           this.stego2.setCollideWorldBounds(true);
@@ -730,7 +740,7 @@ export default class Level2 extends Phaser.Scene {
         if (this.mount.boss){
           this.mount.anims.play('step', true);
         } else {
-            this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'dilo');
+          this.mount.anims.play('dstep', true);
         }
 
       }
@@ -761,7 +771,11 @@ export default class Level2 extends Phaser.Scene {
     } else if (this.d.isDown || this.cursors.right.isDown) {
       this.player.anims.play("walkRight", true);
       if(this.player.isMounted){
-      this.mount.anims.play('step', true);
+        if (this.mount.boss){
+          this.mount.anims.play('step', true);
+        } else {
+          this.mount.anims.play('dstep', true);
+        }
       }
       try {
         this.mount.flipX = false;
