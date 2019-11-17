@@ -39,9 +39,10 @@ export default class Tutorial1 extends Phaser.Scene {
       frameHeight: 43
     });
     //this.load.image('stego', './assets/dinosaur/stego2.png')
-    this.load.spritesheet('stego', './assets/dinosaur/dinoWalk.png', {
-      frameWidth: 721,
-      frameHeight: 720
+    this.load.image('stego2', './assets/dinosaur/newStego.png')
+    this.load.spritesheet('stego', './assets/dinosaur/dinoWalk2.png', {
+      frameWidth: 1244,
+      frameHeight: 528
     });
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -186,7 +187,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.stego = this.physics.add.sprite(stegoSpawn.x, stegoSpawn.y, 'stego');
     this.stego.setCollideWorldBounds(true);
     this.stego.body.setSize(256, 128, stegoSpawn.x, stegoSpawn.y);
-    this.stego.setScale(.5);
+    this.stego.setScale(.25);
     this.stego.setDepth(-1);
     this.stego.health = 50;
     this.stego.boss = true;
@@ -858,7 +859,7 @@ export default class Tutorial1 extends Phaser.Scene {
           this.didLasso = true;
           enemy.disableBody(true, true);
           this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
-          this.mount.setScale(.7);
+          this.mount.setScale(.25);
           this.mount.setDepth(-10);
           this.mount.body.setSize(64, 64);
           this.mount.body.setOffset(570, 350);
