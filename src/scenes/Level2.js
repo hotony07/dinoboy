@@ -43,10 +43,10 @@ export default class Level2 extends Phaser.Scene {
       frameWidth: 35,
       frameHeight: 43
     });
-    this.load.image('stego', './assets/dinosaur/newStego.png')
-    this.load.spritesheet('stegoWalk', './assets/dinosaur/dinoWalk2.png', {
-      frameWidth: 1244,
-      frameHeight: 528
+    this.load.image('stego', './assets/dinosaur/trex.png')
+    this.load.spritesheet('stegoWalk', './assets/dinosaur/wobble.png', {
+      frameWidth: 299,
+      frameHeight: 299
     });
 
 
