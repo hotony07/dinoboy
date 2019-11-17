@@ -123,10 +123,10 @@ export default class PreloaderScene extends Phaser.Scene {
       frameWidth: 35,
       frameHeight: 43
     });
-    this.load.image('stego', './assets/dinosaur/stego3.png')
-    this.load.spritesheet('stegoWalk', './assets/dinosaur/dinoWalk.png', {
-      frameWidth: 721,
-      frameHeight: 720
+    this.load.image('stego', './assets/dinosaur/newStego.png')
+    this.load.spritesheet('stegoWalk', './assets/dinosaur/dinoWalk2.png', {
+      frameWidth: 1244,
+      frameHeight: 528
     });
 
 
