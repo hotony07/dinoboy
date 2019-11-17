@@ -43,11 +43,13 @@ export default class Level2 extends Phaser.Scene {
       frameWidth: 35,
       frameHeight: 43
     });
-    this.load.image('stego', './assets/dinosaur/trex.png')
+    this.load.image('stego', './assets/dinosaur/trex.png');
     this.load.spritesheet('stegoWalk', './assets/dinosaur/wobble.png', {
       frameWidth: 299,
       frameHeight: 299
     });
+
+    this.load.image('dilo', './assets/dinosaur/dilo.png');
 
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -529,35 +531,36 @@ export default class Level2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
-    if (this.stegoSpawned && this.kills == 100) {
+    if (this.stegoSpawned && this.kills == 30) {
       this.stegoSpawned = false;
 
-          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
+          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'dilo');
           this.stego1.setCollideWorldBounds(true);
           this.stego1.body.setSize(288, 289, this.B1X, this.B1Y);
-          this.stego1.setScale(0.5);
+          this.stego1.setScale(0.2);
           this.stego1.setDepth(-1);
           this.stego1.health = 50;
-          this.stego1.boss = true;
+          this.stego1.boss = false;
+          this.stego1.boss2 = true;
           this.stego1.stunTimer = 0;
           this.stego1.isStunned = false;
           this.enemyGroup.add(this.stego1);
-          this.stego1.anims.play('step', true);
+          //this.stego1.anims.play('step', true);
     }
-    if (!this.stegoSpawned && this.kills == 150) {
+    if (!this.stegoSpawned && this.kills == 50) {
       this.stegoSpawned = true;
 
-          this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
+          this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'dilo');
           this.stego1b.setCollideWorldBounds(true);
           this.stego1b.body.setSize(288, 289, this.B1X, this.B1Y);
-          this.stego1b.setScale(0.5);
+          this.stego1b.setScale(0.2);
           this.stego1b.setDepth(-1);
           this.stego1b.health = 50;
-          this.stego1b.boss = true;
+          this.stego1b.boss2 = true;
           this.stego1b.stunTimer = 0;
           this.stego1b.isStunned = false;
           this.enemyGroup.add(this.stego1b);
-          this.stego1b.anims.play('step', true);
+          //this.stego1b.anims.play('step', true);
 
           this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
           this.stego2.setCollideWorldBounds(true);
@@ -724,7 +727,12 @@ export default class Level2 extends Phaser.Scene {
     if (this.a.isDown || this.cursors.left.isDown) {
       this.player.anims.play("walkLeft", true);
       if(this.player.isMounted){
-      this.mount.anims.play('step', true);
+        if (this.mount.boss){
+          this.mount.anims.play('step', true);
+        } else {
+            this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'dilo');
+        }
+
       }
       try {
         this.mount.flipX = true;
@@ -1156,6 +1164,36 @@ export default class Level2 extends Phaser.Scene {
         } else {
           //console.log('attempt failed');
         }
+      } else if (enemy.boss2){
+        tameRate = Math.max(100);
+        // tameRate = Math.max((45 - enemy.health) / 25, 0);
+        if (Math.random() < tameRate) {
+          //console.log('enemy tamed');
+          this.lassoHit.play(this.defaultSoundConfig);
+
+          // this.scene.pause();
+          this.cutscene1.alpha = 1;
+          this.cameras.main.setZoom(1);
+          this.cutscene1.setScale(this.cameras.main.displayWidth / this.cutscene1.width, this.cameras.main.displayHeight / this.cutscene1.height);
+          this.cutscene1.setPosition(this.cameras.main.displayWidth / 2, this.cameras.main.displayHeight / 2);
+          this.cutscene1.depth = 100;
+          this.cutscene1.play();
+          this.playerHit = true;
+
+          enemy.disableBody(true, true);
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'dilo');
+          this.mount.setScale(.25);
+          this.mount.setDepth(-10);
+          this.mount.body.setSize(70, 70);
+          this.mount.body.setOffset(870, 350);
+          this.player.isMounted = true;
+          this.mount.boss = false;
+          this.mount.boss2 = true;
+          this.mountGroup.add(this.mount);
+        } else {
+          //console.log('attempt failed');
+        }
+
       } else {
         this.lassoHit.play(this.defaultSoundConfig);
         enemy.isStunned = true;
