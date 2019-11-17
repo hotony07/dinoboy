@@ -547,7 +547,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
           this.stego.setCollideWorldBounds(true);
           this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
-          this.stego.setScale(0.25);
+          this.stego.setScale(0.2);
           this.stego.setDepth(-1);
           this.stego.health = 50;
           this.stego.boss = false;
@@ -857,7 +857,7 @@ export default class Test2 extends Phaser.Scene {
       }
       try {
         this.mount.flipX = true;
-        this.mount.body.setOffset(50, 320);
+        this.mount.body.setOffset(250, 420);
 
       }
       catch {}
@@ -886,7 +886,7 @@ export default class Test2 extends Phaser.Scene {
       }
       try {
         this.mount.flipX = false;
-        this.mount.body.setOffset(1150, 320);
+        this.mount.body.setOffset(450, 420);
       }
       catch {}
 
@@ -911,6 +911,7 @@ export default class Test2 extends Phaser.Scene {
     } else if (this.w.isDown || this.cursors.up.isDown) {
       if(this.player.isMounted){
       this.mount.anims.play('stepBack', true);
+      this.mount.body.setOffset(150, 420);
       }
 
       //dodge roll
@@ -1243,10 +1244,6 @@ export default class Test2 extends Phaser.Scene {
       enemy.health -= 10;
     }
 
-    var walkAn = this.anims.get('step');
-    var newFrames = this.anims.generateFrameNames('chomp');
-    walkAn.addFrame(newFrames);
-
     // if(this.player.isMounted){
     // this.mount.anims.pause();
     // this.mount.anims.play('chomp', true);
@@ -1402,8 +1399,8 @@ export default class Test2 extends Phaser.Scene {
           this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
           this.mount.setScale(.25);
           this.mount.setDepth(-10);
-          this.mount.body.setSize(70, 70);
-          this.mount.body.setOffset(870, 350);
+          this.mount.body.setSize(600, 70);
+          this.mount.body.setOffset(470, 850);
           this.player.isMounted = true;
           this.mount.boss = false;
           this.mount.boss2 = true;

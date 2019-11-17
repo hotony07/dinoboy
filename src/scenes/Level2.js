@@ -555,7 +555,7 @@ export default class Level2 extends Phaser.Scene {
           this.stego1.stunTimer = 0;
           this.stego1.isStunned = false;
           this.enemyGroup.add(this.stego1);
-          //this.stego1.anims.play('step', true);
+          this.stego1.anims.play('dstep', true);
     }
     if (!this.stegoSpawned && this.kills == 50) {
       this.stegoSpawned = true;
