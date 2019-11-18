@@ -16,14 +16,14 @@ export default class PreloaderScene extends Phaser.Scene {
 
       // add logo image
     this.load.image('logo', './assets/Scene1/logo.png');
-    var logo = this.add.image(this.width/2, 270, 'logo');
+    //var logo = this.add.image(this.width/2, 270, 'logo');
     //logo.setScale(0.8);
 
     // display progress bar
     var progressBar = this.add.graphics();
     var progressBox = this.add.graphics();
     progressBox.fillStyle(0x222222, 0.8);
-    progressBox.fillRect(this.width/2 -350, 470, this.width/2 - 30, 50);
+    progressBox.fillRect(this.width/2 -250, 470, this.width/2 - 30, 50);
 
 
     var loadingText = this.make.text({
@@ -64,7 +64,7 @@ export default class PreloaderScene extends Phaser.Scene {
       percentText.setText(parseInt(value * 100) + '%');
       progressBar.clear();
       progressBar.fillStyle(0xffffff, 1);
-      progressBar.fillRect(this.width/2 -340, 480, (this.width/2 -50) * value, 30);
+      progressBar.fillRect(this.width/2 -240, 480, (this.width/2 -50) * value, 30);
     });
 
     // update file progress text
@@ -82,7 +82,7 @@ export default class PreloaderScene extends Phaser.Scene {
       this.ready();
 //move logo
         this.tweens.add({
-        targets: logo,
+        targets: 'logo',
         x: this.width/2,
         y: 120,
         scale: 0.7,
@@ -115,10 +115,7 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.video("cutscene1", './assets/cutscene1.mp4');
     this.load.image('back', './assets/dinosaur/background.png');
 
-    this.load.spritesheet('cowboy', './assets/sprites/cowboy_spritesheet.png', {
-      frameWidth: 64,
-      frameHeight: 64
-    });
+
     this.load.spritesheet('enemy', './assets/dinosaur/smallDino.png', {
       frameWidth: 35,
       frameHeight: 43
@@ -158,7 +155,8 @@ export default class PreloaderScene extends Phaser.Scene {
     var progressBar = this.add.graphics();
     var progressBox = this.add.graphics();
 
-
+    var logo = this.add.image(this.centerX , this.centerY - 200, "logo");
+    
   }
 
   ready () {
