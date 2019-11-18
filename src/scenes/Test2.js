@@ -778,13 +778,8 @@ export default class Test2 extends Phaser.Scene {
     this.player.body.setVelocity(0);
     this.gun.body.setVelocity(0);
     try {
-      if (this.mount.boss = true){
-        this.mount.x = this.player.x;
-        this.mount.y = this.player.y + 60;
-      } else if (this.mount.boss2 = true){
-        this.mount.x = this.player.x ;
-        this.mount.y = this.player.y - 50;
-      }
+        this.mount.x = this.player.x - 25;
+        this.mount.y = this.player.y + 50;
 
     } catch {}
 
