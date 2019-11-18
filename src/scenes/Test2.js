@@ -1297,9 +1297,6 @@ export default class Test2 extends Phaser.Scene {
       enemy.health -= 10;
     }
 
-    var walkAn = this.anims.get('step');
-    var newFrames = this.anims.generateFrameNames('chomp');
-    walkAn.addFrame(newFrames);
 
     // if(this.player.isMounted){
     // this.mount.anims.pause();
