@@ -78,7 +78,7 @@ export default class Test2 extends Phaser.Scene {
     this.load.image('ammo', './assets/sprites/ammo.png');
     this.load.image('health', './assets/Scene1/Heart.png');
     this.load.image('trex', './assets/dinosaur/trex.png');
-    this.load.image('spit', './assets/sprites/dino_spit_green.png');
+    this.load.image('spit', './assets/sprites/dino_spit_purple.png');
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
@@ -347,7 +347,7 @@ export default class Test2 extends Phaser.Scene {
     });
     this.anims.create({
       key: "dodge",
-      frames: this.anims.generateFrameNumbers("cowboy", { start: 3, end: 8 }),
+      frames: this.anims.generateFrameNumbers("cowboyRoll", { start: 0, end: 5 }),
       frameRate: 10,
       repeat: -1
     });
@@ -1080,6 +1080,20 @@ export default class Test2 extends Phaser.Scene {
             l,
             this.enemyGroup,
             this.tameCheck,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
+
+    this.lassos.children.each(
+      function (l) {
+        if (l.active) {
+          this.physics.add.overlap(
+            l,
+            this.enemyBullets,
+            this.deadBullet,
             null,
             this
           );
