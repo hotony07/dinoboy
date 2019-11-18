@@ -51,8 +51,8 @@ export default class Test2 extends Phaser.Scene {
       frameHeight: 520
     });
     this.load.spritesheet('backWalk', './assets/dinosaur/backStego.png', {
-      frameWidth: 230,
-      frameHeight: 255
+      frameWidth: 512,
+      frameHeight: 539
     });
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -353,7 +353,7 @@ export default class Test2 extends Phaser.Scene {
     this.anims.create({
       key: "stepBack",
       frames: this.anims.generateFrameNumbers("backWalk", { start: 0, end: 1 }),
-      frameRate: 2,
+      frameRate: 3,
       repeat: -1
     });
 
