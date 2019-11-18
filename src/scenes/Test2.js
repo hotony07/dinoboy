@@ -54,6 +54,10 @@ export default class Test2 extends Phaser.Scene {
       frameWidth: 512,
       frameHeight: 539
     });
+    this.load.spritesheet('frontWalk', './assets/dinosaur/frontWalk.png', {
+      frameWidth: 445,
+      frameHeight: 445
+    });
 
     this.load.image('gun', './assets/sprites/gun.png');
     this.load.image('gun_forward', './assets/sprites/gun_forward.png');
@@ -355,6 +359,12 @@ export default class Test2 extends Phaser.Scene {
     this.anims.create({
       key: "stepBack",
       frames: this.anims.generateFrameNumbers("backWalk", { start: 0, end: 1 }),
+      frameRate: 3,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "stepFront",
+      frames: this.anims.generateFrameNumbers("frontWalk", { start: 0, end: 1 }),
       frameRate: 3,
       repeat: -1
     });
@@ -931,7 +941,7 @@ export default class Test2 extends Phaser.Scene {
       }
     } else if (this.s.isDown || this.cursors.down.isDown) {
       if(this.player.isMounted){
-      this.mount.anims.play('step', true);
+      this.mount.anims.play('stepFront', true);
       }
 
       //dodge roll
