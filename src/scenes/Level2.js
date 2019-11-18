@@ -547,7 +547,7 @@ export default class Level2 extends Phaser.Scene {
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
           this.stego.setCollideWorldBounds(true);
           this.stego.body.setSize(288, 289, this.sStegoX, this.sStegoY);
-          this.stego.setScale(0.5);
+          this.stego.setScale(0.2);
           this.stego.setDepth(-1);
           this.stego.health = 50;
           this.stego.boss = true;
@@ -1049,6 +1049,20 @@ export default class Level2 extends Phaser.Scene {
       }.bind(this)
     );
 
+    this.mountGroup.children.each(
+      function (b) {
+        if (b.active) {
+          this.physics.add.overlap(
+            b,
+            this.enemyBullets,
+            this.deadBullet,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
+
     this.lassos.children.each(
       function (l) {
         if (l.active) {
@@ -1056,6 +1070,20 @@ export default class Level2 extends Phaser.Scene {
             l,
             this.enemyGroup,
             this.tameCheck,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
+
+    this.lassos.children.each(
+      function (l) {
+        if (l.active) {
+          this.physics.add.overlap(
+            l,
+            this.enemyBullets,
+            this.deadBullet,
             null,
             this
           );
@@ -1102,9 +1130,7 @@ export default class Level2 extends Phaser.Scene {
         if (child.reload == false && child.health > 0) {
           child.reload = true;
           this.spit(this.player, child);
-          console.log('spit');
         }
-
 
       }
 
@@ -1123,7 +1149,7 @@ export default class Level2 extends Phaser.Scene {
 
       if (child.reload) {
         child.shootTimer++
-        if (child.shootTimer > 60) {
+        if (child.shootTimer > 120) {
           child.shootTimer = 0;
           child.reload = false;
         }

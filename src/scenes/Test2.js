@@ -1073,6 +1073,20 @@ export default class Test2 extends Phaser.Scene {
       }.bind(this)
     );
 
+    this.mountGroup.children.each(
+      function (b) {
+        if (b.active) {
+          this.physics.add.overlap(
+            b,
+            this.enemyBullets,
+            this.deadBullet,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
+
     this.lassos.children.each(
       function (l) {
         if (l.active) {
@@ -1141,9 +1155,7 @@ export default class Test2 extends Phaser.Scene {
         if (child.reload == false && child.health > 0) {
           child.reload = true;
           this.spit(this.player, child);
-          console.log('spit');
         }
-
 
       }
 
@@ -1162,7 +1174,7 @@ export default class Test2 extends Phaser.Scene {
 
       if (child.reload) {
         child.shootTimer++
-        if (child.shootTimer > 60) {
+        if (child.shootTimer > 120) {
           child.shootTimer = 0;
           child.reload = false;
         }
@@ -1182,9 +1194,6 @@ export default class Test2 extends Phaser.Scene {
         }
       }
     }.bind(this));
-
-
-    //this.physics.add.overlap(this.mount, this.enemyGroup, this.chompEnemy, null, this);
 
     if (this.lassos.getChildren().length > 0) {
       this.lassoTimer++
@@ -1419,8 +1428,8 @@ export default class Test2 extends Phaser.Scene {
   tameCheck (lasso, enemy) {
     var tameRate;
       if (enemy.boss) {
-        tameRate = Math.max(100);
-        // tameRate = Math.max((45 - enemy.health) / 25, 0);
+        //tameRate = Math.max(100);
+        tameRate = Math.max((45 - enemy.health) / 10, 0);
         if (Math.random() < tameRate) {
           //console.log('enemy tamed');
           this.lassoHit.play(this.defaultSoundConfig);
