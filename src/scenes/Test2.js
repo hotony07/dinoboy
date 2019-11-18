@@ -15,6 +15,7 @@ export default class Test2 extends Phaser.Scene {
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
 
+    this.load.audio("theme", './assets/Music/DinoBoyV2.mp3');
     this.load.audio("baby_dino_growl_1", './assets/sfx/dinosaur/baby_dino_growl_01.mp3');
     this.load.audio("baby_dino_growl_2", './assets/sfx/dinosaur/baby_dino_growl_02.mp3');
     this.load.audio("dino_hurt", './assets/sfx/dinosaur/dino_hurt.mp3');
@@ -780,8 +781,13 @@ export default class Test2 extends Phaser.Scene {
     this.player.body.setVelocity(0);
     this.gun.body.setVelocity(0);
     try {
-        this.mount.x = this.player.x - 25;
-        this.mount.y = this.player.y + 50;
+      if (this.mount.boss = true){
+        this.mount.x = this.player.x;
+        this.mount.y = this.player.y + 60;
+      } else if (this.mount.boss2 = true){
+        this.mount.x = this.player.x ;
+        this.mount.y = this.player.y - 50;
+      }
 
     } catch {}
 
@@ -1077,8 +1083,8 @@ export default class Test2 extends Phaser.Scene {
       this.availDrop = true;
     }
     if (this.ammo == 0 && this.availDrop) {
-      var ammoDrop = this.physics.add.sprite(16, 16, 'bullet');
-      ammoDrop.setScale(2);
+      var ammoDrop = this.physics.add.sprite(16, 16, 'ammo');
+      ammoDrop.setScale(0.3);
       this.ammoDrops.add(ammoDrop);
       ammoDrop.setRandomPosition(0, 0, game.config.width, game.config.height);
       this.availDrop = false;
@@ -1237,7 +1243,7 @@ export default class Test2 extends Phaser.Scene {
       targets: enemy,
       x: this.player.x,
       y: this.player.y,
-      duration: 1000
+      duration: 1500
     });
 
     if (enemy.health == 0) {
