@@ -678,8 +678,13 @@ export default class Level2 extends Phaser.Scene {
     this.gun.x = this.player.x + 13;
     this.gun.y = this.player.y + 5;
     try {
-      this.mount.x = this.player.x + 10 ;
-      this.mount.y = this.player.y + 30;
+      if (this.mount.boss = true){
+        this.mount.x = this.player.x;
+        this.mount.y = this.player.y + 60;
+      } else if (this.mount.boss2 = true){
+        this.mount.x = this.player.x ;
+        this.mount.y = this.player.y - 50;
+      }
     } catch {}
 
 
