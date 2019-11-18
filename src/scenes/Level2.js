@@ -26,6 +26,10 @@ export default class Level2 extends Phaser.Scene {
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
     this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
     this.load.video("cutscene1", './assets/cutscene1.mp4');
+    this.load.spritesheet("chomp", "./assets/dinosaur/dinoChomp.png",{
+      frameWidth: 580,
+      frameHeight: 253
+    });
 
     this.load.spritesheet('cowboyIdle', './assets/sprites/cowboy_idle_spritesheet.png', {
       frameWidth: 64,
@@ -57,6 +61,8 @@ export default class Level2 extends Phaser.Scene {
 
 
     this.load.image('gun', './assets/sprites/gun.png');
+    this.load.image('gun_forward', './assets/sprites/gun_forward.png');
+    this.load.image('gun_backward', './assets/sprites/gun_backward.png');
     this.load.image('lasso', './assets/sprites/lasso.png');
     this.load.image('uplasso', './assets/sprites/uplasso.png');
     this.load.spritesheet("lasso_ss", './assets/sprites/lasso_spritesheet.png', {
@@ -71,6 +77,7 @@ export default class Level2 extends Phaser.Scene {
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
     this.load.image('health', './assets/Scene1/Heart.png');
+    this.load.image('spit', './assets/sprites/dino_spit_green.png');
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
@@ -108,6 +115,7 @@ export default class Level2 extends Phaser.Scene {
     this.player.isHit = false;
     this.stegoSpawned = false;
     this.lassoTimer = 0;
+    this.mobMaxHealth = 3;
 
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
@@ -116,6 +124,7 @@ export default class Level2 extends Phaser.Scene {
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     this.cursors = this.input.keyboard.createCursorKeys();
 
     const camera = this.cameras.main;
@@ -127,10 +136,10 @@ export default class Level2 extends Phaser.Scene {
     this.nextFire = 0;
     this.fireRate = 200;
     this.speed = 1000;
-    this.lastMoveKey = "";
+    this.lastDirection = "";
 
-    this.gun = this.add.sprite(this.player.x, this.player.y, 'gun');
-    this.gun.setOrigin(0.5);
+    this.gun = this.physics.add.sprite(this.player.x + 10, this.player.y + 4, 'gun');
+    this.gun.setDebug(false);
     this.gun.setScale(0.15);
 
     //this.enemies = this.add.group();
@@ -143,51 +152,53 @@ export default class Level2 extends Phaser.Scene {
       child.setScale(0.7);
       child.x = 200 + Math.floor(Math.random() * (map.widthInPixels - 200));
       child.y = 200 + Math.floor(Math.random() * (map.heightInPixels - 200));
-      child.health = 1;
+      child.health = 3;
       child.boss = false;
       child.boss2 = false;
       child.isStunned = false;
       child.stunTimer = 0;
+      child.shootTimer = 0;
+      child.reload = false;
     });
 
     this.mountGroup = this.physics.add.group();
 
-    var enemy = this.physics.add.sprite(100, 100, 'enemy');
-    var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
-    var enemy3 = this.physics.add.sprite(100, 300, 'enemy');
-    var enemy4 = this.physics.add.sprite(100, 400, 'enemy');
-
-
-    var tween = this.tweens.add({
-      targets: [enemy, enemy3],
-      props: {
-        x: { value: '+=600', duration: 7000, flipX: true},
-        y: { value: '570', duration: 7500, ease: 'Sine.easeInOut'}
-      },
-      delay: 100,
-      yoyo: true,
-      loop: -1
-    })
-
-    this.tweens.add({
-      targets: [enemy2, enemy4],
-      props: {
-        x: { value: '500', duration: 7000, flipX: true},
-        y: { value: '170', duration: 7500, ease: 'Sine.easeInOut'}
-      },
-      delay: 100,
-      yoyo: true,
-      loop: -1
-    })
-
-    this.enemyGroup.add(enemy);
-    this.enemyGroup.add(enemy2);
-    this.enemyGroup.add(enemy3);
-    this.enemyGroup.add(enemy4);
-    enemy.health = 1;
-    enemy2.health = 1;
-    enemy3.health = 1;
-    enemy4.health = 1;
+    // var enemy = this.physics.add.sprite(100, 100, 'enemy');
+    // var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
+    // var enemy3 = this.physics.add.sprite(100, 300, 'enemy');
+    // var enemy4 = this.physics.add.sprite(100, 400, 'enemy');
+    //
+    //
+    // var tween = this.tweens.add({
+    //   targets: [enemy, enemy3],
+    //   props: {
+    //     x: { value: '+=600', duration: 7000, flipX: true},
+    //     y: { value: '570', duration: 7500, ease: 'Sine.easeInOut'}
+    //   },
+    //   delay: 100,
+    //   yoyo: true,
+    //   loop: -1
+    // })
+    //
+    // this.tweens.add({
+    //   targets: [enemy2, enemy4],
+    //   props: {
+    //     x: { value: '500', duration: 7000, flipX: true},
+    //     y: { value: '170', duration: 7500, ease: 'Sine.easeInOut'}
+    //   },
+    //   delay: 100,
+    //   yoyo: true,
+    //   loop: -1
+    // })
+    //
+    // this.enemyGroup.add(enemy);
+    // this.enemyGroup.add(enemy2);
+    // this.enemyGroup.add(enemy3);
+    // this.enemyGroup.add(enemy4);
+    // enemy.health = 1;
+    // enemy2.health = 1;
+    // enemy3.health = 1;
+    // enemy4.health = 1;
 
     //stegosaurus
     const stegoSpawn = map.findObject(
@@ -201,6 +212,11 @@ export default class Level2 extends Phaser.Scene {
     this.bullets = this.physics.add.group({
       defaultKey: "bullet",
       maxSize: 20
+    });
+
+    //change the enemy projectile asset here
+    this.enemyBullets = this.physics.add.group({
+      defaultKey: "spit",
     });
 
     this.lassos = this.physics.add.group({
@@ -660,11 +676,78 @@ export default class Level2 extends Phaser.Scene {
       if (this.esc.isDown) {
         this.gameOver = false;
         this.scene.restart();
-      }
+        }
+      this.input.enabled = false;
     }
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
+
+    this.input.on("pointermove", function (pointer) {
+        var betweenPoints = Phaser.Math.Angle.BetweenPoints;
+        var angle = Phaser.Math.RAD_TO_DEG * betweenPoints(this.gun, pointer.positionToCamera(this.cameras.main));
+        this.gun.setAngle(angle);
+
+        if (angle < 45 || angle > -45)
+        {
+          this.lastDirection = "right";
+          this.player.anims.play("walkRight", true);
+        }
+        if (angle < 135 && angle > 45)
+        {
+          this.lastDirection = "forward";
+          this.player.anims.play("walkForward", true);
+        }
+        if (angle < -135 || angle > 135)
+        {
+          this.lastDirection = "left";
+          this.player.anims.play("walkLeft", true);
+        }
+        if (angle > -135 && angle < -45)
+        {
+          this.lastDirection = "backward";
+          this.player.anims.play("walkBackward", true);
+        }
+      }, this
+    );
+
+    switch (this.lastDirection)
+    {
+      case "left":
+        this.gun.body.setOffset(this.player.x - 10, this.player.y + 4);
+        this.gun.x = this.player.x - 10;
+        this.gun.y = this.player.y + 4;
+        this.gun.setTexture('gun');
+        this.gun.flipY = true;
+        break;
+      case "right":
+        this.gun.body.setOffset(this.player.x + 10, this.player.y + 4);
+        this.gun.x = this.player.x + 10;
+        this.gun.y = this.player.y + 4;
+        this.gun.setTexture('gun');
+        this.gun.flipY = false;
+        break;
+      case "forward":
+        this.gun.body.setOffset(this.player.x - 10, this.player.y + 8);
+        this.gun.x = this.player.x - 10;
+        this.gun.y = this.player.y + 8;
+        this.gun.flipY = false;
+        this.gun.setTexture('gun_forward');
+        this.gun.setRotation(Phaser.Math.DegToRad(0));
+        this.gun.setDepth(this.player.depth + 1);
+        break;
+      case "backward":
+        this.gun.body.setOffset(this.player.x + 10, this.player.y + 5);
+        this.gun.x = this.player.x + 10;
+        this.gun.y = this.player.y + 5;
+        this.gun.flipY = false;
+        this.gun.setTexture('gun_backward');
+        this.gun.setRotation(Phaser.Math.DegToRad(0));
+        this.gun.setDepth(this.player.depth - 1);
+        break;
+      default:
+        break;
+    }
 
     // var timeElapsed = 0;
     // timeElapsed += game.timer.elapsed();
@@ -678,13 +761,8 @@ export default class Level2 extends Phaser.Scene {
     this.gun.x = this.player.x + 13;
     this.gun.y = this.player.y + 5;
     try {
-      if (this.mount.boss = true){
-        this.mount.x = this.player.x;
-        this.mount.y = this.player.y + 60;
-      } else if (this.mount.boss2 = true){
-        this.mount.x = this.player.x ;
-        this.mount.y = this.player.y - 50;
-      }
+      this.mount.x = this.player.x + 10 ;
+      this.mount.y = this.player.y + 30;
     } catch {}
 
 
@@ -699,44 +777,55 @@ export default class Level2 extends Phaser.Scene {
 
     // Horizontal movement
     if (this.a.isDown || this.cursors.left.isDown) {
-      this.lastMoveKey = "a";
+      this.walk(this.lastDirection);
       if (this.player.isMounted){
         this.player.body.setVelocityX(-300);
-        console.log('mounted');
+        this.gun.body.setVelocityX(-300);
+        //console.log('mounted');
       } else {
       this.player.body.setVelocityX(-speed);
+      this.gun.body.setVelocityX(-speed);
     }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-      this.lastMoveKey = "d";
+      this.walk(this.lastDirection);
       if (this.player.isMounted){
         this.player.body.setVelocityX(300);
+        this.gun.body.setVelocityX(300);
       } else {
       this.player.body.setVelocityX(speed);
+      this.gun.body.setVelocityX(speed);
     }
     }
 
     // Vertical movement
     if (this.w.isDown || this.cursors.up.isDown) {
-      this.lastMoveKey = "w";
-      if (this.player.isMounted){
+      this.walk(this.lastDirection);
+      if (this.player.isMounted) {
         this.player.body.setVelocityY(-300);
+
+        this.gun.body.setVelocityY(-300);
       } else {
       this.player.body.setVelocityY(-speed);
-    }
+      this.gun.body.setVelocityY(-speed);
+      }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-      this.lastMoveKey = "s";
-      if (this.player.isMounted){
-        this.player.body.setVelocityY(300);
-      } else {
-      this.player.body.setVelocityY(speed);
-    }
+      this.walk(this.lastDirection);
+        if (this.player.isMounted){
+          this.player.body.setVelocityY(300);
+          this.gun.body.setVelocityY(300);
+        } else {
+        this.player.body.setVelocityY(speed);
+        this.gun.body.setVelocityY(speed);
+      }
     }
 
     // Normalize and scale the velocity so that player can't move faster along a diagonal
     if (this.player.isMounted) {
       this.player.body.velocity.normalize().scale(300);
+      this.gun.body.velocity.normalize().scale(300);
     } else {
       this.player.body.velocity.normalize().scale(speed);
+      this.gun.body.velocity.normalize().scale(speed);
     }
 
     if (this.a.isDown || this.cursors.left.isDown) {
@@ -856,23 +945,25 @@ export default class Level2 extends Phaser.Scene {
         //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
       }
     } else {
-      switch (this.lastMoveKey) {
-        case "s":
+      switch (this.lastDirection)
+      {
+        case "forward":
           this.player.anims.play("idleForward", true);
           break;
-        case "w":
+        case "backward":
           this.player.anims.play("idleBackward", true);
           break;
-        case "a":
+        case "left":
           this.player.anims.play("idleLeft", true);
           break;
-        case "d":
+        case "right":
           this.player.anims.play("idleRight", true);
           break;
         default:
           this.player.anims.play("idleForward", true);
           break;
       }
+
       if(this.player.isMounted){
       this.mount.anims.stop();
       }
@@ -921,6 +1012,29 @@ export default class Level2 extends Phaser.Scene {
       }.bind(this)
     );
 
+    this.enemyBullets.children.each(
+      function (b) {
+        if (b.active) {
+          this.physics.add.overlap(
+            b,
+            this.player,
+            this.hitPlayer,
+            null,
+            this
+          )
+          if (b.y < 0) {
+            b.disableBody(true, true);
+          } else if (b.y > game.config.height) {
+            b.disableBody(true, true);
+          } else if (b.x < 0) {
+            b.disableBody(true, true);
+          } else if (b.x > game.config.width) {
+            b.disableBody(true, true);
+          }
+        }
+      }.bind(this)
+    );
+
     this.mountGroup.children.each(
       function (b) {
         if (b.active) {
@@ -955,7 +1069,7 @@ export default class Level2 extends Phaser.Scene {
       this.availDrop = true;
     }
     if (this.ammo == 0 && this.availDrop) {
-      var ammoDrop = this.physics.add.sprite(16, 16, 'bullet');
+      var ammoDrop = this.physics.add.sprite(16, 16, 'ammo');
       ammoDrop.setScale(0.3);
       this.ammoDrops.add(ammoDrop);
       ammoDrop.setRandomPosition(0, 0, game.config.width, game.config.height);
@@ -978,6 +1092,22 @@ export default class Level2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
+      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 250 && Math.abs(child.y - this.player.y) < 250 ) {
+        this.tweens.add({
+          targets: child,
+          x: this.player.x,
+          y: this.player.y,
+          duration: 1000
+        });
+        if (child.reload == false && child.health > 0) {
+          child.reload = true;
+          this.spit(this.player, child);
+          console.log('spit');
+        }
+
+
+      }
+
       if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
           this.tweens.add({
             targets: child,
@@ -985,7 +1115,21 @@ export default class Level2 extends Phaser.Scene {
             y: this.player.y,
             duration: 1000 + Math.floor(Math.random() * 2000)
           });
-      } else {
+          if (child.reload == false && child.health > 0) {
+            child.reload = true;
+            this.spit(this.player, child);
+          }
+      }
+
+      if (child.reload) {
+        child.shootTimer++
+        if (child.shootTimer > 60) {
+          child.shootTimer = 0;
+          child.reload = false;
+        }
+      }
+
+      if (child.isStunned) {
         this.tweens.add({
           targets: child,
           x: child.x,
@@ -1033,6 +1177,25 @@ export default class Level2 extends Phaser.Scene {
     this.gunshot.play(this.defaultSoundConfig);
   }
 
+  spit (player, enemy) {
+    var betweenPoints = Phaser.Math.Angle.BetweenPoints;
+    var angle = betweenPoints(enemy, player);
+    var velocityFromRotation = this.physics.velocityFromRotation;
+    //Create a variable called velocity from a Vector2
+    var velocity = new Phaser.Math.Vector2();
+    velocityFromRotation(angle, this.speed/6, velocity);
+    //Get the bullet group
+    var bullet = this.enemyBullets.get();
+    bullet.setAngle(Phaser.Math.RAD_TO_DEG * angle);
+    bullet
+      .enableBody(true, enemy.x, enemy.y, true, true)
+      .setVelocity(velocity.x, velocity.y)
+      .setScale(.2),
+
+    this.gunshot.play(this.defaultSoundConfig);
+    //this.bullet.setCollideWorldBounds(true);
+  }
+
   takeDamage (player, enemy) {
     if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
       this.currentHealth--;
@@ -1057,6 +1220,14 @@ export default class Level2 extends Phaser.Scene {
     this.dinoHurt.volume = volume
 
     this.dinoHurt.play(this.dinoHurtSoundConfig);
+
+    this.tweens.add({
+      targets: enemy,
+      x: this.player.x,
+      y: this.player.y,
+      duration: 1500
+    });
+
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
       this.kills += 1;
@@ -1077,6 +1248,19 @@ export default class Level2 extends Phaser.Scene {
     }
   }
 
+  hitPlayer (bullet, enemy) {
+    bullet.disableBody(true, true);
+    if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
+      this.currentHealth--;
+      this.playerHit = true;
+      this.player.isHit = true;
+      this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
+      if (this.currentHealth == 0) {
+        this.gameOver = true;
+      }
+    }
+  }
+
   chompEnemy (dino, enemy) {
     //10 damage chomp
     if (enemy.health < 11) {
@@ -1084,6 +1268,7 @@ export default class Level2 extends Phaser.Scene {
     } else {
       enemy.health -= 10;
     }
+
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
     var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
     var volume = deltaVolume * distFromPlayerToEnemy + 1
@@ -1109,6 +1294,28 @@ export default class Level2 extends Phaser.Scene {
         ammoDrop.setScale(0.3);
         this.ammoDrops.add(ammoDrop);
       }
+    }
+  }
+
+  walk(direction)
+  {
+    switch (direction)
+    {
+      case "forward":
+        this.player.anims.play("walkForward", true);
+        break;
+      case "backward":
+        this.player.anims.play("walkBackward", true);
+        break;
+      case "left":
+        this.player.anims.play("walkLeft", true);
+        break;
+      case "right":
+        this.player.anims.play("walkRight", true);
+        break;
+      default:
+        this.player.anims.play("walkForward", true);
+        break;
     }
   }
 
@@ -1145,7 +1352,7 @@ export default class Level2 extends Phaser.Scene {
       health.disableBody(true, true);
       this.currentHealth++;
     } else {
-      console.log('full health!');
+      //console.log('full health!');
     }
 
   }
@@ -1213,28 +1420,30 @@ export default class Level2 extends Phaser.Scene {
           //console.log('attempt failed');
         }
 
-      } else {
+      } else{
         this.lassoHit.play(this.defaultSoundConfig);
         enemy.isStunned = true;
-        // enemy.health--;
-        // if (enemy.health == 0) {
-        //   enemy.disableBody(true, true);
-        //   this.kills += 1;
-        //   // Random ammo drop after enemy kill
-        //   //dropRate increases when you're low on bullets
-        //   var healthDropRate = 0.10;
-        //   var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
-        //   if (Math.random() < healthDropRate) {
-        //     var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
-        //     healthDrop.setDepth(-1);
-        //     healthDrop.setScale(0.3);
-        //     this.healthDrops.add(healthDrop);
-        //   } else if (Math.random() < ammoDropRate) {
-        //     var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-        //     ammoDrop.setScale(0.3);
-        //     this.ammoDrops.add(ammoDrop);
-        //   }
-        // }
+        if (this.ammo == 0) {
+          enemy.health--;
+        }
+        if (enemy.health == 0) {
+          enemy.disableBody(true, true);
+          this.kills += 1;
+          // Random ammo drop after enemy kill
+          //dropRate increases when you're low on bullets
+          var healthDropRate = 0.10;
+          var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+          if (Math.random() < healthDropRate) {
+            var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+            healthDrop.setDepth(-1);
+            healthDrop.setScale(0.3);
+            this.healthDrops.add(healthDrop);
+          } else if (Math.random() < ammoDropRate) {
+            var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
+            ammoDrop.setScale(0.3);
+            this.ammoDrops.add(ammoDrop);
+          }
+        }
       }
   }
 }
