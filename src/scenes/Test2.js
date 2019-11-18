@@ -73,6 +73,7 @@ export default class Test2 extends Phaser.Scene {
     this.load.image('ammo', './assets/sprites/ammo.png');
     this.load.image('health', './assets/Scene1/Heart.png');
     this.load.image('trex', './assets/dinosaur/trex.png');
+    this.load.image('spit', './assets/sprites/dino_spit_green.png');
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
@@ -155,6 +156,7 @@ export default class Test2 extends Phaser.Scene {
       child.isStunned = false;
       child.stunTimer = 0;
       child.shootTimer = 0;
+      child.reload = false;
     });
 
     this.mountGroup = this.physics.add.group();
@@ -212,7 +214,7 @@ export default class Test2 extends Phaser.Scene {
 
     //change the enemy projectile asset here
     this.enemyBullets = this.physics.add.group({
-      defaultKey: "bullet",
+      defaultKey: "spit",
     });
 
     this.lassos = this.physics.add.group({
@@ -1106,7 +1108,15 @@ export default class Test2 extends Phaser.Scene {
           y: this.player.y,
           duration: 1000
         });
+        if (child.reload == false && child.health > 0) {
+          child.reload = true;
+          this.spit(this.player, child);
+          console.log('spit');
+        }
+
+
       }
+
       if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
           this.tweens.add({
             targets: child,
@@ -1114,7 +1124,20 @@ export default class Test2 extends Phaser.Scene {
             y: this.player.y,
             duration: 1000 + Math.floor(Math.random() * 2000)
           });
+          if (child.reload == false && child.health > 0) {
+            child.reload = true;
+            this.spit(this.player, child);
+          }
       }
+
+      if (child.reload) {
+        child.shootTimer++
+        if (child.shootTimer > 60) {
+          child.shootTimer = 0;
+          child.reload = false;
+        }
+      }
+
       if (child.isStunned) {
         this.tweens.add({
           targets: child,
@@ -1160,6 +1183,25 @@ export default class Test2 extends Phaser.Scene {
       .enableBody(true, this.gun.x, this.gun.y, true, true)
       .setVelocity(velocity.x, velocity.y)
       .setScale(.5),
+
+    this.gunshot.play(this.defaultSoundConfig);
+    //this.bullet.setCollideWorldBounds(true);
+  }
+
+  spit (player, enemy) {
+    var betweenPoints = Phaser.Math.Angle.BetweenPoints;
+    var angle = betweenPoints(enemy, player);
+    var velocityFromRotation = this.physics.velocityFromRotation;
+    //Create a variable called velocity from a Vector2
+    var velocity = new Phaser.Math.Vector2();
+    velocityFromRotation(angle, this.speed/6, velocity);
+    //Get the bullet group
+    var bullet = this.enemyBullets.get();
+    bullet.setAngle(Phaser.Math.RAD_TO_DEG * angle);
+    bullet
+      .enableBody(true, enemy.x, enemy.y, true, true)
+      .setVelocity(velocity.x, velocity.y)
+      .setScale(.2),
 
     this.gunshot.play(this.defaultSoundConfig);
     //this.bullet.setCollideWorldBounds(true);
@@ -1238,6 +1280,10 @@ export default class Test2 extends Phaser.Scene {
     } else {
       enemy.health -= 10;
     }
+
+    var walkAn = this.anims.get('step');
+    var newFrames = this.anims.generateFrameNames('chomp');
+    walkAn.addFrame(newFrames);
 
     // if(this.player.isMounted){
     // this.mount.anims.pause();
