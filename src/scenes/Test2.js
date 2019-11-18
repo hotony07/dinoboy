@@ -554,7 +554,7 @@ export default class Test2 extends Phaser.Scene {
       }
     }
     //stego is spawned
-    if (!this.stegoSpawned && this.kills == 10) {
+    if (!this.stegoSpawned && this.kills == 1) {
       this.stegoSpawned = true;
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
@@ -792,8 +792,8 @@ export default class Test2 extends Phaser.Scene {
     this.gun.body.setVelocity(0);
     try {
       if (this.mount.boss = true){
-        this.mount.x = this.player.x;
-        this.mount.y = this.player.y + 60;
+        this.mount.x = this.player.x - 5;
+        this.mount.y = this.player.y + 50;
       } else if (this.mount.boss2 = true){
         this.mount.x = this.player.x ;
         this.mount.y = this.player.y - 50;
