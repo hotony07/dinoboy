@@ -151,7 +151,7 @@ export default class Level2 extends Phaser.Scene {
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
       key: "enemy",
-      repeat: 100
+      repeat: 50
     });
 
     this.enemyGroup.children.iterate(function(child) {
@@ -563,7 +563,7 @@ export default class Level2 extends Phaser.Scene {
       }
     }
     //stego is spawned
-    if (!this.stegoSpawned && this.kills == 10) {
+    if (!this.stegoSpawned && this.kills == 5) {
       this.stegoSpawned = true;
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
@@ -579,7 +579,7 @@ export default class Level2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
-    if (this.stegoSpawned && this.kills == 30) {
+    if (this.stegoSpawned && this.kills == 10) {
       this.stegoSpawned = false;
 
           this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'dilo');
@@ -595,7 +595,7 @@ export default class Level2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego1);
           this.stego1.anims.play('dstep', true);
     }
-    if (!this.stegoSpawned && this.kills == 50) {
+    if (!this.stegoSpawned && this.kills == 30) {
       this.stegoSpawned = true;
 
           this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'dilo');
@@ -678,7 +678,7 @@ export default class Level2 extends Phaser.Scene {
       });
 
       this.playerHitTimer++;
-      if (this.playerHitTimer >= 120) {
+      if (this.playerHitTimer >= 180) {
         this.playerHit = false;
         this.playerHitTimer = 0;
       }
@@ -686,7 +686,13 @@ export default class Level2 extends Phaser.Scene {
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-
+    if (this.esc.isDown && !this.gameOver) {
+      this.gameOver = false;
+      this.playerHit = false;
+      this.playerHitTimer = 0;
+      this.scene.restart();
+      this.scene.start('Boot');
+      }
     //Game over
     if (this.gameOver) {
       while (this.healthGroup.getChildren().length > 0) {
@@ -705,7 +711,11 @@ export default class Level2 extends Phaser.Scene {
       this.input.enabled = false;
       if (this.esc.isDown) {
         this.gameOver = false;
+        this.player.enableBody(true, 0, 0, true, true);
+        this.playerHit = false;
+        this.input.enabled = true;
         this.scene.restart();
+        this.scene.start('Boot');
         }
       this.input.enabled = false;
     }
@@ -887,11 +897,11 @@ export default class Level2 extends Phaser.Scene {
         this.player.anims.play("dodge", true);
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso(-75, 0, 180);
-        //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.lasso = this.makeLasso(-75, 0, 180);
+      //   //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
+      // }
     } else if (this.d.isDown || this.cursors.right.isDown) {
       this.player.anims.play("walkRight", true);
       if(this.player.isMounted){
@@ -920,11 +930,11 @@ export default class Level2 extends Phaser.Scene {
         this.player.anims.play("dodge", true);
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso(75, 0, 0);
-        //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.lasso = this.makeLasso(75, 0, 0);
+      //   //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
+      // }
     } else if (this.w.isDown || this.cursors.up.isDown) {
       this.player.anims.play("walkBackward", true);
       if(this.player.isMounted){
@@ -945,11 +955,11 @@ export default class Level2 extends Phaser.Scene {
         this.player.anims.play("dodge", true);
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.makeLasso2(0, -75, 180);
-        //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.makeLasso2(0, -75, 180);
+      //   //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
+      // }
     } else if (this.s.isDown || this.cursors.down.isDown) {
       this.player.anims.play("walkForward", true);
       if(this.player.isMounted){
@@ -969,11 +979,11 @@ export default class Level2 extends Phaser.Scene {
         this.player.anims.play("dodge", true);
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso2(0, 75, 0);
-        //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.lasso = this.makeLasso2(0, 75, 0);
+      //   //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
+      // }
     } else {
       switch (this.lastDirection)
       {
@@ -998,11 +1008,11 @@ export default class Level2 extends Phaser.Scene {
       this.mount.anims.stop();
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso(75, 0, 0);
-        //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.lasso = this.makeLasso(75, 0, 0);
+      //   //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
+      // }
   }
 
   if (this.playerIsHurt)
@@ -1105,6 +1115,20 @@ export default class Level2 extends Phaser.Scene {
       }.bind(this)
     );
 
+    this.mountGroup.children.each(
+      function (b) {
+        if (b.active) {
+          this.physics.add.overlap(
+            b,
+            this.treeGroup,
+            this.stompTree,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
+
     this.lassos.children.each(
       function (l) {
         if (l.active) {
@@ -1162,30 +1186,34 @@ export default class Level2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
-      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 250 && Math.abs(child.y - this.player.y) < 250 ) {
+      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 200 && Math.abs(child.y - this.player.y) < 160 && child.isStunned ==  false && !child.boss) {
         this.tweens.add({
           targets: child,
           x: this.player.x,
           y: this.player.y,
-          duration: 1000
+          duration: 2500
         });
         if (child.reload == false && child.health > 0) {
           child.reload = true;
           this.spit(this.player, child);
         }
-
       }
 
-      if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
+      if (Math.abs(child.x - this.player.x) < 120 && Math.abs(child.y - this.player.y) < 80 && child.isStunned == false) {
           this.tweens.add({
             targets: child,
             x: this.player.x,
             y: this.player.y,
-            duration: 1000 + Math.floor(Math.random() * 2000)
+            duration: 2000
           });
           if (child.reload == false && child.health > 0) {
-            child.reload = true;
-            this.spit(this.player, child);
+            child.shootTimer++;
+            if (child.shootTimer > 30 && child.reload == false) {
+              this.spit(this.player, child);
+              child.reload = true;
+            }
+            // child.reload = true;
+            // this.spit(this.player, child);
           }
       }
 
@@ -1370,6 +1398,10 @@ export default class Level2 extends Phaser.Scene {
         this.ammoDrops.add(ammoDrop);
       }
     }
+  }
+
+  stompTree (dino, tree) {
+    tree.disableBody(true, true);
   }
 
   walk(direction)
