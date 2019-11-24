@@ -27,6 +27,8 @@ export default class Level2 extends Phaser.Scene {
     this.load.audio("dino_step_2", './assets/sfx/dinosaur/dino_step_02.mp3');
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
     this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
+    this.load.audio("healthPickup", './assets/sfx/heal.mp3')
+    this.load.audio("ammoPickup", './assets/sfx/ammo.mp3')
     this.load.video("cutscene1", './assets/cutscene1.mp4');
     this.load.spritesheet("chomp", "./assets/dinosaur/dinoChomp.png",{
       frameWidth: 580,
@@ -406,6 +408,8 @@ export default class Level2 extends Phaser.Scene {
     this.dinoStep2 = this.sound.add("dino_step_2");
     this.lassoHit = this.sound.add("lasso_hit");
     this.lassoMiss = this.sound.add("lasso_miss");
+    this.healthPickup = this.sound.add("healthPickup");
+    this.ammoPickup = this.sound.add("ammoPickup");
 
     //trees
     this.treeGroup = this.physics.add.group(
@@ -1457,10 +1461,12 @@ export default class Level2 extends Phaser.Scene {
   pickAmmo (player, ammo) {
     ammo.disableBody(true, true);
     this.ammo += 20;
+    this.ammoPickup.play(this.defaultSoundConfig);
   }
 
   pickHealth (player, health) {
     if (this.currentHealth < this.maxHealth){
+      this.healthPickup.play(this.defaultSoundConfig);
       health.disableBody(true, true);
       this.currentHealth++;
     } else {

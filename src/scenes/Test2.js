@@ -26,6 +26,8 @@ export default class Test2 extends Phaser.Scene {
     this.load.audio("dino_step_2", './assets/sfx/dinosaur/dino_step_02.mp3');
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
     this.load.audio("lasso_miss", './assets/sfx/lasso/lasso_miss.mp3');
+    this.load.audio("healthPickup", './assets/sfx/heal.mp3')
+    this.load.audio("ammoPickup", './assets/sfx/ammo.mp3')
     this.load.video("cutscene1", './assets/cutscene1.mp4');
     this.load.spritesheet("chomp", "./assets/dinosaur/dinoChomp.png",{
       frameWidth: 580,
@@ -415,6 +417,8 @@ export default class Test2 extends Phaser.Scene {
     this.dinoStep2 = this.sound.add("dino_step_2");
     this.lassoHit = this.sound.add("lasso_hit");
     this.lassoMiss = this.sound.add("lasso_miss");
+    this.healthPickup = this.sound.add("healthPickup");
+    this.ammoPickup = this.sound.add("ammoPickup");
 
     //trees
     this.treeGroup = this.physics.add.group(
@@ -496,17 +500,9 @@ export default class Test2 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
-
-    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
-    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0).setDepth(2);
-    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: Space \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0).setDepth
-    (2);
-    this.player.dodgeLock = true;
-
     this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0);
     this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0);
     this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: RMB \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0);
-
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
@@ -615,9 +611,7 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego1);
           this.stego1.anims.play('step', true);
     }
-
     if (!this.stegoSpawned && this.kills == 30) {
-
       this.stegoSpawned = true;
 
           this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -1476,10 +1470,12 @@ export default class Test2 extends Phaser.Scene {
   pickAmmo (player, ammo) {
     ammo.disableBody(true, true);
     this.ammo += 20;
+    this.ammoPickup.play(this.defaultSoundConfig);
   }
 
   pickHealth (player, health) {
     if (this.currentHealth < this.maxHealth){
+      this.healthPickup.play(this.defaultSoundConfig);
       health.disableBody(true, true);
       this.currentHealth++;
     } else {
