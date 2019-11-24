@@ -490,10 +490,10 @@ export default class Level2 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
-    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
-    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0).setDepth(2);
-    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: Space \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0).setDepth
-    (2);
+        this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
+        this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0).setDepth(2);
+        this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: RMB \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0).setDepth
+        (2);
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
