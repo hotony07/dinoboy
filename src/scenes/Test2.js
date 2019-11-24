@@ -500,7 +500,7 @@ export default class Test2 extends Phaser.Scene {
 
     this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0);
     this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0);
-    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: Space \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0);
+    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: RMB \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0);
     this.player.dodgeLock = true;
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
@@ -1133,6 +1133,20 @@ export default class Test2 extends Phaser.Scene {
       }.bind(this)
     );
 
+    this.mountGroup.children.each(
+      function (b) {
+        if (b.active) {
+          this.physics.add.overlap(
+            b,
+            this.treeGroup,
+            this.stompTree,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
+
     this.lassos.children.each(
       function (l) {
         if (l.active) {
@@ -1419,6 +1433,10 @@ export default class Test2 extends Phaser.Scene {
     }
   }
 
+  stompTree (dino, tree) {
+    tree.disableBody(true, true);
+  }
+
   walk(direction)
   {
     switch (direction)
@@ -1476,7 +1494,6 @@ export default class Test2 extends Phaser.Scene {
     } else {
       //console.log('full health!');
     }
-
   }
 
   deadBullet (layer, bullet) {
