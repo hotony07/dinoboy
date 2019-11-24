@@ -11,6 +11,7 @@ export default class Level2 extends Phaser.Scene {
 
   preload () {
     // Preload assets
+    this.load.image('back', './assets/dinosaur/background.png');
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
@@ -21,6 +22,7 @@ export default class Level2 extends Phaser.Scene {
     this.load.audio("baby_dino_growl_2", './assets/sfx/dinosaur/baby_dino_growl_02.mp3');
     this.load.audio("dino_hurt", './assets/sfx/dinosaur/dino_hurt.mp3');
     this.load.audio("dino_roar", './assets/sfx/dinosaur/dino_roar.mp3');
+    this.load.audio("dino_spit", './assets/sfx/dinosaur/dino_spit.mp3');
     this.load.audio("dino_step_1", './assets/sfx/dinosaur/dino_step_01.mp3');
     this.load.audio("dino_step_2", './assets/sfx/dinosaur/dino_step_02.mp3');
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
@@ -130,7 +132,7 @@ export default class Level2 extends Phaser.Scene {
     const camera = this.cameras.main;
     camera.setZoom(5);
     camera.startFollow(this.player);
-    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels - 40);
 
     var gun, bullets, enemy, bullet, enemyGroup;
     this.nextFire = 0;
@@ -397,6 +399,7 @@ export default class Level2 extends Phaser.Scene {
     this.babyDinoGrowl2 = this.sound.add("baby_dino_growl_2");
     this.dinoHurt = this.sound.add("dino_hurt");
     this.dinoRoar = this.sound.add("dino_roar");
+    this.dinoSpit = this.sound.add("dino_spit");
     this.dinoStep1 = this.sound.add("dino_step_1");
     this.dinoStep2 = this.sound.add("dino_step_2");
     this.lassoHit = this.sound.add("lasso_hit");
@@ -451,6 +454,12 @@ export default class Level2 extends Phaser.Scene {
         stepY: 0
       }
     });
+
+    this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back');
+    this.backText.setScrollFactor(0);
+    this.backText.setScale(0.3);
+    this.backText.setDepth(-1);
+
     // this.healthGroup = this.add.group({
     //   key: 'health',
     //   repeat: this.currentHealth - 1,
@@ -509,6 +518,11 @@ export default class Level2 extends Phaser.Scene {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
       }
       if (this.isMounted) {
+        this.backText.x = this.centerX  ;
+        this.backText.y = this.centerY + 400 ;
+        this.backText.setScrollFactor(0);
+        this.backText.setScale(2);
+        this.backText.setDepth(-1);
         this.healthGroup = this.add.group({
           key: 'health',
           repeat: this.currentHealth - 1,
@@ -632,6 +646,11 @@ export default class Level2 extends Phaser.Scene {
       while (this.healthGroup.getChildren().length > 0) {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
       }
+      this.backText.x = this.centerX  ;
+      this.backText.y = this.centerY + 400 ;
+      this.backText.setScrollFactor(0);
+      this.backText.setScale(2);
+      this.backText.setDepth(-1);
       this.healthGroup = this.add.group({
         key: 'health',
         repeat: this.currentHealth - 1,
@@ -1216,9 +1235,12 @@ export default class Level2 extends Phaser.Scene {
     bullet
       .enableBody(true, enemy.x, enemy.y, true, true)
       .setVelocity(velocity.x, velocity.y)
-      .setScale(.2),
+      .setScale(.2);
 
-    this.gunshot.play(this.defaultSoundConfig);
+    var dinoSpitSoundConfig = this.defaultSoundConfig;
+    this.dinoSpit.volume = 0.5;
+
+    this.dinoSpit.play(this.dinoSpitSoundConfig);
     //this.bullet.setCollideWorldBounds(true);
   }
 
