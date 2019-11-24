@@ -165,6 +165,8 @@ export default class Level2 extends Phaser.Scene {
       child.stunTimer = 0;
       child.shootTimer = 0;
       child.reload = false;
+      child.isHurt = false;
+      child.hurtTImer = 0;
     });
 
     this.mountGroup = this.physics.add.group();
@@ -1247,6 +1249,19 @@ export default class Level2 extends Phaser.Scene {
           child.stunTimer = 0;
         }
       }
+
+      if (child.isHurt)
+      {
+        child.hurtTimer++;
+        if (child.hurtTimer >= 3)
+        {
+          child.hurtTimer = 0;
+          child.isHurt = false;
+          child.setTint(0xffffff);
+        }
+      }
+
+
     }.bind(this));
 
     //this.physics.add.overlap(this.mount, this.enemyGroup, this.chompEnemy, null, this);
@@ -1321,6 +1336,7 @@ export default class Level2 extends Phaser.Scene {
   hitEnemy (bullet, enemy) {
     bullet.disableBody(true, true);
     enemy.health -= 1;
+    enemy.setTint(0xff0000);
 
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
     var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
