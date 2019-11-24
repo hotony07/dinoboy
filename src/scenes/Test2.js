@@ -118,6 +118,8 @@ export default class Test2 extends Phaser.Scene {
     this.stegoSpawned = false;
     this.lassoTimer = 0;
     this.mobMaxHealth = 3;
+    this.playerHurtTimer = 0;
+    this.playerIsHurt = false;
 
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
@@ -1002,6 +1004,16 @@ export default class Test2 extends Phaser.Scene {
       }
   }
 
+  if (this.playerIsHurt) {
+    this.playerHurtTimer++;
+  }
+
+  if (this.playerHurtTimer >= 3) {
+    this.playerHurtTimer = 0;
+    this.playerIsHurt = false;
+    this.player.setTint(0xffffff);
+  }
+
   if (this.player.rollInvuln) {
     this.playerDodgeTimer++;
     this.playerHit = true;
@@ -1256,6 +1268,8 @@ export default class Test2 extends Phaser.Scene {
 
   takeDamage (player, enemy) {
     if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
+      this.playerIsHurt = true;
+      this.player.setTint(0xff0000);
       this.currentHealth--;
       this.playerHit = true;
       this.player.isHit = true;
@@ -1309,6 +1323,8 @@ export default class Test2 extends Phaser.Scene {
   hitPlayer (bullet, enemy) {
     bullet.disableBody(true, true);
     if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
+      this.playerIsHurt = true;
+      this.player.setTint(0xff0000);
       this.currentHealth--;
       this.playerHit = true;
       this.player.isHit = true;
