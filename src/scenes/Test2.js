@@ -548,7 +548,7 @@ export default class Test2 extends Phaser.Scene {
         this.backText.y = this.centerY + 400 ;
         this.backText.setScrollFactor(0);
         this.backText.setScale(2);
-        this.backText.setDepth(-1);
+        this.backText.setDepth(1);
         this.healthGroup = this.add.group({
           key: 'health',
           repeat: this.currentHealth - 1,
@@ -691,7 +691,7 @@ export default class Test2 extends Phaser.Scene {
       this.backText.y = this.centerY + 400 ;
       this.backText.setScrollFactor(0);
       this.backText.setScale(2);
-      this.backText.setDepth(-1);
+      this.backText.setDepth(1);
       this.healthGroup = this.add.group({
         key: 'health',
         repeat: this.currentHealth - 1,
