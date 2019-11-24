@@ -119,6 +119,8 @@ export default class Test2 extends Phaser.Scene {
     this.stegoSpawned = false;
     this.lassoTimer = 0;
     this.mobMaxHealth = 3;
+    this.playerHurtTimer = 0;
+    this.playerIsHurt = false;
 
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
@@ -150,7 +152,7 @@ export default class Test2 extends Phaser.Scene {
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
       key: "enemy",
-      repeat: 70
+      repeat: 40
     });
 
     this.enemyGroup.children.iterate(function(child) {
@@ -592,7 +594,7 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
-    if (this.stegoSpawned && this.kills == 30) {
+    if (this.stegoSpawned && this.kills == 15) {
       this.stegoSpawned = false;
 
           this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -608,7 +610,7 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego1);
           this.stego1.anims.play('step', true);
     }
-    if (!this.stegoSpawned && this.kills == 50) {
+    if (!this.stegoSpawned && this.kills == 300) {
       this.stegoSpawned = true;
 
           this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -693,7 +695,7 @@ export default class Test2 extends Phaser.Scene {
       });
 
       this.playerHitTimer++;
-      if (this.playerHitTimer >= 120) {
+      if (this.playerHitTimer >= 180) {
         this.playerHit = false;
         this.playerHitTimer = 0;
       }
@@ -701,8 +703,10 @@ export default class Test2 extends Phaser.Scene {
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-    if (this.esc.isDown) {
+    if (this.esc.isDown && !this.gameOver) {
       this.gameOver = false;
+      this.playerHit = false;
+      this.playerHitTimer = 0;
       this.scene.restart();
       }
     //Game over
@@ -723,12 +727,15 @@ export default class Test2 extends Phaser.Scene {
       this.input.enabled = false;
       if (this.esc.isDown) {
         this.gameOver = false;
+        this.player.enableBody(true, 0, 0, true, true);
+        this.playerHit = false;
+        this.input.enabled = true;
         this.scene.restart();
         }
       this.input.enabled = false;
     }
 
-    if (this.kills > 60) {
+    if (this.kills > 40) {
       this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next', {
         font: "18px monospace",
         fill: "#000000",
@@ -1028,6 +1035,16 @@ export default class Test2 extends Phaser.Scene {
       }
   }
 
+  if (this.playerIsHurt) {
+    this.playerHurtTimer++;
+  }
+
+  if (this.playerHurtTimer >= 3) {
+    this.playerHurtTimer = 0;
+    this.playerIsHurt = false;
+    this.player.setTint(0xffffff);
+  }
+
   if (this.player.rollInvuln) {
     this.playerDodgeTimer++;
     this.playerHit = true;
@@ -1174,35 +1191,39 @@ export default class Test2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
-      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 250 && Math.abs(child.y - this.player.y) < 250 ) {
+      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 200 && Math.abs(child.y - this.player.y) < 160 && child.isStunned ==  false && !child.boss) {
         this.tweens.add({
           targets: child,
           x: this.player.x,
           y: this.player.y,
-          duration: 1000
+          duration: 2500
         });
         if (child.reload == false && child.health > 0) {
           child.reload = true;
           this.spit(this.player, child);
         }
-
       }
 
-      if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
+      if (Math.abs(child.x - this.player.x) < 120 && Math.abs(child.y - this.player.y) < 80 && child.isStunned == false) {
           this.tweens.add({
             targets: child,
             x: this.player.x,
             y: this.player.y,
-            duration: 1000 + Math.floor(Math.random() * 2000)
+            duration: 2000
           });
           if (child.reload == false && child.health > 0) {
-            child.reload = true;
-            this.spit(this.player, child);
+            child.shootTimer++;
+            if (child.shootTimer > 30 && child.reload == false) {
+              this.spit(this.player, child);
+              child.reload = true;
+            }
+            // child.reload = true;
+            // this.spit(this.player, child);
           }
       }
 
       if (child.reload) {
-        child.shootTimer++
+        child.shootTimer++;
         if (child.shootTimer > 120) {
           child.shootTimer = 0;
           child.reload = false;
@@ -1282,6 +1303,8 @@ export default class Test2 extends Phaser.Scene {
 
   takeDamage (player, enemy) {
     if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
+      this.playerIsHurt = true;
+      this.player.setTint(0xff0000);
       this.currentHealth--;
       this.playerHit = true;
       this.player.isHit = true;
@@ -1335,6 +1358,8 @@ export default class Test2 extends Phaser.Scene {
   hitPlayer (bullet, enemy) {
     bullet.disableBody(true, true);
     if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
+      this.playerIsHurt = true;
+      this.player.setTint(0xff0000);
       this.currentHealth--;
       this.playerHit = true;
       this.player.isHit = true;
