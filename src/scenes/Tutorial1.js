@@ -434,6 +434,18 @@ export default class Tutorial1 extends Phaser.Scene {
     });
     this.tutorial_shoot.setDepth(1);
 
+    this.tutorial_loot_ammo = this.add.text(this.player.x - 40, this.player.y - 100, "Killing enemies gives \nyou a chance to \ncollect loot. Kill \ndinos til you get some!",{
+      fontSize: '10.5px',
+      color: 0xff00ff
+    });
+    this.tutorial_loot_ammo.setDepth(1);
+
+    this.tutorial_ammo = this.add.text(this.player.x - 40, this.player.y - 100, "This is ammo \nyou get 20 bullets \nKill more dinos to see \nwhat else there is!",{
+      fontSize: '10.5px',
+      color: 0xff00ff
+    });
+    this.tutorial_ammo.setDepth(1);
+
     this.tutorial_lasso = this.add.text(this.player.x , this.player.y - 100, "Right click - lasso \nCan be used to stun small dinos \nOr try taming a big Stego for \nbonus action!",{
       fontSize: '10px',
       color: 0xff00ff
@@ -455,7 +467,9 @@ export default class Tutorial1 extends Phaser.Scene {
     this.didDodge = false;
 
     this.didShoot = false;
+    this.didAmmo = false;
     this.didLasso = false;
+    this.didHeallth = true;
   }
 
   update (time, delta) {
@@ -475,12 +489,32 @@ export default class Tutorial1 extends Phaser.Scene {
       this.tutorial_shoot.y = this.player.y + 30;
     }
 
+
     if (!this.didShoot) {
+      this.tutorial_loot_ammo.alpha = 0;
+    }
+    else {
+      this.tutorial_loot_ammo.alpha = 1;
+      this.tutorial_loot_ammo.x = this.player.x - 70;
+      this.tutorial_loot_ammo.y = this.player.y + 30;
+    }
+
+    if (!this.didAmmo) {
+      this.tutorial_ammo.alpha = 0;
+    }
+    else {
+      this.tutorial_loot_ammo.destroy();
+      this.tutorial_ammo.alpha = 1;
+      this.tutorial_ammo.x = this.player.x - 65;
+      this.tutorial_ammo.y = this.player.y + 30;
+    }
+
+    if (!this.didHealth) {
       this.tutorial_lasso.alpha = 0;
     }
     else {
       this.tutorial_lasso.alpha = 1;
-      this.tutorial_lasso.x = this.player.x - 85;
+      this.tutorial_lasso.x = this.player.x - 75;
       this.tutorial_lasso.y = this.player.y + 30;
     }
 
@@ -752,7 +786,7 @@ export default class Tutorial1 extends Phaser.Scene {
     if (this.enemyGroup.countActive(true) < 4) {
       this.enemyGroup = this.physics.add.group({
         key: "enemy",
-        repeat: 100
+        repeat: 10
       });
 
       this.enemyGroup.children.iterate(function(child) {
@@ -847,6 +881,8 @@ export default class Tutorial1 extends Phaser.Scene {
   pickAmmo (player, ammo) {
     ammo.disableBody(true, true);
     this.ammo += 20;
+    this.didAmmo = true;
+
   }
 
   deadBullet (layer, bullet) {
