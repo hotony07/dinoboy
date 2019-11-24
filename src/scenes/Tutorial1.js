@@ -60,7 +60,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
     this.load.image('health', './assets/Scene1/Heart.png');
-
+    this.load.image('spit', './assets/sprites/dino_spit_purple.png');
     this.load.image('back', './assets/dinosaur/back2.png');
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
@@ -77,9 +77,6 @@ export default class Tutorial1 extends Phaser.Scene {
     const tileset = map.addTilesetImage("sheet", "tiles");
 
     const belowLayer = map.createStaticLayer("Below", tileset, 0, 0).setDepth(-10);
-    const worldLayer = map.createStaticLayer("World", tileset, 0, 0);
-
-    worldLayer.setCollisionByProperty({ collides: true });
 
     const spawnPoint = map.findObject(
     "Spawns",
@@ -96,10 +93,11 @@ export default class Tutorial1 extends Phaser.Scene {
     this.playerDodgeTimer = 0;
     this.kills = 0;
     this.player.isHit = false;
+    this.stegoSpawned = false;
     this.lassoTimer = 0;
-
-
-    this.physics.add.collider(this.player, worldLayer);
+    this.mobMaxHealth = 3;
+    this.playerHurtTimer = 0;
+    this.playerIsHurt = false;
 
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
@@ -130,53 +128,58 @@ export default class Tutorial1 extends Phaser.Scene {
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
       key: "enemy",
-      repeat: 40
+      repeat: 20
     });
 
     this.enemyGroup.children.iterate(function(child) {
       child.setScale(0.7);
-      child.x = 200 + Math.floor(Math.random() * 700);
-      child.y = 200 + Math.floor(Math.random() * 700);
-      child.health = 1;
+      child.x = 200 + Math.floor(Math.random() * (map.widthInPixels - 200));
+      child.y = 200 + Math.floor(Math.random() * (map.heightInPixels - 200));
+      child.health = 3;
       child.boss = false;
+      child.boss2 = false;
+      child.isStunned = false;
+      child.stunTimer = 0;
+      child.shootTimer = 0;
+      child.reload = false;
     });
 
-    var enemy = this.physics.add.sprite(100, 100, 'enemy');
-    var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
-    var enemy3 = this.physics.add.sprite(100, 300, 'enemy');
-    var enemy4 = this.physics.add.sprite(100, 400, 'enemy');
-
-
-    var tween = this.tweens.add({
-      targets: [enemy, enemy3],
-      props: {
-        x: { value: '+=600', duration: 7000, flipX: true},
-        y: { value: '570', duration: 7500, ease: 'Sine.easeInOut'}
-      },
-      delay: 100,
-      yoyo: true,
-      loop: -1
-    })
-
-    this.tweens.add({
-      targets: [enemy2, enemy4],
-      props: {
-        x: { value: '500', duration: 7000, flipX: true},
-        y: { value: '170', duration: 7500, ease: 'Sine.easeInOut'}
-      },
-      delay: 100,
-      yoyo: true,
-      loop: -1
-    })
-
-    this.enemyGroup.add(enemy);
-    this.enemyGroup.add(enemy2);
-    this.enemyGroup.add(enemy3);
-    this.enemyGroup.add(enemy4);
-    enemy.health = 1;
-    enemy2.health = 1;
-    enemy3.health = 1;
-    enemy4.health = 1;
+    // var enemy = this.physics.add.sprite(100, 100, 'enemy');
+    // var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
+    // var enemy3 = this.physics.add.sprite(100, 300, 'enemy');
+    // var enemy4 = this.physics.add.sprite(100, 400, 'enemy');
+    //
+    //
+    // var tween = this.tweens.add({
+    //   targets: [enemy, enemy3],
+    //   props: {
+    //     x: { value: '+=600', duration: 7000, flipX: true},
+    //     y: { value: '570', duration: 7500, ease: 'Sine.easeInOut'}
+    //   },
+    //   delay: 100,
+    //   yoyo: true,
+    //   loop: -1
+    // })
+    //
+    // this.tweens.add({
+    //   targets: [enemy2, enemy4],
+    //   props: {
+    //     x: { value: '500', duration: 7000, flipX: true},
+    //     y: { value: '170', duration: 7500, ease: 'Sine.easeInOut'}
+    //   },
+    //   delay: 100,
+    //   yoyo: true,
+    //   loop: -1
+    // })
+    //
+    // this.enemyGroup.add(enemy);
+    // this.enemyGroup.add(enemy2);
+    // this.enemyGroup.add(enemy3);
+    // this.enemyGroup.add(enemy4);
+    // enemy.health = 1;
+    // enemy2.health = 1;
+    // enemy3.health = 1;
+    // enemy4.health = 1;
 
     //stegosaurus
     const stegoSpawn = map.findObject(
@@ -198,6 +201,10 @@ export default class Tutorial1 extends Phaser.Scene {
       maxSize: 20
     });
 
+    this.enemyBullets = this.physics.add.group({
+      defaultKey: "spit",
+    });
+
     this.lassos = this.physics.add.group({
       defaultKey: "lasso",
       maxSize: 1
@@ -207,6 +214,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.healthDrops = this.physics.add.group();
     this.availDrop = true;
     this.physics.add.overlap(this.player, this.ammoDrops, this.pickAmmo, null, this);
+    this.physics.add.overlap(this.player, this.healthDrops, this.pickHealth, null, this);
 
     // Event listener for movement of mouse pointer
     this.input.on(
@@ -393,13 +401,6 @@ export default class Tutorial1 extends Phaser.Scene {
       null,
       this
     );
-    this.physics.add.collider(
-      worldLayer,
-      this.bullets,
-      this.deadBullet,
-      null,
-      this
-    );
     this.physics.add.overlap(
       this.player,
       this.enemyGroup,
@@ -434,7 +435,7 @@ export default class Tutorial1 extends Phaser.Scene {
     });
     this.tutorial_shoot.setDepth(1);
 
-    this.tutorial_lasso = this.add.text(this.player.x , this.player.y - 100, "Right click - lasso \nCan be used to stun small dinos \nOr try taming a big Stego for \nbonus action!",{
+    this.tutorial_lasso = this.add.text(this.player.x , this.player.y - 100, "Right click - lasso \nCan stun small dinos\nOr try taming a big Stego for \nbonus action!",{
       fontSize: '10px',
       color: 0xff00ff
     });
@@ -456,6 +457,30 @@ export default class Tutorial1 extends Phaser.Scene {
 
     this.didShoot = false;
     this.didLasso = false;
+
+    const pickupSpawn1 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Pickup1 Spawn"
+    );
+
+    this.p1SpawnX = pickupSpawn1.x;
+    this.p1SpawnY = pickupSpawn1.y;
+
+    var ammoTest = this.physics.add.sprite(pickupSpawn1.x, pickupSpawn1.y, 'ammo');
+    ammoTest.setScale(0.3);
+    this.ammoDrops.add(ammoTest);
+
+    const pickupSpawn2 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Pickup2 Spawn"
+    );
+
+    this.p2SpawnX = pickupSpawn2.x;
+    this.p2SpawnY = pickupSpawn2.y;
+
+    var healthTest = this.physics.add.sprite(pickupSpawn2.x, pickupSpawn2.y, 'health');
+    healthTest.setScale(0.3);
+    this.healthDrops.add(healthTest);
   }
 
   update (time, delta) {
@@ -597,10 +622,10 @@ export default class Tutorial1 extends Phaser.Scene {
         this.player.anims.play("dodge", true);
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso(-75, 0, 180);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.lasso = this.makeLasso(-75, 0, 180);
+      // }
     } else if (this.d.isDown || this.cursors.right.isDown) {
       this.player.anims.play("walkRight", true);
 
@@ -722,6 +747,7 @@ export default class Tutorial1 extends Phaser.Scene {
         }
       }.bind(this)
     );
+
     this.lassos.children.each(
       function (l) {
         if (l.active) {
@@ -735,33 +761,88 @@ export default class Tutorial1 extends Phaser.Scene {
         }
       }.bind(this)
     );
+
+    this.lassos.children.each(
+      function (l) {
+        if (l.active) {
+          this.physics.add.overlap(
+            l,
+            this.enemyBullets,
+            this.deadBullet,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
+
     if (this.ammoDrops.countActive(true) != 0) {
       this.availDrop = false;
     } else {
       this.availDrop = true;
     }
     if (this.ammo == 0 && this.availDrop) {
-      var ammoDrop = this.physics.add.sprite(16, 16, 'bullet');
+      var ammoDrop = this.physics.add.sprite(16, 16, 'ammo');
       ammoDrop.setScale(2);
       this.ammoDrops.add(ammoDrop);
       ammoDrop.setRandomPosition(0, 0, game.config.width, game.config.height);
       this.availDrop = false;
     }
 
-    //If there ar eno enemies left, create more
-    if (this.enemyGroup.countActive(true) < 4) {
-      this.enemyGroup = this.physics.add.group({
-        key: "enemy",
-        repeat: 100
-      });
+    this.enemyGroup.children.iterate(function(child) {
+      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 200 && Math.abs(child.y - this.player.y) < 160 && child.isStunned ==  false && !child.boss) {
+        this.tweens.add({
+          targets: child,
+          x: this.player.x,
+          y: this.player.y,
+          duration: 2500
+        });
+        if (child.reload == false && child.health > 0) {
+          child.reload = true;
+          this.spit(this.player, child);
+        }
+      }
 
-      this.enemyGroup.children.iterate(function(child) {
-        child.setScale(0.7);
-        child.x = Math.floor(Math.random() * 900) ,
-        child.y = Math.floor(Math.random() * 900)
-        child.health = 1;
-      });
-    }
+      if (Math.abs(child.x - this.player.x) < 120 && Math.abs(child.y - this.player.y) < 80 && child.isStunned == false) {
+          this.tweens.add({
+            targets: child,
+            x: this.player.x,
+            y: this.player.y,
+            duration: 2000
+          });
+          if (child.reload == false && child.health > 0) {
+            child.shootTimer++;
+            if (child.shootTimer > 30 && child.reload == false) {
+              this.spit(this.player, child);
+              child.reload = true;
+            }
+            // child.reload = true;
+            // this.spit(this.player, child);
+          }
+      }
+
+      if (child.reload) {
+        child.shootTimer++;
+        if (child.shootTimer > 120) {
+          child.shootTimer = 0;
+          child.reload = false;
+        }
+      }
+
+      if (child.isStunned) {
+        this.tweens.add({
+          targets: child,
+          x: child.x,
+          y: child.y,
+          duration: 1
+        });
+        child.stunTimer++;
+        if (child.stunTimer > 50) {
+          child.isStunned = false;
+          child.stunTimer = 0;
+        }
+      }
+    }.bind(this));
 
     if (this.lassos.getChildren().length > 0) {
       this.lassoTimer++
@@ -773,12 +854,6 @@ export default class Tutorial1 extends Phaser.Scene {
     }
   }
 
-  deleteLasso() {
-    if (this.lassos.getChildren().length > 0) {
-      this.lassos.getChildren()[0].disableBody(true, true);
-      this.lassos.getChildren()[0].destroy();
-    }
-  }
   shoot (pointer) {
     var betweenPoints = Phaser.Math.Angle.BetweenPoints;
     var angle = betweenPoints(this.gun, pointer);
@@ -803,6 +878,10 @@ export default class Tutorial1 extends Phaser.Scene {
       this.playerHit = true;
       this.player.isHit = true;
     }
+  }
+
+  stompTree (dino, tree) {
+    tree.disableBody(true, true);
   }
 
   hitEnemy (bullet, enemy) {
@@ -831,16 +910,48 @@ export default class Tutorial1 extends Phaser.Scene {
     }
   }
 
+  walk(direction)
+  {
+    switch (direction)
+    {
+      case "forward":
+        this.player.anims.play("walkForward", true);
+        break;
+      case "backward":
+        this.player.anims.play("walkBackward", true);
+        break;
+      case "left":
+        this.player.anims.play("walkLeft", true);
+        break;
+      case "right":
+        this.player.anims.play("walkRight", true);
+        break;
+      default:
+        this.player.anims.play("walkForward", true);
+        break;
+    }
+  }
+
   makeLasso (xCo, yCo, angle) {
     this.lassoMiss.play(this.defaultSoundConfig);
     this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'lasso');
-    this.lassos.add(this.lasso.setAngle(angle));
+    var x = this.lasso.widthInPixels;
+    var y = this.lasso.heightInPixels;
+    this.lasso.setAngle(angle);
+    this.lasso.setSize(120, 50);
+    //this.lasso.setOffset(-x/2, -y/2);
+    this.lassos.add(this.lasso);
     this.lasso.anims.play("lasso", true);
   }
   makeLasso2 (xCo, yCo, angle) {
     this.lassoMiss.play(this.defaultSoundConfig);
     this.lasso = this.physics.add.sprite(this.player.x + xCo, this.player.y + yCo, 'uplasso');
-    this.lassos.add(this.lasso.setAngle(angle));
+    var x = this.lasso.widthInPixels;
+    var y = this.lasso.heightInPixels;
+    this.lasso.setAngle(angle);
+    this.lasso.setSize(50, 120);
+    //this.lasso.setOffset(x/2, -y/2);
+    this.lassos.add(this.lasso);
     this.lasso.anims.play("uplasso", true);
   }
 
@@ -851,6 +962,32 @@ export default class Tutorial1 extends Phaser.Scene {
 
   deadBullet (layer, bullet) {
     bullet.disableBody(true, true);
+  }
+
+  pickHealth (player, health) {
+    if (this.currentHealth < this.maxHealth){
+      health.disableBody(true, true);
+      this.currentHealth++;
+    } else {
+      //console.log('full health!');
+    }
+  }
+
+  spit (player, enemy) {
+    var betweenPoints = Phaser.Math.Angle.BetweenPoints;
+    var angle = betweenPoints(enemy, player);
+    var velocityFromRotation = this.physics.velocityFromRotation;
+    //Create a variable called velocity from a Vector2
+    var velocity = new Phaser.Math.Vector2();
+    velocityFromRotation(angle, this.speed/6, velocity);
+    //Get the bullet group
+    var bullet = this.enemyBullets.get();
+    bullet.setAngle(Phaser.Math.RAD_TO_DEG * angle);
+    bullet
+      .enableBody(true, enemy.x, enemy.y, true, true)
+      .setVelocity(velocity.x, velocity.y)
+      .setScale(.2);
+    //this.bullet.setCollideWorldBounds(true);
   }
 
   tameCheck (lasso, enemy) {
@@ -873,16 +1010,25 @@ export default class Tutorial1 extends Phaser.Scene {
         }
       } else{
         this.lassoHit.play(this.defaultSoundConfig);
-        enemy.health--;
+        enemy.isStunned = true;
+        if (this.ammo == 0) {
+          enemy.health--;
+        }
         if (enemy.health == 0) {
           enemy.disableBody(true, true);
           this.kills += 1;
           // Random ammo drop after enemy kill
           //dropRate increases when you're low on bullets
-          var dropRate = Math.max((20 - this.ammo) / 25, 0);
-          if (Math.random() < dropRate) {
+          var healthDropRate = 0.10;
+          var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+          if (Math.random() < healthDropRate) {
+            var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
+            healthDrop.setDepth(-1);
+            healthDrop.setScale(0.3);
+            this.healthDrops.add(healthDrop);
+          } else if (Math.random() < ammoDropRate) {
             var ammoDrop = this.physics.add.sprite(enemy.x, enemy.y, 'ammo');
-            ammoDrop.setScale(0.5);
+            ammoDrop.setScale(0.3);
             this.ammoDrops.add(ammoDrop);
           }
         }
