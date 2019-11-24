@@ -42,7 +42,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.load.image('stego2', './assets/dinosaur/newStego.png')
     this.load.spritesheet('stego', './assets/dinosaur/dinoWalk2.png', {
       frameWidth: 1244,
-      frameHeight: 528
+      frameHeight: 524
     });
 
     this.load.image('gun', './assets/sprites/gun.png');
@@ -414,7 +414,7 @@ export default class Tutorial1 extends Phaser.Scene {
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
     this.backText = this.add.sprite(this.centerX - 832, this. centerY + 375, 'back');
     this.backText.setScale(0.3);
-    this.backText.setDepth(-10);
+    this.backText.setDepth(1);
     //this.backText.setScrollFactor(0);
 
     this.ammoScore = this.add.text(this.centerX - 20, this. centerY + 150, 'Ammo: '+ this.ammo, { fontSize: '12' }).setScrollFactor(0);
@@ -426,21 +426,25 @@ export default class Tutorial1 extends Phaser.Scene {
       fontSize: '10px',
       color: 0xff00ff
     });
+    this.tutorial_wasd.setDepth(1);
 
     this.tutorial_shoot = this.add.text(this.player.x, this.player.y - 100, "Left click - shoot\nShoot the baby dinos!\nWatch your ammo!",{
       fontSize: '11px',
       color: 0xff00ff
     });
+    this.tutorial_shoot.setDepth(1);
 
-    this.tutorial_lasso = this.add.text(this.player.x, this.player.y - 100, "Right click - lasso\nUse it to interact \nwith dinosaurs!\nTry taming a big Stego!",{
+    this.tutorial_lasso = this.add.text(this.player.x , this.player.y - 100, "Right click - lasso \nCan be used to stun small dinos \nOr ry taming a big Stego for \nbonus action!",{
       fontSize: '10px',
       color: 0xff00ff
     });
+    this.tutorial_lasso.setDepth(1);
 
     this.tutorial_complete = this.add.text(this.player.x, this.player.y - 100, "[ESC] to go back to menu\nOR\n[ENTER] to start game!",{
       fontSize: '10px',
       color: 0xff00ff
     });
+    this.tutorial_complete.setDepth(1);
 
     // tutorial checkpoints
     this.didWalk = false;
@@ -476,7 +480,7 @@ export default class Tutorial1 extends Phaser.Scene {
     }
     else {
       this.tutorial_lasso.alpha = 1;
-      this.tutorial_lasso.x = this.player.x - 67;
+      this.tutorial_lasso.x = this.player.x - 85;
       this.tutorial_lasso.y = this.player.y + 30;
     }
 

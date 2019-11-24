@@ -49,7 +49,7 @@ export default class Test2 extends Phaser.Scene {
     this.load.image('stego', './assets/dinosaur/newStego.png')
     this.load.spritesheet('stegoWalk', './assets/dinosaur/dinoWalk2.png', {
       frameWidth: 1244,
-      frameHeight: 520
+      frameHeight: 524
     });
     this.load.spritesheet('backWalk', './assets/dinosaur/backStego.png', {
       frameWidth: 512,
@@ -585,7 +585,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego1.stunTimer = 0;
           this.stego1.isStunned = false;
           this.enemyGroup.add(this.stego1);
-          //this.stego1.anims.play('step', true);
+          this.stego1.anims.play('step', true);
     }
     if (!this.stegoSpawned && this.kills == 50) {
       this.stegoSpawned = true;
