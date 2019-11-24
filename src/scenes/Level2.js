@@ -21,6 +21,7 @@ export default class Level2 extends Phaser.Scene {
     this.load.audio("baby_dino_growl_2", './assets/sfx/dinosaur/baby_dino_growl_02.mp3');
     this.load.audio("dino_hurt", './assets/sfx/dinosaur/dino_hurt.mp3');
     this.load.audio("dino_roar", './assets/sfx/dinosaur/dino_roar.mp3');
+    this.load.audio("dino_spit", './assets/sfx/dinosaur/dino_spit.mp3');
     this.load.audio("dino_step_1", './assets/sfx/dinosaur/dino_step_01.mp3');
     this.load.audio("dino_step_2", './assets/sfx/dinosaur/dino_step_02.mp3');
     this.load.audio("lasso_hit", './assets/sfx/lasso/lasso_hit.mp3');
@@ -397,6 +398,7 @@ export default class Level2 extends Phaser.Scene {
     this.babyDinoGrowl2 = this.sound.add("baby_dino_growl_2");
     this.dinoHurt = this.sound.add("dino_hurt");
     this.dinoRoar = this.sound.add("dino_roar");
+    this.dinoSpit = this.sound.add("dino_spit");
     this.dinoStep1 = this.sound.add("dino_step_1");
     this.dinoStep2 = this.sound.add("dino_step_2");
     this.lassoHit = this.sound.add("lasso_hit");
@@ -1216,9 +1218,12 @@ export default class Level2 extends Phaser.Scene {
     bullet
       .enableBody(true, enemy.x, enemy.y, true, true)
       .setVelocity(velocity.x, velocity.y)
-      .setScale(.2),
+      .setScale(.2);
 
-    this.gunshot.play(this.defaultSoundConfig);
+    var dinoSpitSoundConfig = this.defaultSoundConfig;
+    this.dinoSpit.volume = 0.5;
+
+    this.dinoSpit.play(this.dinoSpitSoundConfig);
     //this.bullet.setCollideWorldBounds(true);
   }
 
