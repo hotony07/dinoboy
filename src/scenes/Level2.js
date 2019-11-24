@@ -443,13 +443,14 @@ export default class Level2 extends Phaser.Scene {
       this
     );
 
-    this.healthScore = this.add.text(this.centerX - 120, this. centerY + 50, 'Health', { fontSize: '12' }).setScrollFactor(0);
+    this.healthScore = this.add.text(this.centerX - 120, this. centerY + 75,
+      'Health', { fontSize: '12', fill: "#000000",}).setScrollFactor(0);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: this.currentHealth - 1,
       setXY: {
         x: this.centerX - 120,
-        y: this.centerY + 70,
+        y: this.centerY + 95,
         stepX: 10,
         stepY: 0
       }
@@ -482,8 +483,9 @@ export default class Level2 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
-    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 50, 'Ammo: '+ this.ammo, { fontSize: '12' }).setScrollFactor(0);
-    this.killScore = this.add.text(this.centerX + 50, this. centerY + 50, 'Kills: '+ this.kills, { fontSize: '12' }).setScrollFactor(0);
+    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12', fill: "#000000" }).setScrollFactor(0);
+    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0);
+    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: Space \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0);
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
@@ -639,6 +641,9 @@ export default class Level2 extends Phaser.Scene {
       this.killScore.y = this.centerY + 200;
       this.killScore.setFontSize(24);
 
+      this.controls.x = this.centerX + 280;
+      this.controls.y = this.centerY + 200;
+      this.controls.setFontSize(20);
 
       this.healthScore.x = this.centerX - 300;
       this.healthScore.y = this.centerY + 200;
