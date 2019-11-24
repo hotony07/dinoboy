@@ -462,7 +462,7 @@ export default class Test2 extends Phaser.Scene {
       repeat: this.currentHealth - 1,
       setXY: {
         x: this.centerX - 120,
-        y: this.centerY + 100,
+        y: this.centerY + 95,
         stepX: 10,
         stepY: 0
       }
