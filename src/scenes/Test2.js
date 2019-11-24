@@ -11,6 +11,7 @@ export default class Test2 extends Phaser.Scene {
 
   preload () {
     // Preload assets
+    this.load.image('back', './assets/dinosaur/background.png');
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
@@ -133,7 +134,7 @@ export default class Test2 extends Phaser.Scene {
     const camera = this.cameras.main;
     camera.setZoom(5);
     camera.startFollow(this.player);
-    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels + 40);
 
     var gun, bullets, enemy, bullet, enemyGroup;
     this.nextFire = 0;
@@ -421,14 +422,14 @@ export default class Test2 extends Phaser.Scene {
       repeat: 10,
       setXY: {
         x: Math.floor(Math.random() * 900) ,
-        y: Math.floor(Math.random() * 900) ,
+        y: Math.floor(Math.random() * 800) ,
       }
     });
 
     this.treeGroup.children.iterate(function(child) {
       child.setScale(0.7);
       child.x = Math.floor(Math.random() * 900) ,
-      child.y = Math.floor(Math.random() * 900)
+      child.y = Math.floor(Math.random() * 800)
       child.body.setSize(15, 30);
       child.body.setOffset(32, 50);
       child.body.immovable = true;
@@ -452,17 +453,25 @@ export default class Test2 extends Phaser.Scene {
       this
     );
 
-    this.healthScore = this.add.text(this.centerX - 120, this. centerY + 50, 'Health', { fontSize: '12' }).setScrollFactor(0);
+    this.healthScore = this.add.text(this.centerX - 120, this. centerY + 75,
+      'Health', { fontSize: '12', fill: "#000000",}).setScrollFactor(0);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: this.currentHealth - 1,
       setXY: {
         x: this.centerX - 120,
-        y: this.centerY + 70,
+        y: this.centerY + 100,
         stepX: 10,
         stepY: 0
       }
     });
+
+    this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back');
+    this.backText.setScrollFactor(0);
+    this.backText.setScale(0.3);
+    this.backText.setDepth(-1);
+
+
     // this.healthGroup = this.add.group({
     //   key: 'health',
     //   repeat: this.currentHealth - 1,
@@ -485,8 +494,10 @@ export default class Test2 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
-    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 50, 'Ammo: '+ this.ammo, { fontSize: '12' }).setScrollFactor(0);
-    this.killScore = this.add.text(this.centerX + 50, this. centerY + 50, 'Kills: '+ this.kills, { fontSize: '12' }).setScrollFactor(0);
+    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0);
+    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0);
+    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: Space \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0);
+    this.player.dodgeLock = true;
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
@@ -518,11 +529,18 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
+
+
     if (this.currentHealth != this.healthGroup.getChildren().length) {
       while (this.healthGroup.getChildren().length > 0) {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
       }
       if (this.isMounted) {
+        this.backText.x = this.centerX  ;
+        this.backText.y = this.centerY + 400 ;
+        this.backText.setScrollFactor(0);
+        this.backText.setScale(2);
+        this.backText.setDepth(-1);
         this.healthGroup = this.add.group({
           key: 'health',
           repeat: this.currentHealth - 1,
@@ -543,7 +561,7 @@ export default class Test2 extends Phaser.Scene {
           repeat: this.currentHealth - 1,
           setXY: {
             x: this.centerX - 120,
-            y: this.centerY + 70,
+            y: this.centerY + 100,
             stepX: 10,
             stepY: 0
           }
@@ -642,6 +660,9 @@ export default class Test2 extends Phaser.Scene {
       this.killScore.y = this.centerY + 200;
       this.killScore.setFontSize(24);
 
+      this.controls.x = this.centerX + 280;
+      this.controls.y = this.centerY + 200;
+      this.controls.setFontSize(20);
 
       this.healthScore.x = this.centerX - 300;
       this.healthScore.y = this.centerY + 200;
@@ -649,6 +670,11 @@ export default class Test2 extends Phaser.Scene {
       while (this.healthGroup.getChildren().length > 0) {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
       }
+      this.backText.x = this.centerX  ;
+      this.backText.y = this.centerY + 400 ;
+      this.backText.setScrollFactor(0);
+      this.backText.setScale(2);
+      this.backText.setDepth(-1);
       this.healthGroup = this.add.group({
         key: 'health',
         repeat: this.currentHealth - 1,
