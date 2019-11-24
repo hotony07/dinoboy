@@ -121,8 +121,6 @@ export default class Test2 extends Phaser.Scene {
     this.stegoSpawned = false;
     this.lassoTimer = 0;
     this.mobMaxHealth = 3;
-    this.playerHurtTimer = 0;
-    this.playerIsHurt = false;
 
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
@@ -154,9 +152,9 @@ export default class Test2 extends Phaser.Scene {
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
       key: "enemy",
-      repeat: 40
+      repeat: 70
     });
-
+    //this.enemyGroup.setDepth(-1)
     this.enemyGroup.children.iterate(function(child) {
       child.setScale(0.7);
       child.x = 200 + Math.floor(Math.random() * (map.widthInPixels - 200));
@@ -432,7 +430,7 @@ export default class Test2 extends Phaser.Scene {
         y: Math.floor(Math.random() * 800) ,
       }
     });
-
+    this.treeGroup.setDepth(1);
     this.treeGroup.children.iterate(function(child) {
       child.setScale(0.7);
       child.x = Math.floor(Math.random() * 900) ,
@@ -461,7 +459,7 @@ export default class Test2 extends Phaser.Scene {
     );
 
     this.healthScore = this.add.text(this.centerX - 120, this. centerY + 75,
-      'Health', { fontSize: '12', fill: "#000000",}).setScrollFactor(0);
+      'Health', { fontSize: '12', fill: "#000000",}).setScrollFactor(0).setDepth(2);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: this.currentHealth - 1,
@@ -476,7 +474,7 @@ export default class Test2 extends Phaser.Scene {
     this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back');
     this.backText.setScrollFactor(0);
     this.backText.setScale(0.3);
-    this.backText.setDepth(-1);
+    this.backText.setDepth(1);
 
 
     // this.healthGroup = this.add.group({
@@ -493,6 +491,7 @@ export default class Test2 extends Phaser.Scene {
     this.healthGroup.children.iterate(function(child) {
       child.setScrollFactor(0);
       child.setScale(0.3);
+      child.setDepth(2);
     });
 
     this.playerGroup = this.physics.add.group();
@@ -501,9 +500,17 @@ export default class Test2 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
+<<<<<<< HEAD
+    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
+    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0).setDepth(2);
+    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: Space \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0).setDepth
+    (2);
+    this.player.dodgeLock = true;
+=======
     this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0);
     this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0);
     this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: RMB \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0);
+>>>>>>> 4449c21f0f566510111c92791b1efbcf3a7161a7
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
@@ -558,6 +565,7 @@ export default class Test2 extends Phaser.Scene {
         this.healthGroup.children.iterate(function(child) {
           child.setScrollFactor(0);
           child.setScale(0.6);
+          child.setDepth(2);
         });
       } else {
         this.healthGroup = this.add.group({
@@ -565,7 +573,7 @@ export default class Test2 extends Phaser.Scene {
           repeat: this.currentHealth - 1,
           setXY: {
             x: this.centerX - 120,
-            y: this.centerY + 100,
+            y: this.centerY + 95,
             stepX: 10,
             stepY: 0
           }
@@ -573,6 +581,7 @@ export default class Test2 extends Phaser.Scene {
         this.healthGroup.children.iterate(function(child) {
           child.setScrollFactor(0);
           child.setScale(0.3);
+          child.setDepth(2);
         });
       }
     }
@@ -594,7 +603,7 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
-    if (this.stegoSpawned && this.kills == 15) {
+    if (this.stegoSpawned && this.kills == 30) {
       this.stegoSpawned = false;
 
           this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -610,7 +619,11 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego1);
           this.stego1.anims.play('step', true);
     }
+<<<<<<< HEAD
+    if (!this.stegoSpawned && this.kills == 50) {
+=======
     if (!this.stegoSpawned && this.kills == 30) {
+>>>>>>> 4449c21f0f566510111c92791b1efbcf3a7161a7
       this.stegoSpawned = true;
 
           this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -659,18 +672,22 @@ export default class Test2 extends Phaser.Scene {
       this.ammoScore.x = this.centerX - 100;
       this.ammoScore.y = this.centerY + 200;
       this.ammoScore.setFontSize(24);
+      this.ammoScore.setDepth(2);
 
       this.killScore.x = this.centerX + 120;
       this.killScore.y = this.centerY + 200;
       this.killScore.setFontSize(24);
+      this.killScore.setDepth(2);
 
       this.controls.x = this.centerX + 280;
       this.controls.y = this.centerY + 200;
       this.controls.setFontSize(20);
+      this.controls.setDepth(2);
 
       this.healthScore.x = this.centerX - 300;
       this.healthScore.y = this.centerY + 200;
       this.healthScore.setFontSize(24);
+      this.healthScore.setDepth(2);
       while (this.healthGroup.getChildren().length > 0) {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
       }
@@ -692,10 +709,11 @@ export default class Test2 extends Phaser.Scene {
       this.healthGroup.children.iterate(function(child) {
         child.setScrollFactor(0);
         child.setScale(0.6);
+        child.setDepth(2);
       });
 
       this.playerHitTimer++;
-      if (this.playerHitTimer >= 180) {
+      if (this.playerHitTimer >= 120) {
         this.playerHit = false;
         this.playerHitTimer = 0;
       }
@@ -703,10 +721,8 @@ export default class Test2 extends Phaser.Scene {
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-    if (this.esc.isDown && !this.gameOver) {
+    if (this.esc.isDown) {
       this.gameOver = false;
-      this.playerHit = false;
-      this.playerHitTimer = 0;
       this.scene.restart();
       this.scene.start('Boot');
       }
@@ -728,16 +744,13 @@ export default class Test2 extends Phaser.Scene {
       this.input.enabled = false;
       if (this.esc.isDown) {
         this.gameOver = false;
-        this.player.enableBody(true, 0, 0, true, true);
-        this.playerHit = false;
-        this.input.enabled = true;
         this.scene.restart();
         this.scene.start('Boot');
         }
       this.input.enabled = false;
     }
 
-    if (this.kills > 40) {
+    if (this.kills > 60) {
       this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next', {
         font: "18px monospace",
         fill: "#000000",
@@ -1037,16 +1050,6 @@ export default class Test2 extends Phaser.Scene {
       // }
   }
 
-  if (this.playerIsHurt) {
-    this.playerHurtTimer++;
-  }
-
-  if (this.playerHurtTimer >= 3) {
-    this.playerHurtTimer = 0;
-    this.playerIsHurt = false;
-    this.player.setTint(0xffffff);
-  }
-
   if (this.player.rollInvuln) {
     this.playerDodgeTimer++;
     this.playerHit = true;
@@ -1207,39 +1210,35 @@ export default class Test2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
-      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 200 && Math.abs(child.y - this.player.y) < 160 && child.isStunned ==  false && !child.boss) {
+      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 250 && Math.abs(child.y - this.player.y) < 250 ) {
         this.tweens.add({
           targets: child,
           x: this.player.x,
           y: this.player.y,
-          duration: 2500
+          duration: 1000
         });
         if (child.reload == false && child.health > 0) {
           child.reload = true;
           this.spit(this.player, child);
         }
+
       }
 
-      if (Math.abs(child.x - this.player.x) < 120 && Math.abs(child.y - this.player.y) < 80 && child.isStunned == false) {
+      if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
           this.tweens.add({
             targets: child,
             x: this.player.x,
             y: this.player.y,
-            duration: 2000
+            duration: 1000 + Math.floor(Math.random() * 2000)
           });
           if (child.reload == false && child.health > 0) {
-            child.shootTimer++;
-            if (child.shootTimer > 30 && child.reload == false) {
-              this.spit(this.player, child);
-              child.reload = true;
-            }
-            // child.reload = true;
-            // this.spit(this.player, child);
+            child.reload = true;
+            this.spit(this.player, child);
           }
       }
 
       if (child.reload) {
-        child.shootTimer++;
+        child.shootTimer++
         if (child.shootTimer > 120) {
           child.shootTimer = 0;
           child.reload = false;
@@ -1319,8 +1318,6 @@ export default class Test2 extends Phaser.Scene {
 
   takeDamage (player, enemy) {
     if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
-      this.playerIsHurt = true;
-      this.player.setTint(0xff0000);
       this.currentHealth--;
       this.playerHit = true;
       this.player.isHit = true;
@@ -1374,8 +1371,6 @@ export default class Test2 extends Phaser.Scene {
   hitPlayer (bullet, enemy) {
     bullet.disableBody(true, true);
     if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
-      this.playerIsHurt = true;
-      this.player.setTint(0xff0000);
       this.currentHealth--;
       this.playerHit = true;
       this.player.isHit = true;
