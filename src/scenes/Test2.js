@@ -673,8 +673,10 @@ export default class Test2 extends Phaser.Scene {
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-    if (this.esc.isDown) {
+    if (this.esc.isDown && !this.gameOver) {
       this.gameOver = false;
+      this.playerHit = false;
+      this.playerHitTimer = 0;
       this.scene.restart();
       }
     //Game over
@@ -695,6 +697,9 @@ export default class Test2 extends Phaser.Scene {
       this.input.enabled = false;
       if (this.esc.isDown) {
         this.gameOver = false;
+        this.player.enableBody(true, 0, 0, true, true);
+        this.playerHit = false;
+        this.input.enabled = true;
         this.scene.restart();
         }
       this.input.enabled = false;
