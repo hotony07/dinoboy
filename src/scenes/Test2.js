@@ -708,6 +708,7 @@ export default class Test2 extends Phaser.Scene {
       this.playerHit = false;
       this.playerHitTimer = 0;
       this.scene.restart();
+      this.scene.start('Boot');
       }
     //Game over
     if (this.gameOver) {
@@ -731,6 +732,7 @@ export default class Test2 extends Phaser.Scene {
         this.playerHit = false;
         this.input.enabled = true;
         this.scene.restart();
+        this.scene.start('Boot');
         }
       this.input.enabled = false;
     }
