@@ -11,6 +11,7 @@ export default class Test2 extends Phaser.Scene {
 
   preload () {
     // Preload assets
+    this.load.image('back', './assets/dinosaur/background.png');
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
@@ -136,7 +137,7 @@ export default class Test2 extends Phaser.Scene {
     const camera = this.cameras.main;
     camera.setZoom(5);
     camera.startFollow(this.player);
-    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels + 40);
 
     var gun, bullets, enemy, bullet, enemyGroup;
     this.nextFire = 0;
@@ -151,7 +152,7 @@ export default class Test2 extends Phaser.Scene {
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
       key: "enemy",
-      repeat: 70
+      repeat: 40
     });
 
     this.enemyGroup.children.iterate(function(child) {
@@ -425,14 +426,14 @@ export default class Test2 extends Phaser.Scene {
       repeat: 10,
       setXY: {
         x: Math.floor(Math.random() * 900) ,
-        y: Math.floor(Math.random() * 900) ,
+        y: Math.floor(Math.random() * 800) ,
       }
     });
 
     this.treeGroup.children.iterate(function(child) {
       child.setScale(0.7);
       child.x = Math.floor(Math.random() * 900) ,
-      child.y = Math.floor(Math.random() * 900)
+      child.y = Math.floor(Math.random() * 800)
       child.body.setSize(15, 30);
       child.body.setOffset(32, 50);
       child.body.immovable = true;
@@ -456,17 +457,25 @@ export default class Test2 extends Phaser.Scene {
       this
     );
 
-    this.healthScore = this.add.text(this.centerX - 120, this. centerY + 50, 'Health', { fontSize: '12' }).setScrollFactor(0);
+    this.healthScore = this.add.text(this.centerX - 120, this. centerY + 75,
+      'Health', { fontSize: '12', fill: "#000000",}).setScrollFactor(0);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: this.currentHealth - 1,
       setXY: {
         x: this.centerX - 120,
-        y: this.centerY + 70,
+        y: this.centerY + 95,
         stepX: 10,
         stepY: 0
       }
     });
+
+    this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back');
+    this.backText.setScrollFactor(0);
+    this.backText.setScale(0.3);
+    this.backText.setDepth(-1);
+
+
     // this.healthGroup = this.add.group({
     //   key: 'health',
     //   repeat: this.currentHealth - 1,
@@ -489,8 +498,10 @@ export default class Test2 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
-    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 50, 'Ammo: '+ this.ammo, { fontSize: '12' }).setScrollFactor(0);
-    this.killScore = this.add.text(this.centerX + 50, this. centerY + 50, 'Kills: '+ this.kills, { fontSize: '12' }).setScrollFactor(0);
+    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0);
+    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0);
+    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: Space \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0);
+    this.player.dodgeLock = true;
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
@@ -522,11 +533,18 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
+
+
     if (this.currentHealth != this.healthGroup.getChildren().length) {
       while (this.healthGroup.getChildren().length > 0) {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
       }
       if (this.isMounted) {
+        this.backText.x = this.centerX  ;
+        this.backText.y = this.centerY + 400 ;
+        this.backText.setScrollFactor(0);
+        this.backText.setScale(2);
+        this.backText.setDepth(-1);
         this.healthGroup = this.add.group({
           key: 'health',
           repeat: this.currentHealth - 1,
@@ -547,7 +565,7 @@ export default class Test2 extends Phaser.Scene {
           repeat: this.currentHealth - 1,
           setXY: {
             x: this.centerX - 120,
-            y: this.centerY + 70,
+            y: this.centerY + 100,
             stepX: 10,
             stepY: 0
           }
@@ -576,7 +594,7 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
-    if (this.stegoSpawned && this.kills == 30) {
+    if (this.stegoSpawned && this.kills == 15) {
       this.stegoSpawned = false;
 
           this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -592,7 +610,7 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego1);
           this.stego1.anims.play('step', true);
     }
-    if (!this.stegoSpawned && this.kills == 50) {
+    if (!this.stegoSpawned && this.kills == 300) {
       this.stegoSpawned = true;
 
           this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -646,6 +664,9 @@ export default class Test2 extends Phaser.Scene {
       this.killScore.y = this.centerY + 200;
       this.killScore.setFontSize(24);
 
+      this.controls.x = this.centerX + 280;
+      this.controls.y = this.centerY + 200;
+      this.controls.setFontSize(20);
 
       this.healthScore.x = this.centerX - 300;
       this.healthScore.y = this.centerY + 200;
@@ -653,6 +674,11 @@ export default class Test2 extends Phaser.Scene {
       while (this.healthGroup.getChildren().length > 0) {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
       }
+      this.backText.x = this.centerX  ;
+      this.backText.y = this.centerY + 400 ;
+      this.backText.setScrollFactor(0);
+      this.backText.setScale(2);
+      this.backText.setDepth(-1);
       this.healthGroup = this.add.group({
         key: 'health',
         repeat: this.currentHealth - 1,
@@ -669,7 +695,7 @@ export default class Test2 extends Phaser.Scene {
       });
 
       this.playerHitTimer++;
-      if (this.playerHitTimer >= 120) {
+      if (this.playerHitTimer >= 180) {
         this.playerHit = false;
         this.playerHitTimer = 0;
       }
@@ -677,8 +703,10 @@ export default class Test2 extends Phaser.Scene {
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-    if (this.esc.isDown) {
+    if (this.esc.isDown && !this.gameOver) {
       this.gameOver = false;
+      this.playerHit = false;
+      this.playerHitTimer = 0;
       this.scene.restart();
       }
     //Game over
@@ -699,12 +727,15 @@ export default class Test2 extends Phaser.Scene {
       this.input.enabled = false;
       if (this.esc.isDown) {
         this.gameOver = false;
+        this.player.enableBody(true, 0, 0, true, true);
+        this.playerHit = false;
+        this.input.enabled = true;
         this.scene.restart();
         }
       this.input.enabled = false;
     }
 
-    if (this.kills > 60) {
+    if (this.kills > 40) {
       this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next', {
         font: "18px monospace",
         fill: "#000000",
@@ -1160,35 +1191,39 @@ export default class Test2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
-      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 250 && Math.abs(child.y - this.player.y) < 250 ) {
+      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 200 && Math.abs(child.y - this.player.y) < 160 && child.isStunned ==  false && !child.boss) {
         this.tweens.add({
           targets: child,
           x: this.player.x,
           y: this.player.y,
-          duration: 1000
+          duration: 2500
         });
         if (child.reload == false && child.health > 0) {
           child.reload = true;
           this.spit(this.player, child);
         }
-
       }
 
-      if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
+      if (Math.abs(child.x - this.player.x) < 120 && Math.abs(child.y - this.player.y) < 80 && child.isStunned == false) {
           this.tweens.add({
             targets: child,
             x: this.player.x,
             y: this.player.y,
-            duration: 1000 + Math.floor(Math.random() * 2000)
+            duration: 2000
           });
           if (child.reload == false && child.health > 0) {
-            child.reload = true;
-            this.spit(this.player, child);
+            child.shootTimer++;
+            if (child.shootTimer > 30 && child.reload == false) {
+              this.spit(this.player, child);
+              child.reload = true;
+            }
+            // child.reload = true;
+            // this.spit(this.player, child);
           }
       }
 
       if (child.reload) {
-        child.shootTimer++
+        child.shootTimer++;
         if (child.shootTimer > 120) {
           child.shootTimer = 0;
           child.reload = false;

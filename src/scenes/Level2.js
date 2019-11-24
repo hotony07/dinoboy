@@ -11,6 +11,7 @@ export default class Level2 extends Phaser.Scene {
 
   preload () {
     // Preload assets
+    this.load.image('back', './assets/dinosaur/background.png');
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
@@ -133,7 +134,7 @@ export default class Level2 extends Phaser.Scene {
     const camera = this.cameras.main;
     camera.setZoom(5);
     camera.startFollow(this.player);
-    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels - 40);
 
     var gun, bullets, enemy, bullet, enemyGroup;
     this.nextFire = 0;
@@ -455,6 +456,12 @@ export default class Level2 extends Phaser.Scene {
         stepY: 0
       }
     });
+
+    this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back');
+    this.backText.setScrollFactor(0);
+    this.backText.setScale(0.3);
+    this.backText.setDepth(-1);
+
     // this.healthGroup = this.add.group({
     //   key: 'health',
     //   repeat: this.currentHealth - 1,
@@ -513,6 +520,11 @@ export default class Level2 extends Phaser.Scene {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
       }
       if (this.isMounted) {
+        this.backText.x = this.centerX  ;
+        this.backText.y = this.centerY + 400 ;
+        this.backText.setScrollFactor(0);
+        this.backText.setScale(2);
+        this.backText.setDepth(-1);
         this.healthGroup = this.add.group({
           key: 'health',
           repeat: this.currentHealth - 1,
@@ -636,6 +648,11 @@ export default class Level2 extends Phaser.Scene {
       while (this.healthGroup.getChildren().length > 0) {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
       }
+      this.backText.x = this.centerX  ;
+      this.backText.y = this.centerY + 400 ;
+      this.backText.setScrollFactor(0);
+      this.backText.setScale(2);
+      this.backText.setDepth(-1);
       this.healthGroup = this.add.group({
         key: 'health',
         repeat: this.currentHealth - 1,
