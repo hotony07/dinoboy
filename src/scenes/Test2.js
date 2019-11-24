@@ -392,7 +392,7 @@ export default class Test2 extends Phaser.Scene {
       repeat: -1
     });
 
-    //this.music = this.sound.add("theme");
+    this.music = this.sound.add("theme");
     var musicConfig = {
       mute: false,
       volume: 1,
@@ -402,8 +402,7 @@ export default class Test2 extends Phaser.Scene {
       loop: true,
       delay: 0
     }
-
-    //this.music.play(musicConfig);
+    this.music.play(musicConfig);
 
     this.gunshot = this.sound.add("gunshot");
     this.gunEmpty = this.sound.add("gun_empty");
@@ -497,11 +496,17 @@ export default class Test2 extends Phaser.Scene {
 
     this.physics.add.collider(this.enemyGroup, this.enemyGroup);
 
+<<<<<<< HEAD
     this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
     this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0).setDepth(2);
     this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: Space \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0).setDepth
     (2);
     this.player.dodgeLock = true;
+=======
+    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0);
+    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0);
+    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: RMB \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0);
+>>>>>>> 4449c21f0f566510111c92791b1efbcf3a7161a7
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
 
@@ -533,8 +538,6 @@ export default class Test2 extends Phaser.Scene {
   }
 
   update (time, delta) {
-
-
     if (this.currentHealth != this.healthGroup.getChildren().length) {
       while (this.healthGroup.getChildren().length > 0) {
         this.healthGroup.getChildren()[this.healthGroup.getChildren().length - 1].destroy();
@@ -612,7 +615,11 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego1);
           this.stego1.anims.play('step', true);
     }
+<<<<<<< HEAD
     if (!this.stegoSpawned && this.kills == 50) {
+=======
+    if (!this.stegoSpawned && this.kills == 30) {
+>>>>>>> 4449c21f0f566510111c92791b1efbcf3a7161a7
       this.stegoSpawned = true;
 
           this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -713,6 +720,7 @@ export default class Test2 extends Phaser.Scene {
     if (this.esc.isDown) {
       this.gameOver = false;
       this.scene.restart();
+      this.scene.start('Boot');
       }
     //Game over
     if (this.gameOver) {
@@ -733,6 +741,7 @@ export default class Test2 extends Phaser.Scene {
       if (this.esc.isDown) {
         this.gameOver = false;
         this.scene.restart();
+        this.scene.start('Boot');
         }
       this.input.enabled = false;
     }
@@ -926,11 +935,11 @@ export default class Test2 extends Phaser.Scene {
         this.player.anims.play("dodge", true);
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso(-75, 0, 180);
-        //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.lasso = this.makeLasso(-75, 0, 180);
+      //   //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
+      // }
     } else if (this.d.isDown || this.cursors.right.isDown) {
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
@@ -954,11 +963,11 @@ export default class Test2 extends Phaser.Scene {
         this.player.anims.play("dodge", true);
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso(75, 0, 0);
-        //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.lasso = this.makeLasso(75, 0, 0);
+      //   //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
+      // }
     } else if (this.w.isDown || this.cursors.up.isDown) {
       if(this.player.isMounted){
       this.mount.anims.play('stepBack', true);
@@ -978,11 +987,11 @@ export default class Test2 extends Phaser.Scene {
         this.player.anims.play("dodge", true);
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.makeLasso2(0, -75, 180);
-        //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.makeLasso2(0, -75, 180);
+      //   //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
+      // }
     } else if (this.s.isDown || this.cursors.down.isDown) {
       if(this.player.isMounted){
       this.mount.anims.play('stepFront', true);
@@ -1001,11 +1010,11 @@ export default class Test2 extends Phaser.Scene {
         this.player.anims.play("dodge", true);
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso2(0, 75, 0);
-        //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.lasso = this.makeLasso2(0, 75, 0);
+      //   //this.lasso = this.physics.add.sprite(this.player.x, this.player.y + 75, 'uplasso').setAngle(90-90);
+      // }
     } else {
       switch (this.lastDirection)
       {
@@ -1030,11 +1039,11 @@ export default class Test2 extends Phaser.Scene {
       this.mount.anims.stop();
       }
 
-      //summon lasso
-      if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
-        this.lasso = this.makeLasso(75, 0, 0);
-        //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
-      }
+      // //summon lasso
+      // if (this.spacebar.isDown && this.lassos.countActive(true) < 1) {
+      //   this.lasso = this.makeLasso(75, 0, 0);
+      //   //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
+      // }
   }
 
   if (this.player.rollInvuln) {
@@ -1118,6 +1127,20 @@ export default class Test2 extends Phaser.Scene {
             b,
             this.enemyBullets,
             this.deadBullet,
+            null,
+            this
+          );
+        }
+      }.bind(this)
+    );
+
+    this.mountGroup.children.each(
+      function (b) {
+        if (b.active) {
+          this.physics.add.overlap(
+            b,
+            this.treeGroup,
+            this.stompTree,
             null,
             this
           );
@@ -1403,6 +1426,10 @@ export default class Test2 extends Phaser.Scene {
     }
   }
 
+  stompTree (dino, tree) {
+    tree.disableBody(true, true);
+  }
+
   walk(direction)
   {
     switch (direction)
@@ -1460,7 +1487,6 @@ export default class Test2 extends Phaser.Scene {
     } else {
       //console.log('full health!');
     }
-
   }
 
   deadBullet (layer, bullet) {
