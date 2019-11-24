@@ -434,7 +434,7 @@ export default class Tutorial1 extends Phaser.Scene {
     });
     this.tutorial_shoot.setDepth(1);
 
-    this.tutorial_lasso = this.add.text(this.player.x , this.player.y - 100, "Right click - lasso \nCan be used to stun small dinos \nOr ry taming a big Stego for \nbonus action!",{
+    this.tutorial_lasso = this.add.text(this.player.x , this.player.y - 100, "Right click - lasso \nCan be used to stun small dinos \nOr try taming a big Stego for \nbonus action!",{
       fontSize: '10px',
       color: 0xff00ff
     });

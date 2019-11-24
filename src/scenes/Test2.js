@@ -356,6 +356,7 @@ export default class Test2 extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers("stegoWalk", { start: 0, end: 1 }),
       frameRate: 5,
       repeat: -1
+
     });
     this.anims.create({
       key: "stepBack",
