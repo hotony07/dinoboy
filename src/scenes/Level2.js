@@ -730,6 +730,10 @@ export default class Level2 extends Phaser.Scene {
         }
       this.input.enabled = false;
     }
+
+    if (this.enemyGroup.countActive(true) == 0) {
+      this.gameOverText = this.add.text(this.player.x - 40, this.player.y - 40, 'You Beat All The Dinosaurs!');
+    }
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
