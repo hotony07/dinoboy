@@ -11,7 +11,7 @@ export default class Test2 extends Phaser.Scene {
 
   preload () {
     // Preload assets
-    this.load.image('back', './assets/dinosaur/background.png');
+    this.load.image('back2', './assets/dinosaur/background.png');
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
@@ -154,7 +154,7 @@ export default class Test2 extends Phaser.Scene {
     //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
       key: "enemy",
-      repeat: 70
+      repeat: 40
     });
     //this.enemyGroup.setDepth(-1)
     this.enemyGroup.children.iterate(function(child) {
@@ -475,7 +475,7 @@ export default class Test2 extends Phaser.Scene {
       }
     });
 
-    this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back');
+    this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back2');
     this.backText.setScrollFactor(0);
     this.backText.setScale(0.3);
     this.backText.setDepth(1);
@@ -501,10 +501,6 @@ export default class Test2 extends Phaser.Scene {
     this.playerGroup = this.physics.add.group();
     this.playerGroup.add(this.player);
     // this.playerGroup.add(this.gun);
-
-    this.physics.add.collider(this.enemyGroup, this.enemyGroup);
-
-
 
     this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
     this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0).setDepth(2);
@@ -604,7 +600,7 @@ export default class Test2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
-    if (this.stegoSpawned && this.kills == 30) {
+    if (this.stegoSpawned && this.kills == 15) {
       this.stegoSpawned = false;
 
           this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
@@ -750,7 +746,7 @@ export default class Test2 extends Phaser.Scene {
       this.input.enabled = false;
     }
 
-    if (this.kills > 60) {
+    if (this.kills > 39) {
       this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next', {
         font: "18px monospace",
         fill: "#000000",
@@ -1369,12 +1365,14 @@ export default class Test2 extends Phaser.Scene {
 
     this.dinoHurt.play(this.dinoHurtSoundConfig);
 
+    if (Math.abs(enemy.x - this.player.x) < 120 && Math.abs(enemy.y - this.player.y) < 80 && enemy.isStunned == false) {
     this.tweens.add({
       targets: enemy,
       x: this.player.x,
       y: this.player.y,
       duration: 1500
     });
+  }
 
     if (enemy.health == 0) {
       enemy.disableBody(true, true);

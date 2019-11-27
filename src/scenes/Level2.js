@@ -1347,12 +1347,14 @@ export default class Level2 extends Phaser.Scene {
 
     this.dinoHurt.play(this.dinoHurtSoundConfig);
 
+    if (Math.abs(enemy.x - this.player.x) < 120 && Math.abs(enemy.y - this.player.y) < 80 && enemy.isStunned == false) {
     this.tweens.add({
       targets: enemy,
       x: this.player.x,
       y: this.player.y,
       duration: 1500
     });
+  }
 
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
@@ -1488,7 +1490,6 @@ export default class Level2 extends Phaser.Scene {
     } else {
       //console.log('full health!');
     }
-
   }
 
   deadBullet (layer, bullet) {
