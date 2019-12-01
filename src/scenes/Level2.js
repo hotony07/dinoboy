@@ -1204,6 +1204,12 @@ export default class Level2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
+      this.tweens.add({
+        targets: child,
+        x: this.player.x,
+        y: this.player.y,
+        duration: 50000
+      });
       if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 200 && Math.abs(child.y - this.player.y) < 160 && child.isStunned ==  false && !child.boss) {
         this.tweens.add({
           targets: child,
