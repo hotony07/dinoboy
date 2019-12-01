@@ -170,6 +170,7 @@ export default class Test2 extends Phaser.Scene {
       child.reload = false;
       child.isHurt = false;
       child.hurtTimer = 0;
+      child.canStomp = true;
     });
 
     this.mountGroup = this.physics.add.group();
@@ -606,6 +607,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego.flipX = true;
           this.stego.stunTimer = 0;
           this.stego.isStunned = false;
+          this.stego.canStomp = true;
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
@@ -622,6 +624,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego1.boss2 = false;
           this.stego1.stunTimer = 0;
           this.stego1.isStunned = false;
+          this.stego1.canStomp = true;
           this.enemyGroup.add(this.stego1);
           this.stego1.anims.play('step', true);
     }
@@ -641,6 +644,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego2.boss2 = false;
           this.stego2.stunTimer = 0;
           this.stego2.isStunned = false;
+          this.stego2.canStomp = true;
           this.enemyGroup.add(this.stego2);
           this.stego2.anims.play('step', true);
 
@@ -653,6 +657,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego3.boss = true;
           this.stego3.stunTimer = 0;
           this.stego3.isStunned = false;
+          this.stego3.canStomp = true;
           this.enemyGroup.add(this.stego3);
           this.stego3.anims.play('step', true);
     }
@@ -1269,6 +1274,7 @@ export default class Test2 extends Phaser.Scene {
         child.stunTimer++;
         if (child.stunTimer > 50) {
           child.isStunned = false;
+          child.canStomp = true;
           child.stunTimer = 0;
         }
       }
@@ -1419,15 +1425,31 @@ export default class Test2 extends Phaser.Scene {
     //10 damage chomp
     if (enemy.health < 11) {
       enemy.health = 0;
+      var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
+      var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
+      var volume = deltaVolume * distFromPlayerToEnemy + 1
+
+      var dinoHurtSoundConfig = this.defaultSoundConfig;
+      this.dinoHurt.volume = volume
+
+
+      this.dinoHurt.play(this.dinoHurtSoundConfig);
     } else {
-      if(!enemy.isStunned)
+      if(!enemy.isStunned && enemy.canStomp)
       {
+        enemy.canStomp = false;
         enemy.isStunned = true;
         enemy.health -= 10;
+        var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
+        var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
+        var volume = deltaVolume * distFromPlayerToEnemy + 1
+
+        var dinoHurtSoundConfig = this.defaultSoundConfig;
+        this.dinoHurt.volume = volume
+
+        this.dinoHurt.play(this.dinoHurtSoundConfig);
       }
     }
-
-
     // if(this.player.isMounted){
     // this.mount.anims.pause();
     // this.mount.anims.play('chomp', true);
@@ -1439,15 +1461,7 @@ export default class Test2 extends Phaser.Scene {
     // }
     // catch {}
 
-    var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
-    var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
-    var volume = deltaVolume * distFromPlayerToEnemy + 1
 
-    var dinoHurtSoundConfig = this.defaultSoundConfig;
-    this.dinoHurt.volume = volume
-
-
-    this.dinoHurt.play(this.dinoHurtSoundConfig);
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
       this.kills += 1;
