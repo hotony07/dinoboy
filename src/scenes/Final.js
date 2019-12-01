@@ -338,7 +338,7 @@ export default class Final extends Phaser.Scene {
       }, this);
 
 
-    //Anims
+    //#region Anims
     const anims = this.anims;
     this.anims.create({
       key: "walkForward",
@@ -432,6 +432,7 @@ export default class Final extends Phaser.Scene {
       frameRate: 10,
       repeat: -1
     });
+    //#endregion
 
     this.music = this.sound.add("theme");
     var musicConfig = {
