@@ -540,7 +540,7 @@ export default class Final extends Phaser.Scene {
 
     this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
     this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0).setDepth(2);
-    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: RMB \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0).setDepth
+    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: RMB \nDodge: Shift\n Goal: Kill all', { fontSize: '10', fill: "#000000" }).setScrollFactor(0).setDepth
     (2);
 
 
@@ -627,7 +627,7 @@ export default class Final extends Phaser.Scene {
       }
     }
 
-    if (this.kills > 47) {
+    if (this.kills > 49) {
       while (this.enemyGroup.getChildren().length > 0) {
         this.enemyGroup.getChildren()[this.enemyGroup.getChildren().length - 1].destroy();
       }
@@ -645,7 +645,7 @@ export default class Final extends Phaser.Scene {
           fill: "#000000",
           padding: { x: 20, y: 10 },
           backgroundColor: "#ffffff"
-        });
+        }).setScrollFactor(0);
       }
 
     }
@@ -1411,12 +1411,12 @@ export default class Final extends Phaser.Scene {
 
     this.dinoHurt.play(this.dinoHurtSoundConfig);
 
-    if (Math.abs(enemy.x - this.player.x) < 120 && Math.abs(enemy.y - this.player.y) < 80 && enemy.isStunned == false) {
+    if (Math.abs(enemy.x - this.player.x) < 300 && Math.abs(enemy.y - this.player.y) < 200 && enemy.isStunned == false) {
     this.tweens.add({
       targets: enemy,
       x: this.player.x,
       y: this.player.y,
-      duration: 1500
+      duration: 8000
     });
   }
 
