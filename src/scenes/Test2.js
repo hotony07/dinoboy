@@ -437,7 +437,7 @@ export default class Test2 extends Phaser.Scene {
         y: Math.floor(Math.random() * 800) ,
       }
     });
-    this.treeGroup.setDepth(1);
+    this.treeGroup.setDepth(2);
     this.treeGroup.children.iterate(function(child) {
       child.setScale(0.7);
       child.x = Math.floor(Math.random() * 900) ,
@@ -466,7 +466,7 @@ export default class Test2 extends Phaser.Scene {
     );
 
     this.healthScore = this.add.text(this.centerX - 120, this. centerY + 75,
-      'Health', { fontSize: '12', fill: "#000000",}).setScrollFactor(0).setDepth(2);
+      'Health', { font: '10px Georgia', fill: "#000000",}).setScrollFactor(0).setDepth(3);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: this.currentHealth - 1,
@@ -477,11 +477,12 @@ export default class Test2 extends Phaser.Scene {
         stepY: 0
       }
     });
+    this.healthGroup.setDepth(3);
 
     this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back2');
     this.backText.setScrollFactor(0);
     this.backText.setScale(0.3);
-    this.backText.setDepth(1);
+    this.backText.setDepth(2);
 
 
     // this.healthGroup = this.add.group({
@@ -498,16 +499,16 @@ export default class Test2 extends Phaser.Scene {
     this.healthGroup.children.iterate(function(child) {
       child.setScrollFactor(0);
       child.setScale(0.3);
-      child.setDepth(2);
+      child.setDepth(3);
     });
 
     this.playerGroup = this.physics.add.group();
     this.playerGroup.add(this.player);
     // this.playerGroup.add(this.gun);
 
-    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
-    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0).setDepth(2);
-    this.controls = this.add.text(this.centerX + 110, this. centerY + 70, 'Lasso: RMB \nDodge: Shift\nGoal: kill 40', {fontSize: '5', fill: "#000000" }).setScrollFactor(0).setDepth
+    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { font: '10px Georgia' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
+    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '10px Georgia', fill: "#000000" }).setScrollFactor(0).setDepth(2);
+    this.controls = this.add.text(this.centerX + 110, this. centerY + 70, 'Lasso: RMB \nDodge: Shift\nGoal: kill 40', {font: '9px Georgia', fill: "#000000" }).setScrollFactor(0).setDepth
     (2);
     this.controls.style.fontSize = "5px";
 
@@ -552,7 +553,7 @@ export default class Test2 extends Phaser.Scene {
         this.backText.y = this.centerY + 400 ;
         this.backText.setScrollFactor(0);
         this.backText.setScale(2);
-        this.backText.setDepth(1);
+        this.backText.setDepth(2);
         this.healthGroup = this.add.group({
           key: 'health',
           repeat: this.currentHealth - 1,
