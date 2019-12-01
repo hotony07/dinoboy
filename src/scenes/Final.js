@@ -1,7 +1,7 @@
 /*global Phaser*/
-export default class Level2 extends Phaser.Scene {
+export default class Final extends Phaser.Scene {
   constructor () {
-    super('Level2');
+    super('Final');
   }
 
   init (data) {
@@ -11,11 +11,10 @@ export default class Level2 extends Phaser.Scene {
 
   preload () {
     // Preload assets
-    this.load.image('back', './assets/dinosaur/background.png');
+    this.load.image('back2', './assets/dinosaur/background.png');
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
-    this.load.image('trex', './assets/dinosaur/trex.png');
 
     this.load.audio("theme", './assets/Music/DinoBoyV2.mp3');
     this.load.audio("baby_dino_growl_1", './assets/sfx/dinosaur/baby_dino_growl_01.mp3');
@@ -51,18 +50,19 @@ export default class Level2 extends Phaser.Scene {
       frameWidth: 35,
       frameHeight: 43
     });
-    this.load.image('stego', './assets/dinosaur/trex.png');
-    this.load.spritesheet('stegoWalk', './assets/dinosaur/wobble.png', {
-      frameWidth: 299,
-      frameHeight: 299
+    this.load.image('stego', './assets/dinosaur/newStego.png')
+    this.load.spritesheet('stegoWalk', './assets/dinosaur/dinoWalk2.png', {
+      frameWidth: 1244,
+      frameHeight: 524
     });
-
-    this.load.image('dilo', './assets/dinosaur/dilo3.png');
-    this.load.spritesheet('diloRun', './assets/dinosaur/diloRun.png', {
-      frameWidth: 1297,
-      frameHeight: 618
+    this.load.spritesheet('backWalk', './assets/dinosaur/backStego.png', {
+      frameWidth: 512,
+      frameHeight: 539
     });
-
+    this.load.spritesheet('frontWalk', './assets/dinosaur/frontWalk.png', {
+      frameWidth: 445,
+      frameHeight: 445
+    });
 
     this.load.image('gun', './assets/sprites/gun.png');
     this.load.image('gun_forward', './assets/sprites/gun_forward.png');
@@ -81,11 +81,12 @@ export default class Level2 extends Phaser.Scene {
     this.load.image('tree', './assets/Scene1/tree.png');
     this.load.image('ammo', './assets/sprites/ammo.png');
     this.load.image('health', './assets/Scene1/Heart.png');
-    this.load.image('spit', './assets/sprites/dino_spit_green.png');
+    this.load.image('trex', './assets/dinosaur/trex.png');
+    this.load.image('spit', './assets/sprites/dino_spit_purple.png');
 
 
     this.load.image("tiles", "./assets/Tilemaps/tiles.png");
-    this.load.tilemapTiledJSON("map2", "./assets/Tilemaps/bgmap3.json");
+    this.load.tilemapTiledJSON("map", "./assets/Tilemaps/bgmapfinal.json");
 
 
     // Declare variables for center of the scene
@@ -97,7 +98,7 @@ export default class Level2 extends Phaser.Scene {
     this.cutscene1 = this.add.video(this.cameras.main.x, this.cameras.main.y, 'cutscene1');
     this.cutscene1.alpha = 0;
 
-    const map = this.make.tilemap({ key: "map2" });
+    const map = this.make.tilemap({ key: "map" });
     const tileset = map.addTilesetImage("sheet", "tiles");
 
     const belowLayer = map.createStaticLayer("Below", tileset, 0, 0).setDepth(-10);
@@ -122,6 +123,9 @@ export default class Level2 extends Phaser.Scene {
     this.mobMaxHealth = 3;
     this.playerHurtTimer = 0;
     this.playerIsHurt = false;
+    this.waves = 0;
+    this.waveTimer = 0;
+    this.waveSpawn = false;
 
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
@@ -129,8 +133,10 @@ export default class Level2 extends Phaser.Scene {
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
     this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+
     this.cursors = this.input.keyboard.createCursorKeys();
 
     const camera = this.cameras.main;
@@ -148,29 +154,61 @@ export default class Level2 extends Phaser.Scene {
     this.gun.setDebug(false);
     this.gun.setScale(0.15);
 
-    //this.enemies = this.add.group();
     this.enemyGroup = this.physics.add.group({
-      key: "enemy",
-      repeat: 50
+      defaultKey: "enemy"
     });
-    this.enemyGroup.setDepth(-1);
-    this.enemyGroup.children.iterate(function(child) {
-      child.setScale(0.7);
-      child.x = 200 + Math.floor(Math.random() * (map.widthInPixels - 200));
-      child.y = 200 + Math.floor(Math.random() * (map.heightInPixels - 300));
-      child.health = 3;
-      child.boss = false;
-      child.boss2 = false;
-      child.isStunned = false;
-      child.stunTimer = 0;
-      child.shootTimer = 0;
-      child.reload = false;
-      child.isHurt = false;
-      child.hurtTImer = 0;
-    });
+    this.spawn1 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 1"
+    );
+    this.spawn2 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 2"
+    );
+    this.spawn3 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 3"
+    );
+    this.spawn4 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 4"
+    );
+    this.spawn5 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 5"
+    );
+    this.spawn6 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 6"
+    );
+    this.spawn7 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 7"
+    );
+    this.spawn8 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 8"
+    );
+    this.spawn9 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 9"
+    );
+    this.spawn10 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 10"
+    );
+    this.spawn11 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 11"
+    );
+    this.spawn12 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Dino Spawn 12"
+    );
+
 
     this.mountGroup = this.physics.add.group();
-
+    //
     // var enemy = this.physics.add.sprite(100, 100, 'enemy');
     // var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
     // var enemy3 = this.physics.add.sprite(100, 300, 'enemy');
@@ -211,7 +249,7 @@ export default class Level2 extends Phaser.Scene {
     //stegosaurus
     const stegoSpawn = map.findObject(
     "Spawns",
-    obj => obj.name === "Stego Spawn"
+    obj => obj.name === "Big Spawn 1"
     );
 
     this.sStegoX = stegoSpawn.x;
@@ -296,6 +334,7 @@ export default class Level2 extends Phaser.Scene {
             this.makeLasso2(0, -75, 180);
           }
         }
+
       }, this);
 
 
@@ -357,21 +396,29 @@ export default class Level2 extends Phaser.Scene {
     });
     this.anims.create({
       key: "step",
-      frames: this.anims.generateFrameNumbers("stegoWalk", { start: 2, end: 3 }),
-      frameRate: 5,
-      repeat: -1
-    });
-    this.anims.create({
-      key: "stepBack",
       frames: this.anims.generateFrameNumbers("stegoWalk", { start: 0, end: 1 }),
       frameRate: 5,
       repeat: -1
+
     });
     this.anims.create({
-      key: "dstep",
-      frames: this.anims.generateFrameNumbers("diloRun", { start: 0, end: 2 }),
-      frameRate: 5,
+      key: "stepBack",
+      frames: this.anims.generateFrameNumbers("backWalk", { start: 0, end: 1 }),
+      frameRate: 3,
       repeat: -1
+    });
+    this.anims.create({
+      key: "stepFront",
+      frames: this.anims.generateFrameNumbers("frontWalk", { start: 0, end: 1 }),
+      frameRate: 3,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: "chomp",
+      frames: this.anims.generateFrameNumbers("chomp", { start: 0, end: 1 }),
+      frameRate: 2,
+      repeat: 2
     });
     this.anims.create({
       key: "lasso",
@@ -397,7 +444,6 @@ export default class Level2 extends Phaser.Scene {
       loop: true,
       delay: 0
     }
-
     this.music.play(musicConfig);
 
     this.gunshot = this.sound.add("gunshot");
@@ -421,14 +467,14 @@ export default class Level2 extends Phaser.Scene {
       repeat: 10,
       setXY: {
         x: Math.floor(Math.random() * 900) ,
-        y: Math.floor(Math.random() * 900) ,
+        y: Math.floor(Math.random() * 800) ,
       }
     });
-    this.treeGroup.setDepth(-1);
+    this.treeGroup.setDepth(1);
     this.treeGroup.children.iterate(function(child) {
       child.setScale(0.7);
       child.x = Math.floor(Math.random() * 900) ,
-      child.y = Math.floor(Math.random() * 900)
+      child.y = Math.floor(Math.random() * 800)
       child.body.setSize(15, 30);
       child.body.setOffset(32, 50);
       child.body.immovable = true;
@@ -453,7 +499,7 @@ export default class Level2 extends Phaser.Scene {
     );
 
     this.healthScore = this.add.text(this.centerX - 120, this. centerY + 75,
-      'Health', { font: "10px Georgia",  fill: "#000000",}).setScrollFactor(0);
+      'Health', { fontSize: '12', fill: "#000000",}).setScrollFactor(0).setDepth(2);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: this.currentHealth - 1,
@@ -465,10 +511,11 @@ export default class Level2 extends Phaser.Scene {
       }
     });
 
-    this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back');
+    this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back2');
     this.backText.setScrollFactor(0);
     this.backText.setScale(0.3);
-    this.backText.setDepth(-1);
+    this.backText.setDepth(1);
+
 
     // this.healthGroup = this.add.group({
     //   key: 'health',
@@ -491,12 +538,11 @@ export default class Level2 extends Phaser.Scene {
     this.playerGroup.add(this.player);
     // this.playerGroup.add(this.gun);
 
-    this.physics.add.collider(this.enemyGroup, this.enemyGroup);
+    this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, { fontSize: '12' , fill: "#000000"}).setScrollFactor(0).setDepth(2);
+    this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '12', fill: "#000000" }).setScrollFactor(0).setDepth(2);
+    this.controls = this.add.text(this.centerX + 110, this. centerY + 75, 'Lasso: RMB \nDodge: Shift', { fontSize: '10', fill: "#000000" }).setScrollFactor(0).setDepth
+    (2);
 
-        this.ammoScore = this.add.text(this.centerX - 40, this. centerY + 75, 'Ammo: '+ this.ammo, {font: " 10px Georgia", fill: "#000000"}).setScrollFactor(0).setDepth(2);
-        this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { font:" 10px Georgia",  fill: "#000000" }).setScrollFactor(0).setDepth(2);
-        this.controls = this.add.text(this.centerX + 110, this. centerY + 70, 'Lasso: RMB \nDodge: Shift\nGoal: kill 50', {font: "9px Georgia", fill: "#000000" }).setScrollFactor(0).setDepth
-        (2);
 
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
@@ -524,6 +570,16 @@ export default class Level2 extends Phaser.Scene {
 
     this.B3X = bigSpawn3.x;
     this.B3Y = bigSpawn3.y;
+
+    const bigSpawn4 = map.findObject(
+    "Spawns",
+    obj => obj.name === "Big Spawn 4"
+    );
+
+    this.B4X = bigSpawn4.x;
+    this.B4Y = bigSpawn4.y;
+
+
   }
 
   update (time, delta) {
@@ -571,60 +627,66 @@ export default class Level2 extends Phaser.Scene {
       }
     }
     //stego is spawned
-    if (!this.stegoSpawned && this.kills == 5) {
+    if (!this.stegoSpawned && this.kills == 1) {
       this.stegoSpawned = true;
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
           this.stego.setCollideWorldBounds(true);
-          this.stego.body.setSize(288, 289, this.sStegoX, this.sStegoY);
+          this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
           this.stego.setScale(0.2);
           this.stego.setDepth(-1);
           this.stego.health = 50;
-          this.stego.boss = true;
+          this.stego.boss = false;
+          this.stego.boss2 = true;
           this.stego.flipX = true;
           this.stego.stunTimer = 0;
           this.stego.isStunned = false;
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
-    if (this.stegoSpawned && this.kills == 10) {
+    if (this.stegoSpawned && this.kills == 15) {
       this.stegoSpawned = false;
 
-          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'dilo');
+          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
           this.stego1.setCollideWorldBounds(true);
-          this.stego1.body.setSize(288, 289, this.B1X, this.B1Y);
+          this.stego1.body.setSize(256, 128, this.B1X, this.B1Y);
           this.stego1.setScale(0.2);
           this.stego1.setDepth(-1);
           this.stego1.health = 50;
-          this.stego1.boss = false;
-          this.stego1.boss2 = true;
+          this.stego1.boss = true;
+          this.stego1.boss2 = false;
           this.stego1.stunTimer = 0;
           this.stego1.isStunned = false;
           this.enemyGroup.add(this.stego1);
-          this.stego1.anims.play('dstep', true);
+          this.stego1.anims.play('step', true);
     }
+
+
     if (!this.stegoSpawned && this.kills == 30) {
+
       this.stegoSpawned = true;
 
-          this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'dilo');
+          this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
           this.stego1b.setCollideWorldBounds(true);
-          this.stego1b.body.setSize(288, 289, this.B1X, this.B1Y);
+          this.stego1b.body.setSize(256, 128, this.B1X, this.B1Y);
           this.stego1b.setScale(0.2);
           this.stego1b.setDepth(-1);
           this.stego1b.health = 50;
-          this.stego1b.boss2 = true;
+          this.stego1b.boss = true;
+          this.stego1b.boss2 = false;
           this.stego1b.stunTimer = 0;
           this.stego1b.isStunned = false;
           this.enemyGroup.add(this.stego1b);
-          this.stego1b.anims.play('dstep', true);
+          this.stego1b.anims.play('step', true);
 
           this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
           this.stego2.setCollideWorldBounds(true);
-          this.stego2.body.setSize(288, 289, this.B2X, this.B2Y);
-          this.stego2.setScale(0.5);
+          this.stego2.body.setSize(256, 128, this.B2X, this.B2Y);
+          this.stego2.setScale(0.25);
           this.stego2.setDepth(-1);
           this.stego2.health = 50;
           this.stego2.boss = true;
+          this.stego1b.boss2 = false;
           this.stego2.stunTimer = 0;
           this.stego2.isStunned = false;
           this.enemyGroup.add(this.stego2);
@@ -632,8 +694,8 @@ export default class Level2 extends Phaser.Scene {
 
           this.stego3 = this.physics.add.sprite(this.B3X, this.B3Y, 'stego');
           this.stego3.setCollideWorldBounds(true);
-          this.stego3.body.setSize(288, 289, this.B3X, this.B3Y);
-          this.stego3.setScale(0.5);
+          this.stego3.body.setSize(256, 128, this.B3X, this.B3Y);
+          this.stego3.setScale(0.25);
           this.stego3.setDepth(-1);
           this.stego3.health = 50;
           this.stego3.boss = true;
@@ -691,7 +753,7 @@ export default class Level2 extends Phaser.Scene {
       });
 
       this.playerHitTimer++;
-      if (this.playerHitTimer >= 180) {
+      if (this.playerHitTimer >= 120) {
         this.playerHit = false;
         this.playerHitTimer = 0;
       }
@@ -699,10 +761,8 @@ export default class Level2 extends Phaser.Scene {
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-    if (this.esc.isDown && !this.gameOver) {
+    if (this.esc.isDown) {
       this.gameOver = false;
-      this.playerHit = false;
-      this.playerHitTimer = 0;
       this.scene.restart();
       this.scene.start('Boot');
       }
@@ -724,16 +784,13 @@ export default class Level2 extends Phaser.Scene {
       this.input.enabled = false;
       if (this.esc.isDown) {
         this.gameOver = false;
-        this.player.enableBody(true, 0, 0, true, true);
-        this.playerHit = false;
-        this.input.enabled = true;
         this.scene.restart();
         this.scene.start('Boot');
         }
       this.input.enabled = false;
     }
 
-    if (this.kills > 49) {
+    if (this.kills > 39) {
       this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next', {
         font: "18px monospace",
         fill: "#000000",
@@ -741,10 +798,9 @@ export default class Level2 extends Phaser.Scene {
         backgroundColor: "#ffffff"
       }).setScrollFactor(0);
       if (this.enter.isDown) {
-        this.scene.start("Final");
+        this.scene.start("Level2");
       }
     }
-
     // Update the scene
     const speed = 175;
     const prevVelocity = this.player.body.velocity.clone();
@@ -824,11 +880,16 @@ export default class Level2 extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
-    this.gun.x = this.player.x + 13;
-    this.gun.y = this.player.y + 5;
+    this.gun.body.setVelocity(0);
     try {
-      this.mount.x = this.player.x + 10 ;
-      this.mount.y = this.player.y + 30;
+      if (this.mount.boss = true){
+        this.mount.x = this.player.x - 5;
+        this.mount.y = this.player.y + 50;
+      } else if (this.mount.boss2 = true){
+        this.mount.x = this.player.x ;
+        this.mount.y = this.player.y - 50;
+      }
+
     } catch {}
 
 
@@ -895,16 +956,13 @@ export default class Level2 extends Phaser.Scene {
     }
 
     if (this.a.isDown || this.cursors.left.isDown) {
-      this.player.anims.play("walkLeft", true);
       if(this.player.isMounted){
-        if (this.mount.boss){
-          this.mount.anims.play('step', true);
-        }
-
+      this.mount.anims.play('step', true);
       }
       try {
         this.mount.flipX = true;
-        this.mount.body.setOffset(5, 40);
+        this.mount.body.setOffset(250, 420);
+
       }
       catch {}
 
@@ -927,15 +985,12 @@ export default class Level2 extends Phaser.Scene {
       //   //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
       // }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-      this.player.anims.play("walkRight", true);
       if(this.player.isMounted){
-        if (this.mount.boss){
-          this.mount.anims.play('step', true);
-        }
+      this.mount.anims.play('step', true);
       }
       try {
         this.mount.flipX = false;
-        this.mount.body.setOffset(230, 30);
+        this.mount.body.setOffset(450, 420);
       }
       catch {}
 
@@ -958,10 +1013,9 @@ export default class Level2 extends Phaser.Scene {
       //   //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
       // }
     } else if (this.w.isDown || this.cursors.up.isDown) {
-      this.player.anims.play("walkBackward", true);
       if(this.player.isMounted){
       this.mount.anims.play('stepBack', true);
-      this.mount.body.setOffset(113, 10);
+      this.mount.body.setOffset(150, 420);
       }
 
       //dodge roll
@@ -983,9 +1037,8 @@ export default class Level2 extends Phaser.Scene {
       //   //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
       // }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-      this.player.anims.play("walkForward", true);
       if(this.player.isMounted){
-      this.mount.anims.play('step', true);
+      this.mount.anims.play('stepFront', true);
       }
 
       //dodge roll
@@ -1074,13 +1127,13 @@ export default class Level2 extends Phaser.Scene {
             this
           );
           if (b.y < 0) {
-            b.setActive(false);
-          } else if (b.y > this.cameras.main.height) {
-            b.setActive(false);
+            b.disableBody(true, true);
+          } else if (b.y > game.config.height) {
+            b.disableBody(true, true);
           } else if (b.x < 0) {
-            b.setActive(false);
-          } else if (b.x > this.cameras.main.width) {
-            b.setActive(false);
+            b.disableBody(true, true);
+          } else if (b.x > game.config.width) {
+            b.disableBody(true, true);
           }
         }
       }.bind(this)
@@ -1192,6 +1245,21 @@ export default class Level2 extends Phaser.Scene {
       this.availDrop = false;
     }
 
+    if (!this.waveSpawn && this.waves < 5) {
+      this.waveSpawn = true;
+      this.spawnWave();
+      this.waves++;
+    };
+
+    if (this.waveSpawn) {
+      this.waveTimer++
+      if (this.waveTimer > 500) {
+        this.waveTimer = 0;
+        this.waveSpawn = false;
+      }
+    };
+
+
     //If there ar eno enemies left, create more
     // if (this.enemyGroup.countActive(true) < 40) {
     //   this.enemyGroup = this.physics.add.group({
@@ -1208,34 +1276,30 @@ export default class Level2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
-      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 200 && Math.abs(child.y - this.player.y) < 160 && child.isStunned ==  false && !child.boss) {
+      if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 250 && Math.abs(child.y - this.player.y) < 250 ) {
         this.tweens.add({
           targets: child,
           x: this.player.x,
           y: this.player.y,
-          duration: 2500
+          duration: 1000
         });
         if (child.reload == false && child.health > 0) {
           child.reload = true;
           this.spit(this.player, child);
         }
+
       }
 
-      if (Math.abs(child.x - this.player.x) < 120 && Math.abs(child.y - this.player.y) < 80 && child.isStunned == false) {
+      if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
           this.tweens.add({
             targets: child,
             x: this.player.x,
             y: this.player.y,
-            duration: 2000
+            duration: 1000 + Math.floor(Math.random() * 2000)
           });
           if (child.reload == false && child.health > 0) {
-            child.shootTimer++;
-            if (child.shootTimer > 30 && child.reload == false) {
-              this.spit(this.player, child);
-              child.reload = true;
-            }
-            // child.reload = true;
-            // this.spit(this.player, child);
+            child.reload = true;
+            this.spit(this.player, child);
           }
       }
 
@@ -1264,18 +1328,16 @@ export default class Level2 extends Phaser.Scene {
       if (child.isHurt)
       {
         child.hurtTimer++;
-        if (child.hurtTimer >= 3)
-        {
-          child.hurtTimer = 0;
-          child.isHurt = false;
-          child.setTint(0xffffff);
-        }
       }
 
+      if (child.hurtTimer >= 3)
+      {
+        child.hurtTimer = 0;
+        child.isHurt = false;
+        child.setTint(0xffffff);
+      }
 
     }.bind(this));
-
-    //this.physics.add.overlap(this.mount, this.enemyGroup, this.chompEnemy, null, this);
 
     if (this.lassos.getChildren().length > 0) {
       this.lassoTimer++
@@ -1303,9 +1365,10 @@ export default class Level2 extends Phaser.Scene {
     bullet
       .enableBody(true, this.gun.x, this.gun.y, true, true)
       .setVelocity(velocity.x, velocity.y)
-      .setScale(.5);
+      .setScale(.5),
 
     this.gunshot.play(this.defaultSoundConfig);
+    //this.bullet.setCollideWorldBounds(true);
   }
 
   spit (player, enemy) {
@@ -1327,8 +1390,10 @@ export default class Level2 extends Phaser.Scene {
     this.dinoSpit.volume = 0.5;
 
     this.dinoSpit.play(this.dinoSpitSoundConfig);
+
     //this.bullet.setCollideWorldBounds(true);
   }
+
 
   takeDamage (player, enemy) {
     if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
@@ -1410,6 +1475,18 @@ export default class Level2 extends Phaser.Scene {
       enemy.health -= 10;
     }
 
+
+    // if(this.player.isMounted){
+    // this.mount.anims.pause();
+    // this.mount.anims.play('chomp', true);
+    // this.mount.anims.resume();
+    // }
+    // try {
+    //   this.mount.flipX = false;
+    //   this.mount.body.setOffset(570, 350);
+    // }
+    // catch {}
+
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
     var deltaVolume = (0.1 - 0.5) / 500         // (vol_far - vol_close) / max_distance
     var volume = deltaVolume * distFromPlayerToEnemy + 1
@@ -1417,11 +1494,12 @@ export default class Level2 extends Phaser.Scene {
     var dinoHurtSoundConfig = this.defaultSoundConfig;
     this.dinoHurt.volume = volume
 
+
     this.dinoHurt.play(this.dinoHurtSoundConfig);
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
       this.kills += 1;
-      // Random ammo drop after enemy kill
+      // Random ammo drop after enemy killaw
       //dropRate increases when you're low on bullets
       var healthDropRate = 0.10;
       var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
@@ -1507,11 +1585,41 @@ export default class Level2 extends Phaser.Scene {
     bullet.disableBody(true, true);
   }
 
+  spawnDino (spawnPoint) {
+    this.child = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, 'enemy');
+    this.enemyGroup.add(this.child);
+      this.child.setScale(0.7);
+      this.child.health = 3;
+      this.child.boss = false;
+      this.child.boss2 = false;
+      this.child.isStunned = false;
+      this.child.stunTimer = 0;
+      this.child.shootTimer = 0;
+      this.child.reload = false;
+      this.child.isHurt = false;
+      this.child.hurtTimer = 0;
+  }
+
+  spawnWave (){
+    this.spawnDino(this.spawn1);
+    this.spawnDino(this.spawn2);
+    this.spawnDino(this.spawn3);
+    this.spawnDino(this.spawn4);
+    this.spawnDino(this.spawn5);
+    this.spawnDino(this.spawn6);
+    this.spawnDino(this.spawn7);
+    this.spawnDino(this.spawn8);
+    this.spawnDino(this.spawn9);
+    this.spawnDino(this.spawn10);
+    this.spawnDino(this.spawn11);
+    this.spawnDino(this.spawn12);
+  }
+
   tameCheck (lasso, enemy) {
     var tameRate;
       if (enemy.boss) {
-        tameRate = Math.max(100);
-        // tameRate = Math.max((45 - enemy.health) / 25, 0);
+        //tameRate = Math.max(100);
+        tameRate = Math.max((45 - enemy.health) / 10, 0);
         if (Math.random() < tameRate) {
           //console.log('enemy tamed');
           this.lassoHit.play(this.defaultSoundConfig);
@@ -1526,12 +1634,14 @@ export default class Level2 extends Phaser.Scene {
           this.playerHit = true;
 
           enemy.disableBody(true, true);
-          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
-          this.mount.setScale(.7);
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stegoWalk');
+          this.mount.setScale(.25);
           this.mount.setDepth(-10);
-          this.mount.body.setSize(64, 64);
-          this.mount.body.setOffset(10, 10);
+          this.mount.body.setSize(100, 100);
+          this.mount.body.setOffset(1150, 330 );
           this.player.isMounted = true;
+          this.mount.boss = false;
+          this.mount.boss2 = true;
           this.mountGroup.add(this.mount);
         } else {
           //console.log('attempt failed');
@@ -1553,11 +1663,11 @@ export default class Level2 extends Phaser.Scene {
           this.playerHit = true;
 
           enemy.disableBody(true, true);
-          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'dilo');
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
           this.mount.setScale(.25);
           this.mount.setDepth(-10);
-          this.mount.body.setSize(70, 70);
-          this.mount.body.setOffset(870, 350);
+          this.mount.body.setSize(600, 70);
+          this.mount.body.setOffset(470, 850);
           this.player.isMounted = true;
           this.mount.boss = false;
           this.mount.boss2 = true;
