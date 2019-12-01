@@ -166,7 +166,7 @@ export default class Level2 extends Phaser.Scene {
       child.shootTimer = 0;
       child.reload = false;
       child.isHurt = false;
-      child.hurtTImer = 0;
+      child.hurtTimer = 0;
     });
 
     this.mountGroup = this.physics.add.group();
@@ -824,8 +824,8 @@ export default class Level2 extends Phaser.Scene {
 
     // Stop any previous movement from the last frame
     this.player.body.setVelocity(0);
-    this.gun.x = this.player.x + 13;
-    this.gun.y = this.player.y + 5;
+    this.gun.body.setVelocity(0);
+
     try {
       this.mount.x = this.player.x + 10 ;
       this.mount.y = this.player.y + 30;
@@ -895,7 +895,6 @@ export default class Level2 extends Phaser.Scene {
     }
 
     if (this.a.isDown || this.cursors.left.isDown) {
-      this.player.anims.play("walkLeft", true);
       if(this.player.isMounted){
         if (this.mount.boss){
           this.mount.anims.play('step', true);
@@ -927,7 +926,6 @@ export default class Level2 extends Phaser.Scene {
       //   //this.lasso = this.physics.add.sprite(this.player.x - 75, this.player.y, 'lasso').setAngle(0);
       // }
     } else if (this.d.isDown || this.cursors.right.isDown) {
-      this.player.anims.play("walkRight", true);
       if(this.player.isMounted){
         if (this.mount.boss){
           this.mount.anims.play('step', true);
@@ -958,7 +956,6 @@ export default class Level2 extends Phaser.Scene {
       //   //this.lasso = this.physics.add.sprite(this.player.x + 75, this.player.y, 'lasso').setAngle(0);
       // }
     } else if (this.w.isDown || this.cursors.up.isDown) {
-      this.player.anims.play("walkBackward", true);
       if(this.player.isMounted){
       this.mount.anims.play('stepBack', true);
       this.mount.body.setOffset(113, 10);
@@ -983,7 +980,6 @@ export default class Level2 extends Phaser.Scene {
       //   //this.lasso = this.physics.add.sprite(this.player.x, this.player.y - 75, 'uplasso').setAngle(-90-90);
       // }
     } else if (this.s.isDown || this.cursors.down.isDown) {
-      this.player.anims.play("walkForward", true);
       if(this.player.isMounted){
       this.mount.anims.play('step', true);
       }

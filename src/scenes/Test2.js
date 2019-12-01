@@ -304,7 +304,7 @@ export default class Test2 extends Phaser.Scene {
       }, this);
 
 
-  //#region Anims
+    //#region Anims
     const anims = this.anims;
     this.anims.create({
       key: "walkForward",
@@ -1087,13 +1087,13 @@ export default class Test2 extends Phaser.Scene {
             this
           );
           if (b.y < 0) {
-            b.disableBody(true, true);
-          } else if (b.y > game.config.height) {
-            b.disableBody(true, true);
+            b.setActive(false);
+          } else if (b.y > this.cameras.main.height) {
+            b.setActive(false);
           } else if (b.x < 0) {
-            b.disableBody(true, true);
-          } else if (b.x > game.config.width) {
-            b.disableBody(true, true);
+            b.setActive(false);
+          } else if (b.x > this.cameras.main.width) {
+            b.setActive(false);
           }
         }
       }.bind(this)
@@ -1313,7 +1313,7 @@ export default class Test2 extends Phaser.Scene {
     bullet
       .enableBody(true, this.gun.x, this.gun.y, true, true)
       .setVelocity(velocity.x, velocity.y)
-      .setScale(.5),
+      .setScale(.5);
 
     this.gunshot.play(this.defaultSoundConfig);
     //this.bullet.setCollideWorldBounds(true);
@@ -1447,7 +1447,7 @@ export default class Test2 extends Phaser.Scene {
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
       this.kills += 1;
-      // Random ammo drop after enemy killaw
+      // Random ammo drop after enemy kill
       //dropRate increases when you're low on bullets
       var healthDropRate = 0.10;
       var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
