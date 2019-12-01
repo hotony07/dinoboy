@@ -136,7 +136,7 @@ export default class Level2 extends Phaser.Scene {
     const camera = this.cameras.main;
     camera.setZoom(5);
     camera.startFollow(this.player);
-    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels - 40);
+    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels + 40);
 
     var gun, bullets, enemy, bullet, enemyGroup;
     this.nextFire = 0;
@@ -556,7 +556,7 @@ export default class Level2 extends Phaser.Scene {
           repeat: this.currentHealth - 1,
           setXY: {
             x: this.centerX - 120,
-            y: this.centerY + 70,
+            y: this.centerY + 95,
             stepX: 10,
             stepY: 0
           }
@@ -897,8 +897,6 @@ export default class Level2 extends Phaser.Scene {
       if(this.player.isMounted){
         if (this.mount.boss){
           this.mount.anims.play('step', true);
-        } else {
-          this.mount.anims.play('dstep', true);
         }
 
       }
@@ -931,8 +929,6 @@ export default class Level2 extends Phaser.Scene {
       if(this.player.isMounted){
         if (this.mount.boss){
           this.mount.anims.play('step', true);
-        } else {
-          this.mount.anims.play('dstep', true);
         }
       }
       try {
