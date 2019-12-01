@@ -618,17 +618,17 @@ export default class Level2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego1b);
           this.stego1b.anims.play('dstep', true);
 
-          this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
+          this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'trex');
           this.stego2.setCollideWorldBounds(true);
           this.stego2.body.setSize(288, 289, this.B2X, this.B2Y);
-          this.stego2.setScale(0.5);
+          this.stego2.setScale(0.2);
           this.stego2.setDepth(-1);
           this.stego2.health = 50;
           this.stego2.boss = true;
           this.stego2.stunTimer = 0;
           this.stego2.isStunned = false;
           this.enemyGroup.add(this.stego2);
-          this.stego2.anims.play('step', true);
+          this.stego2.anims.play('step2', true);
 
     }
 
