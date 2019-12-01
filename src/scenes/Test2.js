@@ -513,7 +513,6 @@ export default class Test2 extends Phaser.Scene {
     this.killScore = this.add.text(this.centerX + 50, this. centerY + 75, 'Kills: '+ this.kills, { fontSize: '10px Georgia', fill: "#000000" }).setScrollFactor(0).setDepth(2);
     this.controls = this.add.text(this.centerX + 110, this. centerY + 70, 'Lasso: RMB \nDodge: Shift\nGoal: kill 40', {font: '9px Georgia', fill: "#000000" }).setScrollFactor(0).setDepth
     (2);
-    this.controls.style.fontSize = "5px";
 
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
@@ -592,7 +591,7 @@ export default class Test2 extends Phaser.Scene {
         });
       }
     }
-    //stego is spawned
+    // is spawned
     if (!this.stegoSpawned && this.kills == 1) {
       this.stegoSpawned = true;
 
