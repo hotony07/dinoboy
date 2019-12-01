@@ -726,11 +726,6 @@ export default class Test2 extends Phaser.Scene {
 
     this.ammoScore.setText('Ammo: ' + this.ammo);
     this.killScore.setText('Kills: ' + this.kills);
-    if (this.esc.isDown) {
-      this.gameOver = false;
-      this.scene.restart();
-      this.scene.start('Boot');
-      }
     //Game over
     if (this.gameOver) {
       while (this.healthGroup.getChildren().length > 0) {
@@ -748,11 +743,18 @@ export default class Test2 extends Phaser.Scene {
       });
       this.input.enabled = false;
       if (this.esc.isDown) {
+        this.music.stop();
         this.gameOver = false;
         this.scene.restart();
-        this.scene.start('Boot');
         }
       this.input.enabled = false;
+    }
+    else {
+      if (this.esc.isDown) {
+        this.music.stop();
+        this.gameOver = false;
+        this.scene.start('Boot');
+      }
     }
 
     if (this.kills > 39) {
