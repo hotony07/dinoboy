@@ -15,7 +15,6 @@ export default class Level2 extends Phaser.Scene {
     this.load.image('bullet', './assets/sprites/bullet.png')
     this.load.audio("gunshot", './assets/sfx/gun/shoot.mp3');
     this.load.audio("gun_empty", './assets/sfx/gun/gun_empty.mp3');
-    this.load.image('trex', './assets/dinosaur/trex.png');
 
     this.load.audio("theme", './assets/Music/DinoBoyV2.mp3');
     this.load.audio("baby_dino_growl_1", './assets/sfx/dinosaur/baby_dino_growl_01.mp3');
@@ -51,8 +50,8 @@ export default class Level2 extends Phaser.Scene {
       frameWidth: 35,
       frameHeight: 43
     });
-    this.load.image('stego', './assets/dinosaur/trex.png');
-    this.load.spritesheet('stegoWalk', './assets/dinosaur/wobble.png', {
+    this.load.image('trex', './assets/dinosaur/trex.png');
+    this.load.spritesheet('trexWalk', './assets/dinosaur/wobble.png', {
       frameWidth: 299,
       frameHeight: 299
     });
@@ -356,14 +355,14 @@ export default class Level2 extends Phaser.Scene {
       repeat: -1
     });
     this.anims.create({
-      key: "step",
-      frames: this.anims.generateFrameNumbers("stegoWalk", { start: 2, end: 3 }),
+      key: "step2",
+      frames: this.anims.generateFrameNumbers("trexWalk", { start: 2, end: 3 }),
       frameRate: 5,
       repeat: -1
     });
     this.anims.create({
-      key: "stepBack",
-      frames: this.anims.generateFrameNumbers("stegoWalk", { start: 0, end: 1 }),
+      key: "stepBack2",
+      frames: this.anims.generateFrameNumbers("trexWalk", { start: 0, end: 1 }),
       frameRate: 5,
       repeat: -1
     });
@@ -575,7 +574,7 @@ export default class Level2 extends Phaser.Scene {
     if (!this.stegoSpawned && this.kills == 5) {
       this.stegoSpawned = true;
 
-          this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
+          this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'trex');
           this.stego.setCollideWorldBounds(true);
           this.stego.body.setSize(288, 289, this.sStegoX, this.sStegoY);
           this.stego.setScale(0.2);
@@ -586,7 +585,7 @@ export default class Level2 extends Phaser.Scene {
           this.stego.stunTimer = 0;
           this.stego.isStunned = false;
           this.enemyGroup.add(this.stego);
-          this.stego.anims.play('step', true);
+          this.stego.anims.play('step2', true);
     }
     if (this.stegoSpawned && this.kills == 10) {
       this.stegoSpawned = false;
@@ -898,7 +897,7 @@ export default class Level2 extends Phaser.Scene {
     if (this.a.isDown || this.cursors.left.isDown) {
       if(this.player.isMounted){
         if (this.mount.boss){
-          this.mount.anims.play('step', true);
+          this.mount.anims.play('step2', true);
         }
 
       }
@@ -929,7 +928,7 @@ export default class Level2 extends Phaser.Scene {
     } else if (this.d.isDown || this.cursors.right.isDown) {
       if(this.player.isMounted){
         if (this.mount.boss){
-          this.mount.anims.play('step', true);
+          this.mount.anims.play('step2', true);
         }
       }
       try {
@@ -958,7 +957,7 @@ export default class Level2 extends Phaser.Scene {
       // }
     } else if (this.w.isDown || this.cursors.up.isDown) {
       if(this.player.isMounted){
-      this.mount.anims.play('stepBack', true);
+      this.mount.anims.play('stepBack2', true);
       this.mount.body.setOffset(113, 10);
       }
 
@@ -982,7 +981,7 @@ export default class Level2 extends Phaser.Scene {
       // }
     } else if (this.s.isDown || this.cursors.down.isDown) {
       if(this.player.isMounted){
-      this.mount.anims.play('step', true);
+      this.mount.anims.play('step2', true);
       }
 
       //dodge roll
@@ -1527,7 +1526,7 @@ export default class Level2 extends Phaser.Scene {
           this.playerHit = true;
 
           enemy.disableBody(true, true);
-          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'stego');
+          this.mount = this.physics.add.sprite(this.player.x, this.player.y, 'trex');
           this.mount.setScale(.7);
           this.mount.setDepth(-10);
           this.mount.body.setSize(64, 64);
