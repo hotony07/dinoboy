@@ -631,19 +631,6 @@ export default class Test2 extends Phaser.Scene {
 
       this.stegoSpawned = true;
 
-          this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
-          this.stego1b.setCollideWorldBounds(true);
-          this.stego1b.body.setSize(256, 128, this.B1X, this.B1Y);
-          this.stego1b.setScale(0.2);
-          this.stego1b.setDepth(-1);
-          this.stego1b.health = 50;
-          this.stego1b.boss = true;
-          this.stego1b.boss2 = false;
-          this.stego1b.stunTimer = 0;
-          this.stego1b.isStunned = false;
-          this.enemyGroup.add(this.stego1b);
-          this.stego1b.anims.play('step', true);
-
           this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
           this.stego2.setCollideWorldBounds(true);
           this.stego2.body.setSize(256, 128, this.B2X, this.B2Y);
@@ -651,7 +638,7 @@ export default class Test2 extends Phaser.Scene {
           this.stego2.setDepth(-1);
           this.stego2.health = 50;
           this.stego2.boss = true;
-          this.stego1b.boss2 = false;
+          this.stego2.boss2 = false;
           this.stego2.stunTimer = 0;
           this.stego2.isStunned = false;
           this.enemyGroup.add(this.stego2);
@@ -1229,6 +1216,12 @@ export default class Test2 extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
+        this.tweens.add({
+          targets: child,
+          x: this.player.x,
+          y: this.player.y,
+          duration: 50000
+        });
       if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 250 && Math.abs(child.y - this.player.y) < 250 ) {
         this.tweens.add({
           targets: child,
