@@ -173,6 +173,7 @@ export default class Test2 extends Phaser.Scene {
     });
 
     this.mountGroup = this.physics.add.group();
+
     //
     // var enemy = this.physics.add.sprite(100, 100, 'enemy');
     // var enemy2 = this.physics.add.sprite(100, 200, 'enemy');
@@ -510,6 +511,7 @@ export default class Test2 extends Phaser.Scene {
 
     this.player.dodgeLock = true;
     this.player.setCollideWorldBounds(true);
+
 
     const bigSpawn1 = map.findObject(
     "Spawns",
@@ -1160,6 +1162,8 @@ export default class Test2 extends Phaser.Scene {
       }.bind(this)
     );
 
+
+
     this.lassos.children.each(
       function (l) {
         if (l.active) {
@@ -1554,6 +1558,7 @@ export default class Test2 extends Phaser.Scene {
           this.player.isMounted = true;
           this.mount.boss = false;
           this.mount.boss2 = true;
+          this.mount.setCollideWorldBounds(true);
           this.mountGroup.add(this.mount);
         } else {
           //console.log('attempt failed');
