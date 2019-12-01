@@ -1328,7 +1328,7 @@ export default class Level2 extends Phaser.Scene {
   }
 
   takeDamage (player, enemy) {
-    if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
+    if (!this.playerHit && !this.player.isHit && this.currentHealth > 0 && !enemy.isStunned) {
       this.playerIsHurt = true;
       this.player.setTint(0xff0000);
       this.currentHealth--;
@@ -1360,7 +1360,7 @@ export default class Level2 extends Phaser.Scene {
       targets: enemy,
       x: this.player.x,
       y: this.player.y,
-      duration: 1500
+      duration: 2500
     });
   }
 
@@ -1369,8 +1369,8 @@ export default class Level2 extends Phaser.Scene {
       this.kills += 1;
       // Random ammo drop after enemy kill
       //dropRate increases when you're low on bullets
-      var healthDropRate = 0.10;
-      var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+      var healthDropRate = 0.30;
+      var ammoDropRate = 0.7;
       if (Math.random() < healthDropRate) {
         var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
         healthDrop.setDepth(-1);
@@ -1404,7 +1404,11 @@ export default class Level2 extends Phaser.Scene {
     if (enemy.health < 11) {
       enemy.health = 0;
     } else {
-      enemy.health -= 10;
+      if(!enemy.isStunned)
+      {
+        enemy.isStunned = true;
+        enemy.health -= 10;
+      }
     }
 
     var distFromPlayerToEnemy = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
@@ -1420,8 +1424,8 @@ export default class Level2 extends Phaser.Scene {
       this.kills += 1;
       // Random ammo drop after enemy kill
       //dropRate increases when you're low on bullets
-      var healthDropRate = 0.10;
-      var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+      var healthDropRate = 0.30;
+      var ammoDropRate = 0.7;
       if (Math.random() < healthDropRate) {
         var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
         healthDrop.setDepth(-1);
@@ -1506,7 +1510,7 @@ export default class Level2 extends Phaser.Scene {
 
   tameCheck (lasso, enemy) {
     var tameRate;
-      if (enemy.boss) {
+      if (enemy.boss && !this.player.isMounted) {
         tameRate = Math.max(100);
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
@@ -1533,7 +1537,7 @@ export default class Level2 extends Phaser.Scene {
         } else {
           //console.log('attempt failed');
         }
-      } else if (enemy.boss2){
+      } else if (enemy.boss2 && !this.player.isMounted){
         tameRate = Math.max(100);
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
@@ -1574,8 +1578,8 @@ export default class Level2 extends Phaser.Scene {
           this.kills += 1;
           // Random ammo drop after enemy kill
           //dropRate increases when you're low on bullets
-          var healthDropRate = 0.10;
-          var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+          var healthDropRate = 0.30;
+          var ammoDropRate = 0.7;
           if (Math.random() < healthDropRate) {
             var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
             healthDrop.setDepth(-1);
