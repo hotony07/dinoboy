@@ -59,7 +59,7 @@ export default class Level2 extends Phaser.Scene {
     this.load.image('dilo', './assets/dinosaur/dilo3.png');
     this.load.spritesheet('diloRun', './assets/dinosaur/diloRun.png', {
       frameWidth: 1297,
-      frameHeight: 609
+      frameHeight: 600
     });
 
 
@@ -577,7 +577,7 @@ export default class Level2 extends Phaser.Scene {
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'trex');
           this.stego.setCollideWorldBounds(true);
           this.stego.body.setSize(288, 289, this.sStegoX, this.sStegoY);
-          this.stego.setScale(0.2);
+          this.stego.setScale(0.3);
           this.stego.setDepth(-1);
           this.stego.health = 50;
           this.stego.boss = true;
@@ -630,17 +630,6 @@ export default class Level2 extends Phaser.Scene {
           this.enemyGroup.add(this.stego2);
           this.stego2.anims.play('step', true);
 
-          this.stego3 = this.physics.add.sprite(this.B3X, this.B3Y, 'stego');
-          this.stego3.setCollideWorldBounds(true);
-          this.stego3.body.setSize(288, 289, this.B3X, this.B3Y);
-          this.stego3.setScale(0.5);
-          this.stego3.setDepth(-1);
-          this.stego3.health = 50;
-          this.stego3.boss = true;
-          this.stego3.stunTimer = 0;
-          this.stego3.isStunned = false;
-          this.enemyGroup.add(this.stego3);
-          this.stego3.anims.play('step', true);
     }
 
 
