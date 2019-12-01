@@ -468,7 +468,7 @@ export default class Level2 extends Phaser.Scene {
     this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back');
     this.backText.setScrollFactor(0);
     this.backText.setScale(0.3);
-    this.backText.setDepth(-1);
+    this.backText.setDepth(1);
 
     // this.healthGroup = this.add.group({
     //   key: 'health',
