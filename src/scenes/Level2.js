@@ -60,7 +60,7 @@ export default class Level2 extends Phaser.Scene {
     this.load.image('dilo', './assets/dinosaur/dilo3.png');
     this.load.spritesheet('diloRun', './assets/dinosaur/diloRun.png', {
       frameWidth: 1297,
-      frameHeight: 618
+      frameHeight: 609
     });
 
 
@@ -453,7 +453,7 @@ export default class Level2 extends Phaser.Scene {
     );
 
     this.healthScore = this.add.text(this.centerX - 120, this. centerY + 75,
-      'Health', { font: "10px Georgia",  fill: "#000000",}).setScrollFactor(0);
+      'Health', { font: "10px Georgia",  fill: "#000000",}).setScrollFactor(0).setDepth(3);
     this.healthGroup = this.add.group({
       key: 'health',
       repeat: this.currentHealth - 1,
@@ -464,11 +464,12 @@ export default class Level2 extends Phaser.Scene {
         stepY: 0
       }
     });
+    this.healthGroup.setDepth(3);
 
     this.backText = this.add.sprite(this.centerX - 20, this. centerY + 100, 'back');
     this.backText.setScrollFactor(0);
     this.backText.setScale(0.3);
-    this.backText.setDepth(1);
+    this.backText.setDepth(2);
 
     // this.healthGroup = this.add.group({
     //   key: 'health',
@@ -484,7 +485,7 @@ export default class Level2 extends Phaser.Scene {
     this.healthGroup.children.iterate(function(child) {
       child.setScrollFactor(0);
       child.setScale(0.3);
-      child.setDepth(2);
+      child.setDepth(3);
     });
 
     this.playerGroup = this.physics.add.group();
@@ -550,7 +551,7 @@ export default class Level2 extends Phaser.Scene {
         this.healthGroup.children.iterate(function(child) {
           child.setScrollFactor(0);
           child.setScale(0.6);
-          child.setDepth(2);
+          child.setDepth(3);
         });
       } else {
         this.healthGroup = this.add.group({

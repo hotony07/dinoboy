@@ -571,7 +571,7 @@ export default class Test2 extends Phaser.Scene {
         this.healthGroup.children.iterate(function(child) {
           child.setScrollFactor(0);
           child.setScale(0.6);
-          child.setDepth(5);
+          child.setDepth(3);
         });
       } else {
         this.healthGroup = this.add.group({
@@ -587,7 +587,7 @@ export default class Test2 extends Phaser.Scene {
         this.healthGroup.children.iterate(function(child) {
           child.setScrollFactor(0);
           child.setScale(0.3);
-          child.setDepth(5);
+          child.setDepth(3);
         });
       }
     }
