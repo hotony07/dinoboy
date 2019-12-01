@@ -929,7 +929,7 @@ export default class Test2 extends Phaser.Scene {
         });
         this.player.dodgeLock = false;
         this.player.rollInvuln = true;
-        this.player.anims.play("dodge", true);
+        this.player.anims.play("cowboyRoll", true);
       }
 
       // //summon lasso
@@ -1473,23 +1473,25 @@ export default class Test2 extends Phaser.Scene {
 
   walk(direction)
   {
-    switch (direction)
-    {
-      case "forward":
-        this.player.anims.play("walkForward", true);
-        break;
-      case "backward":
-        this.player.anims.play("walkBackward", true);
-        break;
-      case "left":
-        this.player.anims.play("walkLeft", true);
-        break;
-      case "right":
-        this.player.anims.play("walkRight", true);
-        break;
-      default:
-        this.player.anims.play("walkForward", true);
-        break;
+    if (!this.shift.isDown) {
+      switch (direction)
+      {
+        case "forward":
+          this.player.anims.play("walkForward", true);
+          break;
+        case "backward":
+          this.player.anims.play("walkBackward", true);
+          break;
+        case "left":
+          this.player.anims.play("walkLeft", true);
+          break;
+        case "right":
+          this.player.anims.play("walkRight", true);
+          break;
+        default:
+          this.player.anims.play("walkForward", true);
+          break;
+      }
     }
   }
 
