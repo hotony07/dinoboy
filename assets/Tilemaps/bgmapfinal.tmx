@@ -71,40 +71,40 @@
   <object id="5" name="Player Spawn" x="501.333" y="497.333">
    <point/>
   </object>
-  <object id="6" name="Dino Spawn 10" x="230.667" y="338.667">
+  <object id="6" name="Dino Spawn 10" x="65.3333" y="326.667">
    <point/>
   </object>
   <object id="7" name="Big Spawn 1" x="156" y="154.667">
    <point/>
   </object>
-  <object id="8" name="Dino Spawn 11" x="349.333" y="232">
+  <object id="8" name="Dino Spawn 11" x="352" y="72">
    <point/>
   </object>
-  <object id="9" name="Dino Spawn 8" x="248" y="632">
+  <object id="9" name="Dino Spawn 8" x="66.6667" y="656">
    <point/>
   </object>
-  <object id="10" name="Dino Spawn 7" x="344" y="716">
+  <object id="10" name="Dino Spawn 7" x="325.333" y="906.667">
    <point/>
   </object>
-  <object id="11" name="Dino Spawn 6" x="496" y="858.667">
+  <object id="11" name="Dino Spawn 6" x="482.667" y="917.333">
    <point/>
   </object>
-  <object id="12" name="Dino Spawn 5" x="653.333" y="737.333">
+  <object id="12" name="Dino Spawn 5" x="630.667" y="906.667">
    <point/>
   </object>
-  <object id="13" name="Dino Spawn 4" x="757.333" y="649.333">
+  <object id="13" name="Dino Spawn 4" x="886.667" y="653.333">
    <point/>
   </object>
-  <object id="14" name="Dino Spawn 3" x="825.333" y="497.333">
+  <object id="14" name="Dino Spawn 3" x="905.333" y="501.333">
    <point/>
   </object>
-  <object id="15" name="Dino Spawn 2" x="760" y="353.333">
+  <object id="15" name="Dino Spawn 2" x="900" y="325.333">
    <point/>
   </object>
-  <object id="16" name="Dino Spawn 1" x="656" y="248">
+  <object id="16" name="Dino Spawn 1" x="649.333" y="64">
    <point/>
   </object>
-  <object id="17" name="Dino Spawn 12" x="500" y="148">
+  <object id="17" name="Dino Spawn 12" x="497.333" y="74.6667">
    <point/>
   </object>
   <object id="18" name="Big Spawn 2" x="808" y="160">
@@ -116,7 +116,7 @@
   <object id="20" name="Big Spawn 3" x="168" y="837.333">
    <point/>
   </object>
-  <object id="21" name="Dino Spawn 9" x="154.667" y="484">
+  <object id="21" name="Dino Spawn 9" x="65.3333" y="490.667">
    <point/>
   </object>
  </objectgroup>

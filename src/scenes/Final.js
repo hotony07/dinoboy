@@ -625,13 +625,36 @@ export default class Final extends Phaser.Scene {
         });
       }
     }
+
+    if (this.kills > 47) {
+      while (this.enemyGroup.getChildren().length > 0) {
+        this.enemyGroup.getChildren()[this.enemyGroup.getChildren().length - 1].destroy();
+      }
+      if (this.player.isMounted){
+        this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'KING OF THE DINOSAURS\n YOU WIN!', {
+          font: "18px monospace",
+          fill: "#000000",
+          padding: { x: 20, y: 10 },
+          backgroundColor: "#ffffff"
+        }).setScrollFactor(0);
+      }
+      else {
+        this.restartText = this.add.text(this.player.x - 150, this.player.y + 75, 'KING OF THE DINOSAURS\n YOU WIN!', {
+          font: "18px monospace",
+          fill: "#000000",
+          padding: { x: 20, y: 10 },
+          backgroundColor: "#ffffff"
+        });
+      }
+
+    }
     //stego is spawned
-    if (!this.stegoSpawned && this.kills == 1) {
+    if (!this.stegoSpawned && this.kills == 10) {
       this.stegoSpawned = true;
 
           this.stego = this.physics.add.sprite(this.sStegoX, this.sStegoY, 'stego');
           this.stego.setCollideWorldBounds(true);
-          this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
+          //this.stego.body.setSize(256, 128, this.sStegoX, this.sStegoY);
           this.stego.setScale(0.2);
           this.stego.setDepth(-1);
           this.stego.health = 50;
@@ -643,58 +666,12 @@ export default class Final extends Phaser.Scene {
           this.enemyGroup.add(this.stego);
           this.stego.anims.play('step', true);
     }
-    if (this.stegoSpawned && this.kills == 15) {
+    if (this.stegoSpawned && this.kills == 20) {
       this.stegoSpawned = false;
-
-          this.stego1 = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
-          this.stego1.setCollideWorldBounds(true);
-          this.stego1.body.setSize(256, 128, this.B1X, this.B1Y);
-          this.stego1.setScale(0.2);
-          this.stego1.setDepth(-1);
-          this.stego1.health = 50;
-          this.stego1.boss = true;
-          this.stego1.boss2 = false;
-          this.stego1.stunTimer = 0;
-          this.stego1.isStunned = false;
-          this.enemyGroup.add(this.stego1);
-          this.stego1.anims.play('step', true);
-    }
-
-
-    if (!this.stegoSpawned && this.kills == 30) {
-
-      this.stegoSpawned = true;
-
-          this.stego1b = this.physics.add.sprite(this.B1X, this.B1Y, 'stego');
-          this.stego1b.setCollideWorldBounds(true);
-          this.stego1b.body.setSize(256, 128, this.B1X, this.B1Y);
-          this.stego1b.setScale(0.2);
-          this.stego1b.setDepth(-1);
-          this.stego1b.health = 50;
-          this.stego1b.boss = true;
-          this.stego1b.boss2 = false;
-          this.stego1b.stunTimer = 0;
-          this.stego1b.isStunned = false;
-          this.enemyGroup.add(this.stego1b);
-          this.stego1b.anims.play('step', true);
-
-          this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
-          this.stego2.setCollideWorldBounds(true);
-          this.stego2.body.setSize(256, 128, this.B2X, this.B2Y);
-          this.stego2.setScale(0.25);
-          this.stego2.setDepth(-1);
-          this.stego2.health = 50;
-          this.stego2.boss = true;
-          this.stego1b.boss2 = false;
-          this.stego2.stunTimer = 0;
-          this.stego2.isStunned = false;
-          this.enemyGroup.add(this.stego2);
-          this.stego2.anims.play('step', true);
-
           this.stego3 = this.physics.add.sprite(this.B3X, this.B3Y, 'stego');
           this.stego3.setCollideWorldBounds(true);
-          this.stego3.body.setSize(256, 128, this.B3X, this.B3Y);
-          this.stego3.setScale(0.25);
+          //this.stego3.body.setSize(256, 128, this.B3X, this.B3Y);
+          this.stego3.setScale(0.5);
           this.stego3.setDepth(-1);
           this.stego3.health = 50;
           this.stego3.boss = true;
@@ -702,6 +679,24 @@ export default class Final extends Phaser.Scene {
           this.stego3.isStunned = false;
           this.enemyGroup.add(this.stego3);
           this.stego3.anims.play('step', true);
+    }
+
+
+    if (!this.stegoSpawned && this.kills == 40) {
+
+      this.stegoSpawned = true;
+
+          this.stego2 = this.physics.add.sprite(this.B2X, this.B2Y, 'stego');
+          this.stego2.setCollideWorldBounds(true);
+          //this.stego2.body.setSize(256, 128, this.B2X, this.B2Y);
+          this.stego2.setScale(0.5);
+          this.stego2.setDepth(-1);
+          this.stego2.health = 50;
+          this.stego2.boss = true;
+          this.stego2.stunTimer = 0;
+          this.stego2.isStunned = false;
+          this.enemyGroup.add(this.stego2);
+          this.stego2.anims.play('step', true);
     }
 
 
@@ -787,18 +782,6 @@ export default class Final extends Phaser.Scene {
         this.scene.start('Boot');
         }
       this.input.enabled = false;
-    }
-
-    if (this.kills > 39) {
-      this.restartText = this.add.text(this.centerX - 125, this.centerY + 75, 'Press ENTER to go next', {
-        font: "18px monospace",
-        fill: "#000000",
-        padding: { x: 20, y: 10 },
-        backgroundColor: "#ffffff"
-      }).setScrollFactor(0);
-      if (this.enter.isDown) {
-        this.scene.start("Level2");
-      }
     }
     // Update the scene
     const speed = 175;
@@ -1252,7 +1235,7 @@ export default class Final extends Phaser.Scene {
 
     if (this.waveSpawn) {
       this.waveTimer++
-      if (this.waveTimer > 500) {
+      if (this.waveTimer > 300) {
         this.waveTimer = 0;
         this.waveSpawn = false;
       }
@@ -1275,6 +1258,12 @@ export default class Final extends Phaser.Scene {
     // }
 
     this.enemyGroup.children.iterate(function(child) {
+      this.tweens.add({
+        targets: child,
+        x: this.player.x,
+        y: this.player.y,
+        duration: 10000
+      });
       if (child.health < this.mobMaxHealth && Math.abs(child.x - this.player.x) < 250 && Math.abs(child.y - this.player.y) < 250 ) {
         this.tweens.add({
           targets: child,
@@ -1286,7 +1275,6 @@ export default class Final extends Phaser.Scene {
           child.reload = true;
           this.spit(this.player, child);
         }
-
       }
 
       if (Math.abs(child.x - this.player.x) < 150 && Math.abs(child.y - this.player.y) < 150 && child.isStunned == false) {
@@ -1395,7 +1383,7 @@ export default class Final extends Phaser.Scene {
 
 
   takeDamage (player, enemy) {
-    if (!this.playerHit && !this.player.isHit && this.currentHealth > 0) {
+    if (!this.playerHit && !this.player.isHit && this.currentHealth > 0 && !enemy.isStunned) {
       this.playerIsHurt = true;
       this.player.setTint(0xff0000);
       this.currentHealth--;
@@ -1436,8 +1424,8 @@ export default class Final extends Phaser.Scene {
       this.kills += 1;
       // Random ammo drop after enemy kill
       //dropRate increases when you're low on bullets
-      var healthDropRate = 0.10;
-      var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+      var healthDropRate = 0.30;
+      var ammoDropRate = 0.7;
       if (Math.random() < healthDropRate) {
         var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
         healthDrop.setDepth(-1);
@@ -1471,10 +1459,12 @@ export default class Final extends Phaser.Scene {
     if (enemy.health < 11) {
       enemy.health = 0;
     } else {
-      enemy.health -= 10;
+      if(!enemy.isStunned)
+      {
+        enemy.isStunned = true;
+        enemy.health -= 10;
+      }
     }
-
-
     // if(this.player.isMounted){
     // this.mount.anims.pause();
     // this.mount.anims.play('chomp', true);
@@ -1493,15 +1483,14 @@ export default class Final extends Phaser.Scene {
     var dinoHurtSoundConfig = this.defaultSoundConfig;
     this.dinoHurt.volume = volume
 
-
     this.dinoHurt.play(this.dinoHurtSoundConfig);
     if (enemy.health == 0) {
       enemy.disableBody(true, true);
       this.kills += 1;
       // Random ammo drop after enemy killaw
       //dropRate increases when you're low on bullets
-      var healthDropRate = 0.10;
-      var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+      var healthDropRate = 0.30;
+      var ammoDropRate = 0.7;
       if (Math.random() < healthDropRate) {
         var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
         healthDrop.setDepth(-1);
@@ -1616,7 +1605,7 @@ export default class Final extends Phaser.Scene {
 
   tameCheck (lasso, enemy) {
     var tameRate;
-      if (enemy.boss) {
+      if (enemy.boss && !this.player.isMounted) {
         //tameRate = Math.max(100);
         tameRate = Math.max((45 - enemy.health) / 10, 0);
         if (Math.random() < tameRate) {
@@ -1645,7 +1634,7 @@ export default class Final extends Phaser.Scene {
         } else {
           //console.log('attempt failed');
         }
-      } else if (enemy.boss2){
+      } else if (enemy.boss2 && !this.player.isMounted){
         tameRate = Math.max(100);
         // tameRate = Math.max((45 - enemy.health) / 25, 0);
         if (Math.random() < tameRate) {
@@ -1686,8 +1675,8 @@ export default class Final extends Phaser.Scene {
           this.kills += 1;
           // Random ammo drop after enemy kill
           //dropRate increases when you're low on bullets
-          var healthDropRate = 0.10;
-          var ammoDropRate = Math.max((20 - this.ammo) / 25, 0);
+          var healthDropRate = 0.30;
+          var ammoDropRate = 0.7;
           if (Math.random() < healthDropRate) {
             var healthDrop = this.physics.add.sprite(enemy.x, enemy.y, 'health');
             healthDrop.setDepth(-1);
