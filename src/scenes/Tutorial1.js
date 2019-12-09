@@ -610,9 +610,11 @@ export default class Tutorial1 extends Phaser.Scene {
 
       if (this.esc.isDown) {
         this.scene.start("Boot");
+        this.music.stop();
       }
       else if(this.enter.isDown) {
         this.scene.start("Test2");
+        this.music.stop();
       }
     }
 

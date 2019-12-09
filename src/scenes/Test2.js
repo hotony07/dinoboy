@@ -756,6 +756,7 @@ export default class Test2 extends Phaser.Scene {
         backgroundColor: "#ffffff"
       }).setScrollFactor(0);
       if (this.enter.isDown) {
+        this.music.stop();
         this.scene.start("Level2");
       }
     }

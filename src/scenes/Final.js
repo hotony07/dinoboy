@@ -571,13 +571,13 @@ export default class Final extends Phaser.Scene {
     this.B3X = bigSpawn3.x;
     this.B3Y = bigSpawn3.y;
 
-    const bigSpawn4 = map.findObject(
-    "Spawns",
-    obj => obj.name === "Big Spawn 4"
-    );
-
-    this.B4X = bigSpawn4.x;
-    this.B4Y = bigSpawn4.y;
+    // const bigSpawn4 = map.findObject(
+    // "Spawns",
+    // obj => obj.name === "Big Spawn 4"
+    // );
+    //
+    // this.B4X = bigSpawn4.x;
+    // this.B4Y = bigSpawn4.y;
 
 
   }

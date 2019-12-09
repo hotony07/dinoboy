@@ -729,7 +729,13 @@ export default class Level2 extends Phaser.Scene {
         padding: { x: 20, y: 10 },
         backgroundColor: "#ffffff"
       }).setScrollFactor(0);
+
+      while (this.enemyGroup.getChildren().length > 0) {
+        this.enemyGroup.getChildren()[this.enemyGroup.getChildren().length - 1].destroy();
+      }
+
       if (this.enter.isDown) {
+        this.music.stop();
         this.scene.start("Final");
       }
     }
